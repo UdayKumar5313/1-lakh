@@ -166,6 +166,12 @@
       const STORAGE_KEY = 'saveChallenge_v1';
       const DEFAULT_PASSWORD = '1234';
 
+      // SHA-256 hash (async). Used so the plain password never lives in localStorage.
+      async function hashPassword(pw) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+
       const DEFAULT_SETTINGS = {
         startPenalty: 50,
         penaltyIncrement: 50,
@@ -180,7 +186,8 @@
         currency: 'INR',
         notifications: true,
         darkMode: true,
-        dashboardPassword: DEFAULT_PASSWORD
+        // passwordHash is set on first boot; the plain default is never stored or shown.
+        dashboardPasswordHash: null
       };
 
       let finUnlocked = false;
@@ -249,10 +256,18 @@
               state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
               if (!state.settings.dailyPace) state.settings.dailyPace = 1;
               if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
-              if (!state.settings.dashboardPassword) state.settings.dashboardPassword = DEFAULT_PASSWORD;
               if (!Array.isArray(state.boosters)) state.boosters = [];
               if (!Array.isArray(state.penalties)) state.penalties = [];
               if (!Array.isArray(state.missedDates)) state.missedDates = [];
+              // Migrate legacy plaintext password to hash
+              if (state.settings.dashboardPassword && !state.settings.dashboardPasswordHash) {
+                hashPassword(state.settings.dashboardPassword).then(h => {
+                  state.settings.dashboardPasswordHash = h;
+                  delete state.settings.dashboardPassword;
+                  saveState();
+                });
+              }
+              delete state.settings.dashboardPassword;
               return;
             }
           }
@@ -263,6 +278,11 @@
         state.missedDates = [];
         state.settings = { ...DEFAULT_SETTINGS };
         state.lastPenaltyPopupDate = null;
+        // First-run: set default password as a hash.
+        hashPassword(DEFAULT_PASSWORD).then(h => {
+          state.settings.dashboardPasswordHash = h;
+          saveState();
+        });
         saveState();
       }
 
@@ -328,7 +348,6 @@
       function getDailyPace() { return state.settings.dailyPace || 1; }
       function isTodayLimitReached() { return getTodayBoxesCompleted() >= getDailyPace(); }
 
-      // ---- NEW HELPERS FOR MATRIX ----
       function getNextBox() {
         return state.boxes.find(b => !b.completed) || null;
       }
@@ -502,8 +521,21 @@
         modal.classList.remove('hidden'); modal.classList.add('flex');
         setTimeout(() => input.focus(), 100);
 
-        const submit = () => {
-          if (input.value === (state.settings.dashboardPassword || DEFAULT_PASSWORD)) {
+        const submit = async () => {
+          const enteredHash = await hashPassword(input.value);
+          const storedHash = state.settings.dashboardPasswordHash;
+          const legacyPlain = state.settings.dashboardPassword;
+          const matches = storedHash
+            ? enteredHash === storedHash
+            : (legacyPlain ? input.value === legacyPlain : input.value === DEFAULT_PASSWORD);
+
+          if (matches) {
+            // Auto-migrate legacy plaintext on successful unlock
+            if (!storedHash && enteredHash) {
+              state.settings.dashboardPasswordHash = enteredHash;
+              delete state.settings.dashboardPassword;
+              saveState();
+            }
             modal.classList.add('hidden'); modal.classList.remove('flex');
             if (onSuccess) onSuccess();
           } else {
@@ -764,7 +796,6 @@
         </div>`;
       }
 
-      // ===== CHANGED: Savings Matrix shows only NEXT amount + completed boxes =====
       function renderMatrix() {
         const completed = getMatrixBoxesCompleted();
         const matrixSavings = getMatrixSavings();
@@ -1101,13 +1132,26 @@
               <label class="text-sm text-zinc-300">Target completion date</label>
               <input id="settingTargetDate" type="date" value="${s.targetDate || DEFAULT_SETTINGS.targetDate}" class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 text-sm">
             </div>
+          </div>
+
+          <div class="pt-3 border-t border-zinc-800 space-y-2">
             <div class="flex justify-between items-center">
               <label class="text-sm text-zinc-300">Dashboard password</label>
-              <input id="settingPassword" type="text" value="${s.dashboardPassword || DEFAULT_PASSWORD}" class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 w-28 text-sm text-right">
+              <span class="text-xs text-zinc-500">🔒 Protected</span>
             </div>
-            <p class="text-[10px] text-zinc-500">Default password: 1234</p>
+            <p class="text-[10px] text-zinc-500">For security, the current password is never displayed. To change it, enter the current password and a new one below.</p>
+            <input id="settingOldPassword" type="password" placeholder="Current password" autocomplete="off"
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
+            <input id="settingNewPassword" type="password" placeholder="New password (min 4 chars)" autocomplete="new-password"
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
+            <input id="settingConfirmPassword" type="password" placeholder="Confirm new password" autocomplete="new-password"
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
+            <button id="changePasswordBtn" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2 rounded-lg text-sm">
+              Change Password
+            </button>
           </div>
-          <div class="flex gap-3 pt-2 flex-wrap">
+
+          <div class="flex gap-3 pt-2 flex-wrap border-t border-zinc-800">
             <button id="saveSettingsBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">Save Settings</button>
             <button id="resetChallengeBtn" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">Reset Challenge</button>
             <button id="importDataBtn" class="bg-zinc-700 hover:bg-zinc-600 text-white font-semibold px-4 py-2 rounded-xl text-sm">Import JSON</button>
@@ -1149,7 +1193,6 @@
           tab.addEventListener('click', () => { activePeriod = tab.dataset.period; renderCurrentTab(); });
         });
 
-        // ===== CHANGED: only "next amount" button + undo on completed boxes =====
         const checkNextBtn = document.getElementById('checkNextBtn');
         if (checkNextBtn) checkNextBtn.addEventListener('click', () => {
           const nextBox = getNextBox();
@@ -1264,7 +1307,6 @@
           const dp = parseInt(document.getElementById('settingDailyPace').value, 10);
           const sd = document.getElementById('settingStartDate').value;
           const td = document.getElementById('settingTargetDate').value;
-          const pw = document.getElementById('settingPassword').value.trim();
           if (sp > 0) state.settings.startPenalty = sp;
           if (pi > 0) state.settings.penaltyIncrement = pi;
           if (dp > 0) {
@@ -1277,8 +1319,41 @@
             if (!/^\d{4}-\d{2}-\d{2}$/.test(td)) { showToast('Invalid date', 'error'); return; }
             state.settings.targetDate = td;
           }
-          if (pw.length > 0) state.settings.dashboardPassword = pw;
-          saveState(); showToast('Saved', 'success'); renderCurrentTab();
+          saveState(); showToast('Settings saved', 'success'); renderCurrentTab();
+        });
+
+        // Dedicated change-password flow — never displays current password.
+        const changePwBtn = document.getElementById('changePasswordBtn');
+        if (changePwBtn) changePwBtn.addEventListener('click', async () => {
+          const oldPw = document.getElementById('settingOldPassword').value;
+          const newPw = document.getElementById('settingNewPassword').value;
+          const confirmPw = document.getElementById('settingConfirmPassword').value;
+
+          const oldHash = await hashPassword(oldPw);
+          const storedHash = state.settings.dashboardPasswordHash;
+          const legacyPlain = state.settings.dashboardPassword;
+          const valid = storedHash
+            ? oldHash === storedHash
+            : (legacyPlain ? oldPw === legacyPlain : oldPw === DEFAULT_PASSWORD);
+
+          if (!valid) {
+            showToast('Current password is incorrect', 'error');
+            return;
+          }
+          if (newPw.length < 4) {
+            showToast('New password must be at least 4 characters', 'error');
+            return;
+          }
+          if (newPw !== confirmPw) {
+            showToast('New passwords do not match', 'error');
+            return;
+          }
+          const newHash = await hashPassword(newPw);
+          state.settings.dashboardPasswordHash = newHash;
+          delete state.settings.dashboardPassword;
+          saveState();
+          showToast('Password changed successfully', 'success');
+          renderCurrentTab();
         });
 
         const resetBtn = document.getElementById('resetChallengeBtn');
@@ -1302,7 +1377,18 @@
                 state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
                 if (!state.settings.dailyPace) state.settings.dailyPace = 1;
                 if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
-                if (!state.settings.dashboardPassword) state.settings.dashboardPassword = DEFAULT_PASSWORD;
+                if (!state.settings.dashboardPasswordHash) {
+                  const legacyPlain = state.settings.dashboardPassword;
+                  hashPassword(legacyPlain || DEFAULT_PASSWORD).then(h => {
+                    state.settings.dashboardPasswordHash = h;
+                    delete state.settings.dashboardPassword;
+                    saveState();
+                    showToast('Imported', 'success');
+                    renderCurrentTab();
+                  });
+                  return;
+                }
+                delete state.settings.dashboardPassword;
                 saveState(); showToast('Imported', 'success'); renderCurrentTab();
               } else showToast('Invalid file', 'error');
             } catch (err) { showToast('Invalid JSON', 'error'); }
