@@ -3,1419 +3,1316 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>₹1 LAKH SAVINGS CHALLENGE – SMART MONEY TRACKER</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>₹1 LAKH CHALLENGE – MONO TRACKER</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
-    * { box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    body { background: #000000; color: #e5e7eb; margin: 0; min-height: 100vh; }
-    .glass-card {
-      background: rgba(18, 18, 22, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 1.5rem;
-      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.8);
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #000; color: #fff; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      line-height: 1.5;
+      font-feature-settings: 'tnum';
     }
-    .matrix-grid {
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
+
+    /* Layout */
+    .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 100px; }
+    .stack > * + * { margin-top: 16px; }
+    .stack-sm > * + * { margin-top: 10px; }
+    .stack-lg > * + * { margin-top: 24px; }
+
+    /* Header */
+    .hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px; }
+    .hdr h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+    .hdr p { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #666; margin-top: 6px; font-weight: 500; }
+    .hdr .bal { text-align: right; }
+    .hdr .bal small { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #666; margin-bottom: 4px; font-weight: 500; }
+    .hdr .bal b { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+
+    /* Nav */
+    .nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; scrollbar-width: none; }
+    .nav::-webkit-scrollbar { display: none; }
+    .nav button {
+      flex-shrink: 0; background: transparent; border: 1px solid #222;
+      color: #888; font-size: 12px; font-weight: 600; padding: 8px 14px;
+      border-radius: 8px; cursor: pointer; transition: all 0.15s;
+      font-family: inherit; white-space: nowrap;
+    }
+    .nav button:hover { color: #fff; border-color: #333; }
+    .nav button.active { background: #fff; color: #000; border-color: #fff; }
+
+    /* Cards */
+    .card {
+      background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 14px; padding: 20px;
+    }
+    .card-tight { padding: 14px; }
+    .card-tighter { padding: 12px; }
+
+    /* Typography helpers */
+    .label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #666; font-weight: 600; }
+    .label-lg { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; font-weight: 600; }
+    .big { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+    .big-lg { font-size: 40px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+    .h2 { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
+    .muted { color: #666; }
+    .dim { color: #888; }
+
+    /* Divider */
+    .div { height: 1px; background: #1a1a1a; margin: 14px 0; }
+
+    /* Progress bar */
+    .bar { height: 6px; background: #1a1a1a; border-radius: 3px; overflow: hidden; }
+    .bar > div { height: 100%; background: #fff; border-radius: 3px; transition: width 0.4s ease; }
+
+    /* Grid utilities */
+    .row { display: flex; gap: 10px; }
+    .row-b { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    @media (max-width: 480px) {
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Stat tiles */
+    .stat { background: #000; border: 1px solid #1a1a1a; border-radius: 10px; padding: 12px; }
+    .stat .label { display: block; margin-bottom: 6px; }
+    .stat b { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+
+    /* Matrix grid */
+    .m-grid {
       display: grid;
-      grid-template-columns: repeat(15, minmax(0, 1fr));
-      gap: 2px;
-      width: 100%;
+      grid-template-columns: repeat(15, 1fr);
+      gap: 3px;
     }
-    @media (min-width: 640px) { .matrix-grid { gap: 3px; } }
-    @media (min-width: 1024px) { .matrix-grid { gap: 4px; } }
-    .matrix-box {
-      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    .m-box {
+      aspect-ratio: 1;
+      border-radius: 3px;
+      background: #111;
+      border: 1px solid #1f1f1f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 600;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.15s;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      border-radius: 4px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-weight: 600; font-size: 9px; padding: 1px; line-height: 1;
-      border: 1px solid #2a2a2e; background: #1c1c1f; color: #a1a1aa;
-      cursor: pointer; aspect-ratio: 1 / 1; min-width: 0; overflow: hidden; text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+      padding: 0;
+      overflow: hidden;
     }
-    @media (min-width: 380px) { .matrix-box { font-size: 10px; } }
-    @media (min-width: 640px) { .matrix-box { font-size: 12px; border-radius: 6px; padding: 2px; } }
-    @media (min-width: 1024px) { .matrix-box { font-size: 13px; } }
-    .matrix-box.completed {
-      background: #10b981; border-color: #34d399; color: #000;
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); font-weight: 700;
-      text-decoration: line-through; opacity: 0.9;
+    @media (min-width: 480px) {
+      .m-box { font-size: 10px; border-radius: 4px; }
     }
-    .matrix-box.completed .check { display: block; }
-    .matrix-box.locked { opacity: 0.35; cursor: not-allowed; border-color: #1f1f23; }
-    .matrix-box:active:not(.locked) { transform: scale(0.9); }
-    .check { display: none; font-size: 0.7em; margin-bottom: 0; line-height: 1; }
-    .matrix-box .denom-label { font-size: 1em; line-height: 1; white-space: nowrap; }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #0a0a0a; }
-    ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .modal-backdrop { background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); }
-    .toast { animation: slideUp 0.25s ease-out; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .progress-bar { transition: width 0.5s ease; }
-    .tab-active { background: #1f1f23; color: #10b981; border-bottom: 2px solid #10b981; }
-    .tab-btn { transition: all 0.15s; }
-    .tab-btn:hover { background: #18181b; }
-    .calendar-day { width: 2.2rem; height: 2.2rem; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border-radius: 0.5rem; }
-    .calendar-day.active { background: #10b981; color: #000; font-weight: 700; }
-    .calendar-day.missed { background: #3f3f46; color: #a1a1aa; }
-    .calendar-day.today { outline: 2px solid #f59e0b; }
-    .countdown-warn { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.35); }
-    .countdown-ok { background: rgba(16,185,129,0.10); border: 1px solid rgba(16,185,129,0.3); }
-    .countdown-ahead { background: rgba(59,130,246,0.10); border: 1px solid rgba(59,130,246,0.35); }
-    .locked-panel { background: repeating-linear-gradient(45deg, #0a0a0a, #0a0a0a 10px, #111 10px, #111 20px); }
-    .fin-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #71717a; }
-    .fin-stat-value { font-size: 1.05rem; font-weight: 700; }
-    .period-tab { padding: 0.35rem 0.75rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-    .period-tab.active { background: #10b981; color: #000; }
-    .period-tab:not(.active) { background: #1f1f23; color: #a1a1aa; }
-    .period-tab:not(.active):hover { background: #27272a; }
+    .m-box:active { transform: scale(0.92); }
+    .m-box.done {
+      background: #fff;
+      border-color: #fff;
+      color: #000;
+      font-weight: 700;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; border-radius: 10px; font-family: inherit;
+      font-weight: 600; cursor: pointer; transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: #fff; color: #000; padding: 14px 20px; font-size: 14px; width: 100%;
+    }
+    .btn-primary:hover { background: #e5e5e5; }
+    .btn-secondary {
+      background: transparent; color: #fff; border: 1px solid #333;
+      padding: 10px 16px; font-size: 13px;
+    }
+    .btn-secondary:hover { border-color: #555; }
+    .btn-ghost {
+      background: transparent; color: #888; border: 1px solid #1a1a1a;
+      padding: 8px 14px; font-size: 12px;
+    }
+    .btn-ghost:hover { color: #fff; border-color: #333; }
+    .btn-danger {
+      background: transparent; color: #fff; border: 1px solid #333;
+      padding: 10px 16px; font-size: 13px;
+    }
+    .btn-danger:hover { background: #1a1a1a; }
+    .btn-sm { padding: 6px 12px; font-size: 11px; }
+
+    /* Inputs */
+    .inp {
+      background: #000; border: 1px solid #222; color: #fff;
+      padding: 10px 12px; border-radius: 10px; font-family: inherit;
+      font-size: 14px; width: 100%; outline: none; transition: border 0.15s;
+    }
+    .inp:focus { border-color: #666; }
+    .inp::placeholder { color: #444; }
+    select.inp { appearance: none; cursor: pointer; }
+    input[type="date"].inp { color-scheme: dark; }
+    input[type="number"].inp { font-family: 'JetBrains Mono', monospace; }
+
+    /* Select pills */
+    .pill-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .pill {
+      background: transparent; border: 1px solid #222; color: #888;
+      padding: 7px 14px; border-radius: 8px; font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: all 0.15s;
+      font-family: inherit;
+    }
+    .pill:hover { color: #fff; border-color: #444; }
+    .pill.active { background: #fff; color: #000; border-color: #fff; }
+
+    /* List rows */
+    .list-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid #151515; gap: 12px;
+    }
+    .list-row:last-child { border-bottom: none; }
+
+    /* Calendar */
+    .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; border-radius: 6px;
+      background: #0f0f0f; color: #444; font-family: 'JetBrains Mono', monospace;
+    }
+    .cal-day.done { background: #fff; color: #000; }
+    .cal-day.missed { background: #1a1a1a; color: #666; }
+    .cal-day.today { outline: 1px solid #fff; outline-offset: -1px; }
+
+    /* Modal */
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center;
+      padding: 16px; z-index: 100;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+      background: #0a0a0a; border: 1px solid #222; border-radius: 16px;
+      width: 100%; max-width: 400px; padding: 24px;
+    }
+    .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .modal p { color: #888; font-size: 14px; line-height: 1.5; }
+
+    /* Toast */
+    #toasts {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 200; width: 100%; max-width: 360px; padding: 0 16px;
+      display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+    }
+    .toast {
+      background: #fff; color: #000; padding: 12px 16px; border-radius: 10px;
+      font-size: 13px; font-weight: 600; text-align: center;
+      animation: slideUp 0.2s ease-out;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Empty state */
+    .empty { text-align: center; padding: 32px 16px; color: #555; font-size: 13px; }
+
+    /* Badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 6px; font-size: 10px;
+      font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+      border: 1px solid #222; color: #888;
+    }
+    .badge-fill { background: #fff; color: #000; border-color: #fff; }
+    .badge-muted { color: #555; }
   </style>
 </head>
-<body class="bg-black text-gray-200 antialiased">
+<body>
 
-  <div id="app" class="max-w-7xl mx-auto px-3 sm:px-5 py-4 pb-28 sm:pb-24">
-    <header class="flex items-center justify-between mb-5">
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">₹1 LAKH CHALLENGE</h1>
-        <p class="text-xs sm:text-sm text-zinc-400 mt-0.5">SMART MONEY TRACKER · 240 BOXES</p>
-      </div>
-      <div class="text-right">
-        <p class="text-[10px] uppercase tracking-widest text-zinc-500">Matrix Savings</p>
-        <p id="headerMatrix" class="text-xl sm:text-2xl font-bold text-emerald-400">₹0</p>
-      </div>
-    </header>
+<div class="wrap">
+  <header class="hdr">
+    <div>
+      <h1>₹1 LAKH<br>CHALLENGE</h1>
+      <p>240 Boxes · Savings Tracker</p>
+    </div>
+    <div class="bal">
+      <small>Matrix</small>
+      <b id="headerMatrix" class="mono">₹0</b>
+    </div>
+  </header>
 
-    <nav class="flex overflow-x-auto gap-1 mb-6 pb-1 scrollbar-hide" id="mainNav">
-      <button data-tab="dashboard" class="tab-btn tab-active px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Dashboard</button>
-      <button data-tab="matrix" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Savings Matrix</button>
-      <button data-tab="streak" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Streak Tracker</button>
-      <button data-tab="booster" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Booster Savings</button>
-      <button data-tab="penalty" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Penalty Collection</button>
-      <button data-tab="activity" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Daily Activity</button>
-      <button data-tab="reports" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Financial Reports</button>
-      <button data-tab="coach" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">AI Coach</button>
-      <button data-tab="settings" class="tab-btn px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium whitespace-nowrap">Settings</button>
-    </nav>
+  <nav class="nav" id="mainNav">
+    <button data-tab="dashboard" class="active">Dashboard</button>
+    <button data-tab="matrix">Matrix</button>
+    <button data-tab="streak">Streak</button>
+    <button data-tab="booster">Booster</button>
+    <button data-tab="penalty">Penalty</button>
+    <button data-tab="activity">Activity</button>
+    <button data-tab="reports">Reports</button>
+    <button data-tab="coach">Coach</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
 
-    <div id="tabContent" class="space-y-6"></div>
-  </div>
+  <main id="tabContent"></main>
+</div>
 
-  <!-- Penalty popup -->
-  <div id="penaltyModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
-    <div class="glass-card max-w-md w-full p-6 space-y-4">
-      <h2 class="text-xl font-bold text-red-400">⚠️ Missed Streak Penalty</h2>
-      <p id="penaltyModalText" class="text-sm text-zinc-300"></p>
-      <div class="flex gap-3 pt-2">
-        <button id="penaltyPayBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl">Pay Now / Mark as Paid</button>
-        <button id="penaltyLaterBtn" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold py-2.5 rounded-xl">Remind Me Later</button>
-      </div>
+<!-- Modal: Penalty -->
+<div id="penaltyModal" class="modal-bg">
+  <div class="modal">
+    <h3>Missed Streak</h3>
+    <p id="penaltyModalText" style="margin-bottom:20px;"></p>
+    <div class="row" style="margin-top:20px;">
+      <button id="penaltyPayBtn" class="btn btn-primary" style="flex:1;">Mark Paid</button>
+      <button id="penaltyLaterBtn" class="btn btn-secondary" style="flex:1;">Later</button>
     </div>
   </div>
+</div>
 
-  <!-- Password modal -->
-  <div id="passwordModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
-    <div class="glass-card max-w-sm w-full p-6 space-y-4">
-      <h2 class="text-lg font-bold text-white">🔒 Unlock Financial Details</h2>
-      <p class="text-xs text-zinc-400">Enter your password to view sensitive collection data.</p>
-      <input id="passwordInput" type="password" placeholder="Password" autocomplete="off"
-        class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-      <p id="passwordError" class="text-xs text-red-400 hidden">Incorrect password. Try again.</p>
-      <div class="flex gap-3 pt-1">
-        <button id="passwordSubmit" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 rounded-xl text-sm">Unlock</button>
-        <button id="passwordCancel" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold py-2.5 rounded-xl text-sm">Cancel</button>
-      </div>
+<!-- Modal: Password -->
+<div id="passwordModal" class="modal-bg">
+  <div class="modal">
+    <h3>Unlock Details</h3>
+    <p style="margin-bottom:16px;">Enter password to view financial details.</p>
+    <input id="passwordInput" type="password" class="inp" placeholder="Password" autocomplete="off" style="margin-bottom:8px;">
+    <p id="passwordError" style="display:none; color:#fff; font-size:12px; margin-bottom:12px;">Incorrect password</p>
+    <div class="row" style="margin-top:12px;">
+      <button id="passwordSubmit" class="btn btn-primary" style="flex:1;">Unlock</button>
+      <button id="passwordCancel" class="btn btn-secondary" style="flex:1;">Cancel</button>
     </div>
   </div>
+</div>
 
-  <div id="toastContainer" class="fixed bottom-20 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4 space-y-2"></div>
-
-  <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop">
-    <div class="glass-card max-w-sm w-full p-6 space-y-4">
-      <h3 id="confirmTitle" class="text-lg font-bold">Confirm</h3>
-      <p id="confirmMessage" class="text-sm text-zinc-300"></p>
-      <div class="flex gap-3 pt-2">
-        <button id="confirmYes" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-2 rounded-xl">Yes</button>
-        <button id="confirmNo" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold py-2 rounded-xl">Cancel</button>
-      </div>
+<!-- Modal: Confirm -->
+<div id="confirmModal" class="modal-bg">
+  <div class="modal">
+    <h3 id="confirmTitle">Confirm</h3>
+    <p id="confirmMessage"></p>
+    <div class="row" style="margin-top:20px;">
+      <button id="confirmYes" class="btn btn-primary" style="flex:1;">Yes</button>
+      <button id="confirmNo" class="btn btn-secondary" style="flex:1;">Cancel</button>
     </div>
   </div>
+</div>
 
-  <script>
-    (function() {
-      'use strict';
+<div id="toasts"></div>
 
-      const DENOMS = [
-        { value: 100, count: 20 },
-        { value: 200, count: 40 },
-        { value: 500, count: 180 }
-      ];
-      const TOTAL_BOXES = 240;
-      const TOTAL_TARGET = 100000;
+<script>
+(function() {
+  'use strict';
 
-      const denomTotal = DENOMS.reduce((s, d) => s + d.value * d.count, 0);
-      const denomCount = DENOMS.reduce((s, d) => s + d.count, 0);
-      if (denomTotal !== TOTAL_TARGET || denomCount !== TOTAL_BOXES) {
-        document.body.innerHTML = '<div class="p-8 text-red-500 text-center text-xl">⚠️ Denomination error</div>';
-        throw new Error('Denomination validation failed');
-      }
+  const DENOMS = [
+    { value: 100, count: 20 },
+    { value: 200, count: 40 },
+    { value: 500, count: 180 }
+  ];
+  const TOTAL_BOXES = 240;
+  const TOTAL_TARGET = 100000;
+  const STORAGE_KEY = 'saveChallenge_mono_v1';
+  const DEFAULT_PASSWORD = '1234';
 
-      const STORAGE_KEY = 'saveChallenge_v1';
-      const DEFAULT_PASSWORD = '1234';
+  // ---- Hash (timeout-safe) ----
+  async function hashPassword(pw) {
+    const data = new TextEncoder().encode(pw);
+    if (window.crypto && window.crypto.subtle && typeof window.crypto.subtle.digest === 'function') {
+      try {
+        const subtle = crypto.subtle.digest('SHA-256', data);
+        const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1500));
+        const buf = await Promise.race([subtle, timeout]);
+        return 'sha256:' + Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      } catch (e) { console.warn('subtle fallback:', e.message); }
+    }
+    let h1 = 0x811c9dc5 >>> 0, h2 = (0x811c9dc5 ^ 0x5bd1e995) >>> 0;
+    for (let i = 0; i < data.length; i++) {
+      h1 ^= data[i]; h1 = Math.imul(h1, 0x01000193) >>> 0;
+      h2 ^= data[i]; h2 = Math.imul(h2, 0x01000193) >>> 0;
+      h2 = ((h2 << 13) | (h2 >>> 19)) >>> 0;
+    }
+    return 'fnv:' + h1.toString(16).padStart(8,'0') + h2.toString(16).padStart(8,'0');
+  }
 
-      // --- Password hashing with fallback for non-secure contexts (file://) ---
-      async function hashPassword(pw) {
-        const data = new TextEncoder().encode(pw);
-        if (window.crypto && window.crypto.subtle) {
-          try {
-            const buf = await crypto.subtle.digest('SHA-256', data);
-            return 'sha256:' + Array.from(new Uint8Array(buf))
-              .map(b => b.toString(16).padStart(2, '0')).join('');
-          } catch (e) { /* fall through to fallback */ }
-        }
-        // Fallback hash (NOT cryptographically secure; used only when subtle unavailable,
-        // e.g. opening this file via file://). For real security serve over HTTPS/localhost.
-        let h1 = 0x811c9dc5 >>> 0;
-        let h2 = (0x811c9dc5 ^ 0x5bd1e995) >>> 0;
-        for (let i = 0; i < data.length; i++) {
-          h1 ^= data[i]; h1 = Math.imul(h1, 0x01000193) >>> 0;
-          h2 ^= data[i]; h2 = Math.imul(h2, 0x01000193) >>> 0;
-          h2 = ((h2 << 13) | (h2 >>> 19)) >>> 0;
-        }
-        return 'fnv:' + h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
-      }
+  const DEFAULT_SETTINGS = {
+    startPenalty: 50,
+    penaltyIncrement: 50,
+    dailyPace: 1,
+    challengeStart: new Date().toISOString().slice(0,10),
+    targetDate: (() => { const d = new Date(); d.setDate(d.getDate() + 240); return d.toISOString().slice(0,10); })(),
+    dashboardPasswordHash: null
+  };
 
-      async function checkPassword(entered) {
-        const storedHash = state.settings.dashboardPasswordHash;
-        const legacyPlain = state.settings.dashboardPassword;
-        if (storedHash) {
-          const h = await hashPassword(entered);
-          return h === storedHash;
-        }
-        if (legacyPlain) return entered === legacyPlain;
-        return entered === DEFAULT_PASSWORD;
-      }
+  let finUnlocked = false;
+  let activePeriod = 'today';
+  let currentTab = 'dashboard';
+  let confirmCallback = null;
 
-      async function setPassword(pw) {
-        state.settings.dashboardPasswordHash = await hashPassword(pw);
-        delete state.settings.dashboardPassword;
-        saveState();
-      }
+  let state = {
+    version: 1,
+    boxes: [], boosters: [], penalties: [], missedDates: [],
+    settings: { ...DEFAULT_SETTINGS },
+    lastPenaltyPopupDate: null
+  };
 
-      const DEFAULT_SETTINGS = {
-        startPenalty: 50,
-        penaltyIncrement: 50,
-        dailyGoal: 1,
-        dailyPace: 1,
-        challengeStart: new Date().toISOString().slice(0,10),
-        targetDate: (() => {
-          const d = new Date();
-          d.setDate(d.getDate() + 240);
-          return d.toISOString().slice(0,10);
-        })(),
-        currency: 'INR',
-        notifications: true,
-        darkMode: true,
-        dashboardPasswordHash: null
-      };
+  // ---- Helpers ----
+  const todayStr = () => new Date().toISOString().slice(0,10);
+  const nowISO = () => new Date().toISOString();
+  const fmt = n => '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  function addDays(ds, n) {
+    const d = new Date(ds + 'T00:00:00');
+    if (isNaN(d)) return 'Invalid';
+    d.setDate(d.getDate() + n);
+    if (isNaN(d)) return 'Invalid';
+    return d.toISOString().slice(0,10);
+  }
+  function daysBetween(a, b) {
+    const d1 = new Date(a + 'T00:00:00'), d2 = new Date(b + 'T00:00:00');
+    if (isNaN(d1) || isNaN(d2)) return 0;
+    return Math.round((d2 - d1) / 86400000);
+  }
+  const validDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(new Date(s + 'T00:00:00'));
 
-      let finUnlocked = false;
-      let activePeriod = 'today';
+  function initBoxes() {
+    const arr = [];
+    let id = 0;
+    DENOMS.forEach(d => {
+      for (let i = 0; i < d.count; i++) arr.push({ id: id++, value: d.value, completed: false, timestamp: null });
+    });
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
 
-      let state = {
-        version: 1,
-        boxes: [],
-        boosters: [],
-        penalties: [],
-        missedDates: [],
-        settings: { ...DEFAULT_SETTINGS },
-        lastPenaltyPopupDate: null
-      };
-
-      function todayStr() { return new Date().toISOString().slice(0,10); }
-      function nowISO() { return new Date().toISOString(); }
-      function formatINR(num) {
-        return '₹' + Number(num).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-      }
-      function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-      function addDays(dateStr, n) {
-        const d = new Date(dateStr + 'T00:00:00');
-        d.setDate(d.getDate() + n);
-        return d.toISOString().slice(0,10);
-      }
-      function daysBetween(a, b) {
-        const d1 = new Date(a + 'T00:00:00');
-        const d2 = new Date(b + 'T00:00:00');
-        return Math.round((d2 - d1) / 86400000);
-      }
-      function startOfWeek(d = new Date()) {
-        const day = d.getDay();
-        const diff = (day === 0 ? -6 : 1 - day);
-        const s = new Date(d);
-        s.setDate(s.getDate() + diff);
-        return s.toISOString().slice(0,10);
-      }
-      function startOfMonth(d = new Date()) {
-        return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0,10);
-      }
-
-      function initBoxes() {
-        const arr = [];
-        let id = 0;
-        DENOMS.forEach(d => {
-          for (let i = 0; i < d.count; i++) {
-            arr.push({ id: id++, value: d.value, completed: false, timestamp: null });
+  // ---- Load/Save ----
+  async function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (p && p.version === 1 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
+          state = p;
+          state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
+          if (!state.settings.dailyPace) state.settings.dailyPace = 1;
+          if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
+          ['boosters','penalties','missedDates'].forEach(k => { if (!Array.isArray(state[k])) state[k] = []; });
+          if (state.settings.dashboardPassword && !state.settings.dashboardPasswordHash) {
+            state.settings.dashboardPasswordHash = await hashPassword(state.settings.dashboardPassword);
+            delete state.settings.dashboardPassword;
+            saveState();
           }
-        });
-        for (let i = arr.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [arr[i], arr[j]] = [arr[j], arr[i]];
+          delete state.settings.dashboardPassword;
+          return;
         }
-        return arr;
       }
+    } catch (e) { console.warn('load:', e); }
+    state.boxes = initBoxes();
+    state.boosters = []; state.penalties = []; state.missedDates = [];
+    state.settings = { ...DEFAULT_SETTINGS };
+    state.settings.dashboardPasswordHash = await hashPassword(DEFAULT_PASSWORD);
+    saveState();
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
 
-      async function loadState() {
+  function reconcileMissedDays() {
+    const start = state.settings.challengeStart, today = todayStr();
+    if (!validDate(start) || start > today) return;
+    const missed = [];
+    let d = start, guard = 0;
+    while (d < today) {
+      if (++guard > 5000) break;
+      if (!state.boxes.some(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === d)) missed.push(d);
+      d = addDays(d, 1);
+      if (!validDate(d)) break;
+    }
+    const existing = new Set(state.penalties.map(p => p.date));
+    const added = [];
+    missed.forEach(md => {
+      if (!existing.has(md)) {
+        let cons = 0, chk = md, g = 0;
+        while (missed.includes(chk) && ++g < 5000) { cons++; chk = addDays(chk, -1); if (!validDate(chk)) break; }
+        added.push({ id: uid(), date: md, amount: state.settings.startPenalty + (cons - 1) * state.settings.penaltyIncrement, paid: false, paidDate: null, timestamp: nowISO() });
+      }
+    });
+    if (added.length) state.penalties.push(...added);
+    state.missedDates = missed;
+    saveState();
+  }
+
+  // ---- Getters ----
+  const matrixSaved = () => state.boxes.filter(b => b.completed).reduce((s,b) => s + b.value, 0);
+  const matrixDone = () => state.boxes.filter(b => b.completed).length;
+  const boostersTotal = () => state.boosters.reduce((s,b) => s + b.amount, 0);
+  const penaltiesGen = () => state.penalties.reduce((s,p) => s + p.amount, 0);
+  const penaltiesPaid = () => state.penalties.filter(p => p.paid).reduce((s,p) => s + p.amount, 0);
+  const outstanding = () => penaltiesGen() - penaltiesPaid();
+  const todayDone = () => {
+    const t = todayStr();
+    return state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === t).length;
+  };
+  const pace = () => state.settings.dailyPace || 1;
+  const nextBox = () => state.boxes.find(b => !b.completed) || null;
+  const completedList = () => state.boxes.filter(b => b.completed && b.timestamp).sort((a,b) => a.timestamp.localeCompare(b.timestamp));
+
+  function getStreak() {
+    const dates = new Set(state.boxes.filter(b => b.completed && b.timestamp).map(b => b.timestamp.slice(0,10)));
+    const sorted = Array.from(dates).sort();
+    let cur = 0, best = 0, run = 0, prev = null;
+    let chk = dates.has(todayStr()) ? todayStr() : addDays(todayStr(), -1);
+    while (dates.has(chk)) { cur++; chk = addDays(chk, -1); if (!validDate(chk)) break; }
+    sorted.forEach(d => {
+      if (prev) run = (daysBetween(prev, d) === 1) ? run + 1 : 1;
+      else run = 1;
+      if (run > best) best = run;
+      prev = d;
+    });
+    return { current: cur, best, total: dates.size, dates: sorted };
+  }
+
+  function getCountdown() {
+    const today = todayStr();
+    const target = validDate(state.settings.targetDate) ? state.settings.targetDate : DEFAULT_SETTINGS.targetDate;
+    const daysLeft = daysBetween(today, target);
+    const remBoxes = TOTAL_BOXES - matrixDone();
+    const remAmount = TOTAL_TARGET - matrixSaved();
+    let reqPace = 0;
+    if (daysLeft > 0 && remBoxes > 0) reqPace = remBoxes / daysLeft;
+    else if (remBoxes > 0) reqPace = Infinity;
+    const start = validDate(state.settings.challengeStart) ? state.settings.challengeStart : today;
+    const totalDays = Math.max(1, daysBetween(start, target));
+    const elapsed = Math.max(0, Math.min(totalDays, daysBetween(start, today)));
+    const expected = Math.floor((elapsed / totalDays) * TOTAL_BOXES);
+    const delta = matrixDone() - expected;
+    let status = 'on-track';
+    if (daysLeft < 0 && remBoxes > 0) status = 'overdue';
+    else if (delta >= 5) status = 'ahead';
+    else if (delta <= -5) status = 'behind';
+    const reqSavings = (daysLeft > 0 && remAmount > 0) ? Math.ceil(remAmount / daysLeft) : 0;
+    let projected = null;
+    if (remBoxes > 0 && pace() > 0) projected = addDays(today, Math.ceil(remBoxes / pace()));
+    else if (remBoxes === 0) projected = today;
+    return { daysLeft, target, remBoxes, remAmount, reqPace, reqSavings, delta, status, projected };
+  }
+
+  function periodRange(p) {
+    const t = todayStr();
+    if (p === 'today') return { from: t, to: t };
+    if (p === 'week') {
+      const d = new Date(), day = d.getDay();
+      const s = new Date(d); s.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+      return { from: s.toISOString().slice(0,10), to: t };
+    }
+    if (p === 'month') {
+      const s = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      return { from: s.toISOString().slice(0,10), to: t };
+    }
+    return { from: state.settings.challengeStart || t, to: t };
+  }
+
+  function breakdown(from, to) {
+    let matrix = 0, mB = 0, boost = 0, bC = 0, pPaid = 0, pPaidC = 0, pGen = 0, pGenC = 0;
+    state.boxes.forEach(b => {
+      if (b.completed && b.timestamp) {
+        const d = b.timestamp.slice(0,10);
+        if (d >= from && d <= to) { matrix += b.value; mB++; }
+      }
+    });
+    state.boosters.forEach(b => { if (b.date >= from && b.date <= to) { boost += b.amount; bC++; } });
+    state.penalties.forEach(p => {
+      if (p.date >= from && p.date <= to) { pGen += p.amount; pGenC++; }
+      if (p.paid && p.paidDate && p.paidDate >= from && p.paidDate <= to) { pPaid += p.amount; pPaidC++; }
+    });
+    return { matrix, mB, boost, bC, pPaid, pPaidC, pGen, pGenC, total: matrix + boost + pPaid };
+  }
+
+  // ---- Toast ----
+  function toast(msg) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    document.getElementById('toasts').appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 2400);
+  }
+
+  // ---- Confirm ----
+  function confirmBox(title, msg, onYes) {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMessage').textContent = msg;
+    document.getElementById('confirmModal').classList.add('show');
+    confirmCallback = onYes;
+    document.getElementById('confirmYes').onclick = () => {
+      document.getElementById('confirmModal').classList.remove('show');
+      if (confirmCallback) confirmCallback();
+      confirmCallback = null;
+    };
+    document.getElementById('confirmNo').onclick = () => {
+      document.getElementById('confirmModal').classList.remove('show');
+      confirmCallback = null;
+    };
+  }
+
+  // ---- Password modal ----
+  async function checkPw(entered) {
+    const h = state.settings.dashboardPasswordHash;
+    if (h) return (await hashPassword(entered)) === h;
+    if (state.settings.dashboardPassword) return entered === state.settings.dashboardPassword;
+    return entered === DEFAULT_PASSWORD;
+  }
+  async function setPw(pw) {
+    state.settings.dashboardPasswordHash = await hashPassword(pw);
+    delete state.settings.dashboardPassword;
+    saveState();
+  }
+  function passwordModal(onSuccess) {
+    const modal = document.getElementById('passwordModal');
+    const input = document.getElementById('passwordInput');
+    const err = document.getElementById('passwordError');
+    input.value = ''; err.style.display = 'none';
+    modal.classList.add('show');
+    setTimeout(() => input.focus(), 100);
+    const submit = async () => {
+      if (await checkPw(input.value)) {
+        if (!state.settings.dashboardPasswordHash && input.value) await setPw(input.value);
+        modal.classList.remove('show');
+        onSuccess && onSuccess();
+      } else {
+        err.style.display = 'block'; input.value = ''; input.focus();
+      }
+    };
+    document.getElementById('passwordSubmit').onclick = submit;
+    document.getElementById('passwordCancel').onclick = () => modal.classList.remove('show');
+    input.onkeydown = e => { if (e.key === 'Enter') submit(); else if (e.key === 'Escape') modal.classList.remove('show'); };
+  }
+
+  // ---- Penalty popup ----
+  function checkPenaltyPopup() {
+    const t = todayStr();
+    if (state.lastPenaltyPopupDate === t) return;
+    const unpaid = state.penalties.filter(p => !p.paid);
+    if (!unpaid.length) return;
+    const latest = unpaid[unpaid.length - 1];
+    document.getElementById('penaltyModalText').innerHTML =
+      `You missed <b>${latest.date}</b>. Penalty: <b>${fmt(latest.amount)}</b>.`;
+    document.getElementById('penaltyModal').classList.add('show');
+    state.lastPenaltyPopupDate = t;
+    saveState();
+    document.getElementById('penaltyPayBtn').onclick = () => {
+      latest.paid = true; latest.paidDate = t; saveState();
+      document.getElementById('penaltyModal').classList.remove('show');
+      toast('Penalty paid: ' + fmt(latest.amount));
+      renderTab();
+    };
+    document.getElementById('penaltyLaterBtn').onclick = () => {
+      document.getElementById('penaltyModal').classList.remove('show');
+    };
+  }
+
+  // ============ RENDER ============
+  function renderDashboard() {
+    const m = matrixSaved();
+    const pct = (m / TOTAL_TARGET * 100);
+    const done = matrixDone();
+    const rem = TOTAL_BOXES - done;
+    const tDone = todayDone();
+    const p = pace();
+    const st = getStreak();
+    const c = getCountdown();
+    const statusText = c.status === 'behind' ? `${Math.abs(c.delta)} boxes behind` :
+                       c.status === 'ahead' ? `${c.delta} boxes ahead` :
+                       c.status === 'overdue' ? 'Overdue' : 'On track';
+
+    return `
+    <div class="stack-lg">
+      <div class="card">
+        <div class="row-b" style="margin-bottom:14px;">
+          <div>
+            <div class="label">Progress</div>
+            <div class="big mono" style="margin-top:6px;">${fmt(m)}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="label">of</div>
+            <div class="h2 mono" style="margin-top:6px; color:#888;">${fmt(TOTAL_TARGET)}</div>
+          </div>
+        </div>
+        <div class="bar"><div style="width:${pct}%"></div></div>
+        <div class="row-b" style="margin-top:12px;">
+          <span class="label">${done} / ${TOTAL_BOXES}</span>
+          <span class="label">${pct.toFixed(1)}%</span>
+        </div>
+        <div class="div"></div>
+        <div class="row-b">
+          <span class="dim" style="font-size:13px;">Today</span>
+          <span class="mono" style="font-weight:700; font-size:14px;">${tDone} / ${p}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row-b" style="margin-bottom:14px;">
+          <div class="label-lg">Countdown</div>
+          <span class="badge ${c.status==='on-track' ? 'badge-fill' : ''}">${statusText}</span>
+        </div>
+        <div class="grid-3">
+          <div class="stat">
+            <span class="label">Days Left</span>
+            <b class="mono">${c.daysLeft < 0 ? Math.abs(c.daysLeft) + ' ⏰' : c.daysLeft}</b>
+          </div>
+          <div class="stat">
+            <span class="label">Boxes</span>
+            <b class="mono">${c.remBoxes}</b>
+          </div>
+          <div class="stat">
+            <span class="label">₹/Day</span>
+            <b class="mono">${fmt(c.reqSavings)}</b>
+          </div>
+        </div>
+        <div class="div"></div>
+        <div class="row-b">
+          <span class="dim" style="font-size:13px;">Required pace</span>
+          <span class="mono" style="font-size:13px; font-weight:600;">${c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)} /day</span>
+        </div>
+        <div class="row-b" style="margin-top:8px;">
+          <span class="dim" style="font-size:13px;">Target date</span>
+          <span class="mono" style="font-size:13px;">${c.target}</span>
+        </div>
+        ${c.projected && validDate(c.projected) ? `
+        <div class="row-b" style="margin-top:8px;">
+          <span class="dim" style="font-size:13px;">Projected finish</span>
+          <span class="mono" style="font-size:13px;">${c.projected}</span>
+        </div>` : ''}
+      </div>
+
+      <div class="grid-2">
+        <div class="card card-tight">
+          <div class="label">Streak</div>
+          <div class="big" style="margin-top:8px;">${st.current}</div>
+          <div class="dim" style="font-size:12px; margin-top:4px;">Best ${st.best} · Total ${st.total}</div>
+        </div>
+        <div class="card card-tight">
+          <div class="label">Pace</div>
+          <select id="paceSelect" class="inp mono" style="margin-top:8px; padding:8px 10px;">
+            ${[1,2,3,5,10].map(n => `<option value="${n}" ${p===n?'selected':''}>${n} / day</option>`).join('')}
+          </select>
+          <div class="dim" style="font-size:12px; margin-top:6px;">~${Math.ceil(rem / p)} days to finish</div>
+        </div>
+      </div>
+
+      ${renderFinancialPanel()}
+    </div>`;
+  }
+
+  function renderFinancialPanel() {
+    if (!finUnlocked) {
+      return `
+      <div class="card">
+        <div class="row-b" style="margin-bottom:14px;">
+          <div class="label-lg">Detailed Collections</div>
+          <button id="unlockFinBtn" class="btn btn-ghost btn-sm">🔒 Unlock</button>
+        </div>
+        <div class="dim" style="font-size:13px;">Track every rupee across matrix, boosters, and penalties.</div>
+        <div class="grid-3" style="margin-top:16px; opacity:0.3;">
+          <div class="stat"><span class="label">Today</span><b class="mono">₹•••</b></div>
+          <div class="stat"><span class="label">Week</span><b class="mono">₹•••</b></div>
+          <div class="stat"><span class="label">Month</span><b class="mono">₹•••</b></div>
+        </div>
+      </div>`;
+    }
+    const r = periodRange(activePeriod);
+    const b = breakdown(r.from, r.to);
+    return `
+    <div class="card">
+      <div class="row-b" style="margin-bottom:14px;">
+        <div>
+          <div class="label-lg">Detailed Collections</div>
+          <div class="dim mono" style="font-size:11px; margin-top:4px;">${r.from} → ${r.to}</div>
+        </div>
+        <button id="lockFinBtn" class="btn btn-ghost btn-sm">Lock</button>
+      </div>
+
+      <div class="pill-row" style="margin-bottom:16px;">
+        ${['today','week','month','all'].map(p =>
+          `<button class="pill ${activePeriod===p?'active':''}" data-period="${p}">${p === 'today' ? 'Today' : p === 'week' ? 'Week' : p === 'month' ? 'Month' : 'All'}</button>`
+        ).join('')}
+      </div>
+
+      <div style="text-align:center; padding:20px 0; border-bottom:1px solid #1a1a1a;">
+        <div class="label">Total Collected</div>
+        <div class="big-lg mono" style="margin-top:8px;">${fmt(b.total)}</div>
+      </div>
+
+      <div class="grid-3" style="margin-top:16px;">
+        <div class="stat"><span class="label">Matrix</span><b class="mono">${fmt(b.matrix)}</b><div class="dim" style="font-size:10px; margin-top:2px;">${b.mB} boxes</div></div>
+        <div class="stat"><span class="label">Booster</span><b class="mono">${fmt(b.boost)}</b><div class="dim" style="font-size:10px; margin-top:2px;">${b.bC} entries</div></div>
+        <div class="stat"><span class="label">Penalty</span><b class="mono">${fmt(b.pPaid)}</b><div class="dim" style="font-size:10px; margin-top:2px;">${b.pPaidC} paid</div></div>
+      </div>
+
+      <div class="div"></div>
+      <div class="row-b"><span class="dim" style="font-size:13px;">Penalties generated</span><span class="mono" style="font-weight:600;">${fmt(b.pGen)}</span></div>
+      <div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Outstanding</span><span class="mono" style="font-weight:600;">${fmt(outstanding())}</span></div>
+    </div>`;
+  }
+
+  function renderMatrix() {
+    const done = matrixDone();
+    const saved = matrixSaved();
+    const tDone = todayDone();
+    const p = pace();
+    const limit = tDone >= p;
+    const rem = Math.max(0, p - tDone);
+    const nb = nextBox();
+    const list = completedList();
+
+    return `
+    <div class="stack">
+      <div class="card card-tight">
+        <div class="row-b">
+          <span class="dim" style="font-size:13px;">Completed</span>
+          <span class="mono" style="font-weight:600;">${done} / ${TOTAL_BOXES}</span>
+        </div>
+        <div class="row-b" style="margin-top:6px;">
+          <span class="dim" style="font-size:13px;">Saved</span>
+          <span class="mono" style="font-weight:600;">${fmt(saved)}</span>
+        </div>
+        <div class="div" style="margin:12px 0;"></div>
+        <div class="row-b">
+          <span class="dim" style="font-size:13px;">Today</span>
+          <span class="mono" style="font-weight:600;">${limit ? `${tDone}/${p} · limit` : `${rem} more available`}</span>
+        </div>
+      </div>
+
+      ${nb && !limit ? `
+      <div class="card" style="text-align:center;">
+        <div class="label">Next to save</div>
+        <div class="big-lg mono" style="margin:12px 0;">${fmt(nb.value)}</div>
+        <button id="checkNextBtn" class="btn btn-primary">Mark ${fmt(nb.value)} as Saved</button>
+      </div>` : ''}
+
+      ${nb && limit ? `
+      <div class="card" style="text-align:center;">
+        <div class="label">Next to save</div>
+        <div class="big-lg mono" style="margin:12px 0; color:#555;">${fmt(nb.value)}</div>
+        <div class="dim" style="font-size:13px;">Daily limit reached. Come back tomorrow.</div>
+      </div>` : ''}
+
+      ${!nb ? `
+      <div class="card" style="text-align:center;">
+        <div style="font-size:32px;">🏆</div>
+        <div style="font-weight:700; margin-top:8px;">Complete!</div>
+        <div class="dim" style="font-size:13px; margin-top:4px;">All 240 boxes · ₹1,00,000 saved</div>
+      </div>` : ''}
+
+      ${list.length ? `
+      <div class="card">
+        <div class="label" style="margin-bottom:12px;">Completed (${list.length}) · tap to undo</div>
+        <div class="m-grid">
+          ${list.map(b => `<div class="m-box done" data-box-id="${b.id}">${b.value}</div>`).join('')}
+        </div>
+      </div>` : `
+      <div class="empty">No boxes completed yet.</div>`}
+    </div>`;
+  }
+
+  function renderStreak() {
+    const st = getStreak();
+    const missed = state.missedDates || [];
+    const today = todayStr();
+    let cal = '';
+    for (let i = 29; i >= 0; i--) {
+      const d = addDays(today, -i);
+      if (!validDate(d)) continue;
+      const isDone = st.dates.includes(d);
+      const isMissed = missed.includes(d);
+      const isToday = d === today;
+      cal += `<div class="cal-day ${isDone ? 'done' : isMissed ? 'missed' : ''} ${isToday ? 'today' : ''}">${new Date(d+'T00:00:00').getDate()}</div>`;
+    }
+    return `
+    <div class="stack">
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:16px;">Matrix Streak</div>
+        <div class="grid-4">
+          <div class="stat"><span class="label">Current</span><b class="mono">${st.current}</b></div>
+          <div class="stat"><span class="label">Best</span><b class="mono">${st.best}</b></div>
+          <div class="stat"><span class="label">Active</span><b class="mono">${st.total}</b></div>
+          <div class="stat"><span class="label">Missed</span><b class="mono">${missed.length}</b></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:12px;">Last 30 Days</div>
+        <div class="cal">${cal}</div>
+        <div class="row" style="margin-top:14px; font-size:11px; color:#666; gap:16px;">
+          <span><span style="display:inline-block; width:8px; height:8px; background:#fff; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Done</span>
+          <span><span style="display:inline-block; width:8px; height:8px; background:#1a1a1a; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Missed</span>
+          <span><span style="display:inline-block; width:8px; height:8px; border:1px solid #fff; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Today</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderBooster() {
+    const total = boostersTotal();
+    const sorted = [...state.boosters].sort((a,b) => b.timestamp.localeCompare(a.timestamp));
+    return `
+    <div class="stack">
+      <div class="card">
+        <div class="label-lg">Total Booster</div>
+        <div class="big-lg mono" style="margin:10px 0 18px;">${fmt(total)}</div>
+        <div class="stack-sm">
+          <input id="boosterAmount" type="number" class="inp mono" placeholder="Amount (₹)" min="1">
+          <input id="boosterDesc" type="text" class="inp" placeholder="Description (optional)">
+          <button id="addBoosterBtn" class="btn btn-primary">Add Booster</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:12px;">Ledger</div>
+        ${sorted.length ? sorted.map(b => `
+          <div class="list-row">
+            <div>
+              <div class="mono" style="font-weight:700;">${fmt(b.amount)}</div>
+              <div class="dim" style="font-size:12px; margin-top:2px;">${b.description || '—'}</div>
+              <div style="font-size:11px; color:#444; margin-top:2px;" class="mono">${b.date}${b.time ? ' · ' + b.time : ''}</div>
+            </div>
+            <button class="btn btn-ghost btn-sm delete-booster" data-id="${b.id}">Del</button>
+          </div>`).join('') : '<div class="empty">No boosters yet</div>'}
+      </div>
+    </div>`;
+  }
+
+  function renderPenalty() {
+    const gen = penaltiesGen(), paid = penaltiesPaid(), out = outstanding();
+    const missed = state.missedDates.length;
+    const sorted = [...state.penalties].sort((a,b) => b.date.localeCompare(a.date));
+    return `
+    <div class="stack">
+      <div class="grid-2">
+        <div class="stat"><span class="label">Generated</span><b class="mono">${fmt(gen)}</b></div>
+        <div class="stat"><span class="label">Paid</span><b class="mono">${fmt(paid)}</b></div>
+        <div class="stat"><span class="label">Outstanding</span><b class="mono">${fmt(out)}</b></div>
+        <div class="stat"><span class="label">Missed</span><b class="mono">${missed}</b></div>
+      </div>
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:12px;">History</div>
+        ${sorted.length ? sorted.map(p => `
+          <div class="list-row">
+            <div>
+              <div class="mono" style="font-weight:700;">${fmt(p.amount)}</div>
+              <div class="dim" style="font-size:12px; margin-top:2px;">${p.date} · ${p.paid ? 'Paid ' + p.paidDate : 'Unpaid'}</div>
+            </div>
+            ${!p.paid ? `<button class="btn btn-ghost btn-sm mark-paid" data-id="${p.id}">Pay</button>` : `<span class="badge">Paid</span>`}
+          </div>`).join('') : '<div class="empty">No penalties</div>'}
+      </div>
+    </div>`;
+  }
+
+  function renderActivity() {
+    const map = new Map();
+    const init = () => ({ matrix:0, boxes:0, boost:0, pGen:0, pPaid:0 });
+    state.boxes.forEach(b => {
+      if (b.completed && b.timestamp) {
+        const d = b.timestamp.slice(0,10);
+        if (!map.has(d)) map.set(d, init());
+        const r = map.get(d); r.matrix += b.value; r.boxes++;
+      }
+    });
+    state.boosters.forEach(b => {
+      if (!map.has(b.date)) map.set(b.date, init());
+      map.get(b.date).boost += b.amount;
+    });
+    state.penalties.forEach(p => {
+      if (!map.has(p.date)) map.set(p.date, init());
+      map.get(p.date).pGen += p.amount;
+      if (p.paid && p.paidDate) {
+        if (!map.has(p.paidDate)) map.set(p.paidDate, init());
+        map.get(p.paidDate).pPaid += p.amount;
+      }
+    });
+    const dates = Array.from(map.keys()).filter(validDate).sort().reverse();
+    return `
+    <div class="stack">
+      <div class="label-lg">Activity Log</div>
+      ${dates.length ? dates.map(d => {
+        const r = map.get(d);
+        const actual = r.matrix + r.boost;
+        return `
+        <div class="card card-tight">
+          <div class="row-b" style="margin-bottom:10px;">
+            <span style="font-weight:600; font-size:14px;">${new Date(d+'T00:00:00').toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short' })}</span>
+            <span class="mono" style="font-size:12px; color:#888;">${r.boxes} boxes</span>
+          </div>
+          <div style="font-size:12px; color:#888; line-height:1.7;">
+            <div class="row-b"><span>Matrix</span><span class="mono">${fmt(r.matrix)}</span></div>
+            <div class="row-b"><span>Booster</span><span class="mono">${fmt(r.boost)}</span></div>
+            ${r.pGen ? `<div class="row-b"><span>Penalty gen</span><span class="mono">${fmt(r.pGen)}</span></div>` : ''}
+            ${r.pPaid ? `<div class="row-b"><span>Penalty paid</span><span class="mono">${fmt(r.pPaid)}</span></div>` : ''}
+          </div>
+          <div class="div" style="margin:10px 0;"></div>
+          <div class="row-b">
+            <span style="font-size:12px; color:#888;">Actual</span>
+            <span class="mono" style="font-weight:700;">${fmt(actual)}</span>
+          </div>
+        </div>`;
+      }).join('') : '<div class="empty">No activity yet</div>'}
+    </div>`;
+  }
+
+  function renderReports() {
+    const m = matrixSaved(), b = boostersTotal(), actual = m + b;
+    const pGen = penaltiesGen(), pPaid = penaltiesPaid(), out = outstanding();
+    const done = matrixDone();
+    const st = getStreak();
+    const avg = done > 0 ? m / Math.max(1, st.total) : 0;
+    const c = getCountdown();
+    return `
+    <div class="stack">
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:14px;">Financial Summary</div>
+        <div class="row-b"><span class="dim">Matrix</span><span class="mono" style="font-weight:600;">${fmt(m)}</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Boosters</span><span class="mono" style="font-weight:600;">${fmt(b)}</span></div>
+        <div class="div"></div>
+        <div class="row-b"><span style="font-weight:600;">Actual saved</span><span class="mono big" style="font-size:22px;">${fmt(actual)}</span></div>
+      </div>
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:14px;">Penalties</div>
+        <div class="row-b"><span class="dim">Generated</span><span class="mono" style="font-weight:600;">${fmt(pGen)}</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Paid</span><span class="mono" style="font-weight:600;">${fmt(pPaid)}</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Outstanding</span><span class="mono" style="font-weight:600;">${fmt(out)}</span></div>
+      </div>
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:14px;">Countdown</div>
+        <div class="row-b"><span class="dim">Target</span><span class="mono" style="font-weight:600;">${c.target}</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Days left</span><span class="mono" style="font-weight:600;">${c.daysLeft}</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Required pace</span><span class="mono" style="font-weight:600;">${c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)}/day</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Required ₹/day</span><span class="mono" style="font-weight:600;">${fmt(c.reqSavings)}</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Boxes done</span><span class="mono" style="font-weight:600;">${done} / 240</span></div>
+        <div class="row-b" style="margin-top:8px;"><span class="dim">Daily avg</span><span class="mono" style="font-weight:600;">${fmt(Math.round(avg))}</span></div>
+      </div>
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:14px;">Export</div>
+        <div class="row">
+          <button id="exportJson" class="btn btn-secondary" style="flex:1;">JSON</button>
+          <button id="exportCsv" class="btn btn-secondary" style="flex:1;">CSV</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderCoach() {
+    const m = matrixSaved();
+    const pct = (m / TOTAL_TARGET * 100);
+    const st = getStreak();
+    const out = outstanding();
+    const tM = state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === todayStr()).reduce((s,b) => s + b.value, 0);
+    const tB = boostersTotal();
+    const tDone = todayDone();
+    const p = pace();
+    const limit = tDone >= p;
+    const c = getCountdown();
+    const rp = c.reqPace === Infinity ? '—' : c.reqPace.toFixed(1);
+
+    let msg;
+    if (pct >= 100) msg = '🏆 Challenge complete! You saved the full ₹1,00,000.';
+    else if (c.status === 'overdue') msg = `Target date passed. ${c.remBoxes} boxes left. Set a new target.`;
+    else if (c.status === 'behind') msg = `${Math.abs(c.delta)} boxes behind. Need ${rp}/day to catch up.`;
+    else if (limit) msg = `Daily pace hit (${p} boxes). Come back tomorrow.`;
+    else if (pct >= 50) msg = `Over halfway. ${fmt(m)} of ${fmt(TOTAL_TARGET)} saved.`;
+    else if (out > 0) msg = `${fmt(out)} in outstanding penalties. Settle up when you can.`;
+    else if (st.current >= 7) msg = `${st.current}-day streak. Keep going.`;
+    else if (tM > 0) msg = `Saved ${fmt(tM)} today. Total: ${fmt(m)}.`;
+    else if (st.total > 0) msg = `${c.daysLeft} days left. Try one box today.`;
+    else msg = 'Welcome. Start with your first ₹100 box.';
+
+    return `
+    <div class="stack">
+      <div class="card">
+        <div class="label-lg">Coach</div>
+        <div style="margin-top:16px; font-size:16px; line-height:1.6; font-weight:500;">${msg}</div>
+      </div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="stat"><span class="label">Matrix</span><b class="mono">${fmt(m)}</b></div>
+          <div class="stat"><span class="label">Booster</span><b class="mono">${fmt(tB)}</b></div>
+          <div class="stat"><span class="label">Streak</span><b class="mono">${st.current}d</b></div>
+          <div class="stat"><span class="label">Outstanding</span><b class="mono">${fmt(out)}</b></div>
+          <div class="stat"><span class="label">Days Left</span><b class="mono">${c.daysLeft}</b></div>
+          <div class="stat"><span class="label">Pace Req.</span><b class="mono">${rp}</b></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderSettings() {
+    const s = state.settings;
+    return `
+    <div class="stack">
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:16px;">Penalty</div>
+        <div class="stack-sm">
+          <div class="row-b">
+            <label class="dim" style="font-size:13px;">Starting amount</label>
+            <input id="settingStartPenalty" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" value="${s.startPenalty}">
+          </div>
+          <div class="row-b">
+            <label class="dim" style="font-size:13px;">Increment per miss</label>
+            <input id="settingPenaltyIncrement" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" value="${s.penaltyIncrement}">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:16px;">Challenge</div>
+        <div class="stack-sm">
+          <div class="row-b">
+            <label class="dim" style="font-size:13px;">Daily pace</label>
+            <input id="settingDailyPace" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" min="1" max="240" value="${s.dailyPace || 1}">
+          </div>
+          <div class="row-b">
+            <label class="dim" style="font-size:13px;">Start date</label>
+            <input id="settingStartDate" type="date" class="inp mono" style="width:160px; padding:8px 10px;" value="${s.challengeStart}">
+          </div>
+          <div class="row-b">
+            <label class="dim" style="font-size:13px;">Target date</label>
+            <input id="settingTargetDate" type="date" class="inp mono" style="width:160px; padding:8px 10px;" value="${s.targetDate || DEFAULT_SETTINGS.targetDate}">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label-lg" style="margin-bottom:6px;">Password</div>
+        <p class="dim" style="font-size:12px; margin-bottom:12px;">To change, enter current and new password.</p>
+        <div class="stack-sm">
+          <input id="settingOldPassword" type="password" class="inp" placeholder="Current password" autocomplete="off">
+          <input id="settingNewPassword" type="password" class="inp" placeholder="New password (min 4)" autocomplete="new-password">
+          <input id="settingConfirmPassword" type="password" class="inp" placeholder="Confirm new password" autocomplete="new-password">
+          <button id="changePasswordBtn" class="btn btn-secondary">Change Password</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="gap:8px; flex-wrap:wrap;">
+          <button id="saveSettingsBtn" class="btn btn-primary" style="flex:1;">Save</button>
+          <button id="importDataBtn" class="btn btn-secondary" style="flex:1;">Import</button>
+          <button id="resetChallengeBtn" class="btn btn-danger" style="flex:1;">Reset</button>
+        </div>
+        <input type="file" id="importFile" accept=".json" style="display:none;">
+      </div>
+    </div>`;
+  }
+
+  function renderTab() {
+    const c = document.getElementById('tabContent');
+    switch (currentTab) {
+      case 'dashboard': c.innerHTML = renderDashboard(); break;
+      case 'matrix': c.innerHTML = renderMatrix(); break;
+      case 'streak': c.innerHTML = renderStreak(); break;
+      case 'booster': c.innerHTML = renderBooster(); break;
+      case 'penalty': c.innerHTML = renderPenalty(); break;
+      case 'activity': c.innerHTML = renderActivity(); break;
+      case 'reports': c.innerHTML = renderReports(); break;
+      case 'coach': c.innerHTML = renderCoach(); break;
+      case 'settings': c.innerHTML = renderSettings(); break;
+    }
+    document.getElementById('headerMatrix').textContent = fmt(matrixSaved());
+    bindEvents();
+  }
+
+  async function changePassword() {
+    const oldPw = document.getElementById('settingOldPassword').value;
+    const nwPw = document.getElementById('settingNewPassword').value;
+    const cfPw = document.getElementById('settingConfirmPassword').value;
+    if (!(await checkPw(oldPw))) return toast('Current password incorrect');
+    if (nwPw.length < 4) return toast('Password must be 4+ chars');
+    if (nwPw !== cfPw) return toast('Passwords do not match');
+    await setPw(nwPw);
+    toast('Password changed');
+    renderTab();
+  }
+
+  function bindEvents() {
+    const el = id => document.getElementById(id);
+
+    if (el('unlockFinBtn')) el('unlockFinBtn').onclick = () => passwordModal(() => { finUnlocked = true; toast('Unlocked'); renderTab(); });
+    if (el('lockFinBtn')) el('lockFinBtn').onclick = () => { finUnlocked = false; toast('Locked'); renderTab(); };
+
+    document.querySelectorAll('.pill[data-period]').forEach(p => {
+      p.onclick = () => { activePeriod = p.dataset.period; renderTab(); };
+    });
+
+    if (el('checkNextBtn')) el('checkNextBtn').onclick = () => {
+      const nb = nextBox();
+      if (!nb) return;
+      const p = pace(), t = todayDone();
+      if (t >= p) return toast('Daily limit reached');
+      nb.completed = true;
+      nb.timestamp = nowISO();
+      toast(`Saved ${fmt(nb.value)} (${t + 1}/${p})`);
+      saveState();
+      renderTab();
+    };
+
+    document.querySelectorAll('.m-box.done').forEach(b => {
+      b.onclick = () => {
+        const id = parseInt(b.dataset.boxId, 10);
+        const box = state.boxes.find(x => x.id === id);
+        if (!box || !box.completed) return;
+        confirmBox('Undo', `Uncheck ${fmt(box.value)}?`, () => {
+          box.completed = false; box.timestamp = null;
+          saveState(); renderTab();
+        });
+      };
+    });
+
+    if (el('paceSelect')) el('paceSelect').onchange = () => {
+      const np = parseInt(el('paceSelect').value, 10);
+      const t = todayDone();
+      if (t > np) { toast(`Already ${t} today`); el('paceSelect').value = pace(); return; }
+      state.settings.dailyPace = np;
+      saveState();
+      toast(`Pace: ${np}/day`);
+      renderTab();
+    };
+
+    if (el('addBoosterBtn')) el('addBoosterBtn').onclick = () => {
+      const amt = parseFloat(el('boosterAmount').value);
+      const desc = el('boosterDesc').value.trim();
+      if (!amt || amt <= 0) return toast('Invalid amount');
+      const now = new Date();
+      state.boosters.push({
+        id: uid(), amount: Math.round(amt),
+        date: now.toISOString().slice(0,10),
+        time: now.toTimeString().slice(0,5),
+        description: desc, timestamp: nowISO()
+      });
+      saveState();
+      toast(`+${fmt(amt)}`);
+      renderTab();
+    };
+
+    document.querySelectorAll('.delete-booster').forEach(b => {
+      b.onclick = () => {
+        confirmBox('Delete', 'Remove this entry?', () => {
+          state.boosters = state.boosters.filter(x => x.id !== b.dataset.id);
+          saveState(); renderTab();
+        });
+      };
+    });
+
+    document.querySelectorAll('.mark-paid').forEach(b => {
+      b.onclick = () => {
+        const p = state.penalties.find(x => x.id === b.dataset.id);
+        if (p) { p.paid = true; p.paidDate = todayStr(); saveState(); renderTab(); }
+      };
+    });
+
+    if (el('exportJson')) el('exportJson').onclick = () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'savings_backup.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('Exported');
+    };
+    if (el('exportCsv')) el('exportCsv').onclick = () => {
+      let csv = 'Date,Type,Amount,Description\n';
+      state.boxes.filter(b => b.completed && b.timestamp).forEach(b => {
+        csv += `${b.timestamp.slice(0,10)},Matrix,${b.value},Box\n`;
+      });
+      state.boosters.forEach(b => { csv += `${b.date},Booster,${b.amount},${b.description || ''}\n`; });
+      state.penalties.forEach(p => { csv += `${p.date},Penalty,${p.amount},${p.paid ? 'Paid' : 'Unpaid'}\n`; });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'savings_export.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('Exported');
+    };
+
+    if (el('saveSettingsBtn')) el('saveSettingsBtn').onclick = () => {
+      const sp = parseInt(el('settingStartPenalty').value, 10);
+      const pi = parseInt(el('settingPenaltyIncrement').value, 10);
+      const dp = parseInt(el('settingDailyPace').value, 10);
+      const sd = el('settingStartDate').value;
+      const td = el('settingTargetDate').value;
+      if (sp > 0) state.settings.startPenalty = sp;
+      if (pi > 0) state.settings.penaltyIncrement = pi;
+      if (dp > 0) {
+        if (todayDone() > dp) return toast(`Can't be below ${todayDone()}`);
+        state.settings.dailyPace = dp;
+      }
+      if (sd && validDate(sd)) state.settings.challengeStart = sd;
+      if (td && validDate(td)) state.settings.targetDate = td;
+      saveState();
+      toast('Saved');
+      renderTab();
+    };
+
+    if (el('changePasswordBtn')) el('changePasswordBtn').onclick = changePassword;
+
+    if (el('resetChallengeBtn')) el('resetChallengeBtn').onclick = () => {
+      confirmBox('Reset', 'Erase all data?', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      });
+    };
+
+    if (el('importDataBtn')) el('importDataBtn').onclick = () => el('importFile').click();
+    if (el('importFile')) el('importFile').onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const r = new FileReader();
+      r.onload = async (ev) => {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (parsed && parsed.version === 1 && Array.isArray(parsed.boxes) && parsed.boxes.length === TOTAL_BOXES) {
-              state = parsed;
-              state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
-              if (!state.settings.dailyPace) state.settings.dailyPace = 1;
-              if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
-              if (!Array.isArray(state.boosters)) state.boosters = [];
-              if (!Array.isArray(state.penalties)) state.penalties = [];
-              if (!Array.isArray(state.missedDates)) state.missedDates = [];
-              // Migrate legacy plaintext password to hash
-              if (state.settings.dashboardPassword && !state.settings.dashboardPasswordHash) {
-                const h = await hashPassword(state.settings.dashboardPassword);
-                state.settings.dashboardPasswordHash = h;
-                delete state.settings.dashboardPassword;
-                saveState();
-              }
-              delete state.settings.dashboardPassword;
-              return;
+          const p = JSON.parse(ev.target.result);
+          if (p.version === 1 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
+            state = p;
+            state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
+            if (!state.settings.dailyPace) state.settings.dailyPace = 1;
+            if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
+            ['boosters','penalties','missedDates'].forEach(k => { if (!Array.isArray(state[k])) state[k] = []; });
+            if (!state.settings.dashboardPasswordHash) {
+              state.settings.dashboardPasswordHash = await hashPassword(state.settings.dashboardPassword || DEFAULT_PASSWORD);
             }
-          }
-        } catch (e) { console.warn('Load error', e); }
-        state.boxes = initBoxes();
-        state.boosters = [];
-        state.penalties = [];
-        state.missedDates = [];
-        state.settings = { ...DEFAULT_SETTINGS };
-        state.lastPenaltyPopupDate = null;
-        // First-run: set default password as a hash BEFORE returning (awaited, no race)
-        state.settings.dashboardPasswordHash = await hashPassword(DEFAULT_PASSWORD);
-        saveState();
-      }
-
-      function saveState() {
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-        catch (e) { console.warn('Save failed', e); }
-      }
-
-      function reconcileMissedDays() {
-        const start = state.settings.challengeStart || todayStr();
-        const today = todayStr();
-        if (start > today) return;
-        let missed = [];
-        let d = start;
-        while (d < today) {
-          const dayBoxes = state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === d);
-          if (dayBoxes.length === 0) missed.push(d);
-          d = addDays(d, 1);
-        }
-        const existingPenaltyDates = new Set(state.penalties.map(p => p.date));
-        let newPenalties = [];
-        missed.forEach(md => {
-          if (!existingPenaltyDates.has(md)) {
-            let consecutive = 0;
-            let check = md;
-            while (missed.includes(check)) {
-              consecutive++;
-              check = addDays(check, -1);
-            }
-            const amount = state.settings.startPenalty + (consecutive - 1) * state.settings.penaltyIncrement;
-            newPenalties.push({
-              id: uid(), date: md, amount: amount, paid: false, paidDate: null, timestamp: nowISO()
-            });
-          }
-        });
-        if (newPenalties.length > 0) state.penalties.push(...newPenalties);
-        state.missedDates = missed;
-        saveState();
-      }
-
-      function getMatrixSavings() {
-        return state.boxes.filter(b => b.completed).reduce((s, b) => s + b.value, 0);
-      }
-      function getMatrixBoxesCompleted() { return state.boxes.filter(b => b.completed).length; }
-      function getTotalBoosters() { return state.boosters.reduce((s, b) => s + b.amount, 0); }
-      function getTotalPenaltiesGenerated() { return state.penalties.reduce((s, p) => s + p.amount, 0); }
-      function getTotalPenaltiesPaid() { return state.penalties.filter(p => p.paid).reduce((s, p) => s + p.amount, 0); }
-      function getOutstandingPenalties() { return getTotalPenaltiesGenerated() - getTotalPenaltiesPaid(); }
-      function getTodayBoxesCompleted() {
-        const t = todayStr();
-        return state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === t).length;
-      }
-      function getDailyPace() { return state.settings.dailyPace || 1; }
-      function isTodayLimitReached() { return getTodayBoxesCompleted() >= getDailyPace(); }
-      function getNextBox() { return state.boxes.find(b => !b.completed) || null; }
-      function getCompletedBoxesInOrder() {
-        return state.boxes.filter(b => b.completed && b.timestamp)
-          .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
-      }
-
-      function getCollectionBreakdown(fromDate, toDate) {
-        let matrix = 0, matrixBoxes = 0;
-        let boosters = 0, boosterCount = 0;
-        let penaltyPaid = 0, penaltyPaidCount = 0;
-        let penaltyGenerated = 0, penaltyGenCount = 0;
-
-        state.boxes.forEach(b => {
-          if (b.completed && b.timestamp) {
-            const d = b.timestamp.slice(0,10);
-            if (d >= fromDate && d <= toDate) { matrix += b.value; matrixBoxes++; }
-          }
-        });
-        state.boosters.forEach(b => {
-          if (b.date >= fromDate && b.date <= toDate) { boosters += b.amount; boosterCount++; }
-        });
-        state.penalties.forEach(p => {
-          if (p.date >= fromDate && p.date <= toDate) { penaltyGenerated += p.amount; penaltyGenCount++; }
-          if (p.paid && p.paidDate && p.paidDate >= fromDate && p.paidDate <= toDate) {
-            penaltyPaid += p.amount; penaltyPaidCount++;
-          }
-        });
-
-        return {
-          matrix, matrixBoxes, boosters, boosterCount,
-          penaltyPaid, penaltyPaidCount, penaltyGenerated, penaltyGenCount,
-          totalCollected: matrix + boosters + penaltyPaid
-        };
-      }
-
-      function getPeriodRange(period) {
-        const today = todayStr();
-        if (period === 'today') return { from: today, to: today };
-        if (period === 'week') return { from: startOfWeek(), to: today };
-        if (period === 'month') return { from: startOfMonth(), to: today };
-        const start = state.settings.challengeStart || today;
-        return { from: start, to: today };
-      }
-
-      function getCountdownData() {
-        const today = todayStr();
-        const target = state.settings.targetDate || DEFAULT_SETTINGS.targetDate;
-        const daysRemaining = daysBetween(today, target);
-        const remainingBoxes = TOTAL_BOXES - getMatrixBoxesCompleted();
-        const remainingAmount = TOTAL_TARGET - getMatrixSavings();
-
-        let requiredBoxesPerDay = 0;
-        if (daysRemaining > 0 && remainingBoxes > 0) requiredBoxesPerDay = remainingBoxes / daysRemaining;
-        else if (remainingBoxes > 0) requiredBoxesPerDay = Infinity;
-
-        const start = state.settings.challengeStart || today;
-        const totalDays = Math.max(1, daysBetween(start, target));
-        const elapsedDays = Math.max(0, Math.min(totalDays, daysBetween(start, today)));
-        const expectedBoxesByNow = Math.floor((elapsedDays / totalDays) * TOTAL_BOXES);
-        const actualBoxes = getMatrixBoxesCompleted();
-        const boxesDelta = actualBoxes - expectedBoxesByNow;
-
-        let status = 'on-track';
-        if (daysRemaining < 0 && remainingBoxes > 0) status = 'overdue';
-        else if (boxesDelta >= 5) status = 'ahead';
-        else if (boxesDelta <= -5) status = 'behind';
-
-        const requiredDailySavings = (daysRemaining > 0 && remainingAmount > 0)
-          ? Math.ceil(remainingAmount / daysRemaining) : 0;
-
-        const currentPace = getDailyPace();
-        let projectedCompletionDate = null;
-        if (remainingBoxes > 0 && currentPace > 0) {
-          projectedCompletionDate = addDays(today, Math.ceil(remainingBoxes / currentPace));
-        } else if (remainingBoxes === 0) {
-          projectedCompletionDate = today;
-        }
-
-        return {
-          daysRemaining, targetDate: target, remainingBoxes, remainingAmount,
-          requiredBoxesPerDay, requiredDailySavings, expectedBoxesByNow,
-          actualBoxes, boxesDelta, status, currentPace, projectedCompletionDate
-        };
-      }
-
-      function getStreakData() {
-        const completedDates = new Set(
-          state.boxes.filter(b => b.completed && b.timestamp).map(b => b.timestamp.slice(0,10))
-        );
-        const sorted = Array.from(completedDates).sort();
-        let currentStreak = 0, bestStreak = 0, streak = 0;
-        let prevDate = null;
-        let d = todayStr();
-        let checkDate = completedDates.has(d) ? d : addDays(d, -1);
-        while (completedDates.has(checkDate)) { currentStreak++; checkDate = addDays(checkDate, -1); }
-        sorted.forEach(date => {
-          if (prevDate) streak = (daysBetween(prevDate, date) === 1) ? streak + 1 : 1;
-          else streak = 1;
-          if (streak > bestStreak) bestStreak = streak;
-          prevDate = date;
-        });
-        return { currentStreak, bestStreak, totalActiveDays: completedDates.size, completedDates: sorted };
-      }
-
-      function checkPenaltyPopup() {
-        const today = todayStr();
-        if (state.lastPenaltyPopupDate === today) return;
-        const unpaid = state.penalties.filter(p => !p.paid);
-        if (unpaid.length === 0) return;
-        const latest = unpaid[unpaid.length - 1];
-        const modal = document.getElementById('penaltyModal');
-        document.getElementById('penaltyModalText').innerHTML = `
-          Hey! You missed your savings streak on <strong>${latest.date}</strong>.<br>
-          Your penalty for this missed day is <strong>${formatINR(latest.amount)}</strong>.<br>
-          Don't worry. You can get back on track today.<br>
-          Have you set aside your penalty amount?
-        `;
-        modal.classList.remove('hidden'); modal.classList.add('flex');
-        state.lastPenaltyPopupDate = today;
-        saveState();
-
-        document.getElementById('penaltyPayBtn').onclick = () => {
-          latest.paid = true; latest.paidDate = today;
-          saveState();
-          modal.classList.add('hidden'); modal.classList.remove('flex');
-          showToast('Penalty marked as paid: ' + formatINR(latest.amount));
-          renderCurrentTab();
-        };
-        document.getElementById('penaltyLaterBtn').onclick = () => {
-          modal.classList.add('hidden'); modal.classList.remove('flex');
-        };
-      }
-
-      function showToast(msg, type='info') {
-        const container = document.getElementById('toastContainer');
-        const el = document.createElement('div');
-        const colors = { info: 'bg-zinc-800 text-white', success: 'bg-emerald-700 text-white', error: 'bg-red-700 text-white', warning: 'bg-amber-700 text-white' };
-        el.className = `toast ${colors[type] || colors.info} px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg text-center`;
-        el.textContent = msg;
-        container.appendChild(el);
-        setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 2800);
-      }
-
-      let confirmCallback = null;
-      function showConfirm(title, message, onYes) {
-        document.getElementById('confirmTitle').textContent = title;
-        document.getElementById('confirmMessage').textContent = message;
-        const modal = document.getElementById('confirmModal');
-        modal.classList.remove('hidden'); modal.classList.add('flex');
-        confirmCallback = onYes;
-        document.getElementById('confirmYes').onclick = () => {
-          modal.classList.add('hidden'); modal.classList.remove('flex');
-          if (confirmCallback) confirmCallback();
-          confirmCallback = null;
-        };
-        document.getElementById('confirmNo').onclick = () => {
-          modal.classList.add('hidden'); modal.classList.remove('flex');
-          confirmCallback = null;
-        };
-      }
-
-      function showPasswordModal(onSuccess) {
-        const modal = document.getElementById('passwordModal');
-        const input = document.getElementById('passwordInput');
-        const err = document.getElementById('passwordError');
-        input.value = '';
-        err.classList.add('hidden');
-        modal.classList.remove('hidden'); modal.classList.add('flex');
-        setTimeout(() => input.focus(), 100);
-
-        const submit = async () => {
-          const ok = await checkPassword(input.value);
-          if (ok) {
-            // Auto-migrate legacy plaintext on successful unlock
-            if (!state.settings.dashboardPasswordHash && input.value) {
-              await setPassword(input.value);
-            }
-            modal.classList.add('hidden'); modal.classList.remove('flex');
-            if (onSuccess) onSuccess();
-          } else {
-            err.classList.remove('hidden');
-            input.value = '';
-            input.focus();
-          }
-        };
-        const cancel = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
-
-        document.getElementById('passwordSubmit').onclick = submit;
-        document.getElementById('passwordCancel').onclick = cancel;
-        input.onkeydown = (e) => {
-          if (e.key === 'Enter') submit();
-          else if (e.key === 'Escape') cancel();
-        };
-      }
-
-      function renderCountdownCard() {
-        const c = getCountdownData();
-        const targetFormatted = new Date(c.targetDate + 'T00:00:00')
-          .toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-        const projectedFormatted = c.projectedCompletionDate
-          ? new Date(c.projectedCompletionDate + 'T00:00:00').toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
-          : '—';
-
-        let statusClass = 'countdown-ok', statusIcon = '✅', statusText = 'On track';
-        let statusDesc = 'You are pacing well toward your target.';
-
-        if (c.status === 'behind') {
-          statusClass = 'countdown-warn'; statusIcon = '⚠️'; statusText = 'Behind schedule';
-          statusDesc = `You're ${Math.abs(c.boxesDelta)} boxes behind schedule. Increase your daily pace.`;
-        } else if (c.status === 'ahead') {
-          statusClass = 'countdown-ahead'; statusIcon = '🚀'; statusText = 'Ahead of schedule';
-          statusDesc = `You're ${c.boxesDelta} boxes ahead. Great work!`;
-        } else if (c.status === 'overdue') {
-          statusClass = 'countdown-warn'; statusIcon = '⏰'; statusText = 'Overdue';
-          statusDesc = `Target date passed with ${c.remainingBoxes} boxes remaining.`;
-        } else if (c.daysRemaining === 0) {
-          statusClass = 'countdown-warn'; statusIcon = '⏳'; statusText = 'Last day';
-          statusDesc = 'Today is your target date. Push to finish!';
-        }
-
-        const paceWarning = (c.daysRemaining > 0 && c.requiredBoxesPerDay > c.currentPace && c.remainingBoxes > 0)
-          ? `<p class="text-xs text-amber-400 mt-2">⚡ Current pace (${c.currentPace}/day) is below required (${c.requiredBoxesPerDay.toFixed(1)}/day).</p>`
-          : (c.remainingBoxes > 0 && c.daysRemaining > 0)
-            ? `<p class="text-xs text-emerald-400 mt-2">✅ Pace sufficient to finish on time.</p>` : '';
-
-        return `
-          <div class="glass-card p-5 space-y-3">
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="text-xs uppercase tracking-widest text-zinc-500">Challenge Countdown</p>
-                <p class="text-lg font-semibold text-white mt-1">Target: ${targetFormatted}</p>
-              </div>
-              <button id="editTargetDateBtn" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-1.5 rounded-lg">Edit</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2 text-center">
-              <div class="bg-zinc-900/60 rounded-xl py-2.5 px-1">
-                <p class="text-2xl font-bold ${c.daysRemaining < 0 ? 'text-red-400' : c.daysRemaining <= 7 ? 'text-amber-400' : 'text-white'}">${c.daysRemaining < 0 ? Math.abs(c.daysRemaining) : c.daysRemaining}</p>
-                <p class="text-[10px] uppercase text-zinc-500 mt-0.5">${c.daysRemaining < 0 ? 'Days Overdue' : 'Days Left'}</p>
-              </div>
-              <div class="bg-zinc-900/60 rounded-xl py-2.5 px-1">
-                <p class="text-2xl font-bold text-emerald-400">${c.remainingBoxes}</p>
-                <p class="text-[10px] uppercase text-zinc-500 mt-0.5">Boxes Left</p>
-              </div>
-              <div class="bg-zinc-900/60 rounded-xl py-2.5 px-1">
-                <p class="text-2xl font-bold text-blue-400">${formatINR(Math.round(c.requiredDailySavings))}</p>
-                <p class="text-[10px] uppercase text-zinc-500 mt-0.5">₹/Day Needed</p>
-              </div>
-            </div>
-            <div class="rounded-xl p-3 ${statusClass}">
-              <div class="flex items-center gap-2">
-                <span class="text-lg">${statusIcon}</span>
-                <p class="text-sm font-semibold ${c.status === 'behind' || c.status === 'overdue' || c.daysRemaining === 0 ? 'text-red-300' : c.status === 'ahead' ? 'text-blue-300' : 'text-emerald-300'}">${statusText}</p>
-              </div>
-              <p class="text-xs text-zinc-300 mt-1">${statusDesc}</p>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="bg-zinc-900/40 rounded-lg p-2">
-                <p class="text-zinc-500">Required pace</p>
-                <p class="text-white font-semibold">${c.requiredBoxesPerDay === Infinity ? '—' : c.requiredBoxesPerDay.toFixed(2)} boxes/day</p>
-              </div>
-              <div class="bg-zinc-900/40 rounded-lg p-2">
-                <p class="text-zinc-500">Projected finish</p>
-                <p class="text-white font-semibold">${projectedFormatted}</p>
-              </div>
-            </div>
-            ${paceWarning}
-          </div>
-        `;
-      }
-
-      function renderFinancialPanel() {
-        if (!finUnlocked) {
-          return `
-            <div class="glass-card p-6 space-y-3 locked-panel relative overflow-hidden">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs uppercase tracking-widest text-zinc-500">Detailed Collections</p>
-                  <p class="text-sm font-semibold text-white mt-0.5">🔒 Password Protected</p>
-                </div>
-                <button id="unlockFinBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">Unlock</button>
-              </div>
-              <p class="text-xs text-zinc-400">Track every rupee collected across matrix savings, booster deposits, and penalty payments — by day, week, and month.</p>
-              <div class="grid grid-cols-3 gap-2 opacity-30 pointer-events-none select-none">
-                <div class="bg-zinc-900/60 rounded-lg p-2">
-                  <p class="fin-stat-label">Today</p>
-                  <p class="fin-stat-value text-emerald-400">₹••••</p>
-                </div>
-                <div class="bg-zinc-900/60 rounded-lg p-2">
-                  <p class="fin-stat-label">Week</p>
-                  <p class="fin-stat-value text-blue-400">₹••••</p>
-                </div>
-                <div class="bg-zinc-900/60 rounded-lg p-2">
-                  <p class="fin-stat-label">Month</p>
-                  <p class="fin-stat-value text-amber-400">₹••••</p>
-                </div>
-              </div>
-            </div>
-          `;
-        }
-
-        const range = getPeriodRange(activePeriod);
-        const b = getCollectionBreakdown(range.from, range.to);
-        const periodLabel = activePeriod === 'today' ? 'Today' : activePeriod === 'week' ? 'This Week' : activePeriod === 'month' ? 'This Month' : 'All Time';
-
-        return `
-          <div class="glass-card p-5 space-y-4">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-              <div>
-                <p class="text-xs uppercase tracking-widest text-zinc-500">Detailed Collections</p>
-                <p class="text-xs text-zinc-400 mt-0.5">${range.from} → ${range.to}</p>
-              </div>
-              <button id="lockFinBtn" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-1.5 rounded-lg">🔒 Lock</button>
-            </div>
-
-            <div class="flex gap-1.5 flex-wrap">
-              <button class="period-tab ${activePeriod==='today'?'active':''}" data-period="today">Today</button>
-              <button class="period-tab ${activePeriod==='week'?'active':''}" data-period="week">This Week</button>
-              <button class="period-tab ${activePeriod==='month'?'active':''}" data-period="month">This Month</button>
-              <button class="period-tab ${activePeriod==='all'?'active':''}" data-period="all">All Time</button>
-            </div>
-
-            <div class="rounded-xl bg-gradient-to-br from-emerald-900/40 to-zinc-900/40 border border-emerald-800/40 p-4 text-center">
-              <p class="text-[10px] uppercase tracking-widest text-emerald-500">Total Collected · ${periodLabel}</p>
-              <p class="text-3xl font-bold text-white mt-1">${formatINR(b.totalCollected)}</p>
-              <p class="text-[10px] text-zinc-400 mt-1">Matrix + Booster + Penalty Paid</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <div class="bg-zinc-900/70 rounded-xl p-3 border border-emerald-900/30">
-                <p class="fin-stat-label text-emerald-500">Matrix Savings</p>
-                <p class="fin-stat-value text-emerald-400 mt-1">${formatINR(b.matrix)}</p>
-                <p class="text-[10px] text-zinc-500 mt-0.5">${b.matrixBoxes} box${b.matrixBoxes!==1?'es':''} checked</p>
-              </div>
-              <div class="bg-zinc-900/70 rounded-xl p-3 border border-blue-900/30">
-                <p class="fin-stat-label text-blue-500">Booster Savings</p>
-                <p class="fin-stat-value text-blue-400 mt-1">${formatINR(b.boosters)}</p>
-                <p class="text-[10px] text-zinc-500 mt-0.5">${b.boosterCount} deposit${b.boosterCount!==1?'s':''}</p>
-              </div>
-              <div class="bg-zinc-900/70 rounded-xl p-3 border border-amber-900/30">
-                <p class="fin-stat-label text-amber-500">Penalties Paid</p>
-                <p class="fin-stat-value text-amber-400 mt-1">${formatINR(b.penaltyPaid)}</p>
-                <p class="text-[10px] text-zinc-500 mt-0.5">${b.penaltyPaidCount} payment${b.penaltyPaidCount!==1?'s':''}</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="bg-zinc-900/40 rounded-lg p-2 flex justify-between">
-                <span class="text-zinc-500">Penalties Generated</span>
-                <span class="text-red-400 font-semibold">${formatINR(b.penaltyGenerated)}</span>
-              </div>
-              <div class="bg-zinc-900/40 rounded-lg p-2 flex justify-between">
-                <span class="text-zinc-500">Outstanding</span>
-                <span class="text-amber-400 font-semibold">${formatINR(getOutstandingPenalties())}</span>
-              </div>
-            </div>
-
-            <div class="pt-2 border-t border-zinc-800 grid grid-cols-3 gap-2 text-center text-[10px]">
-              <div>
-                <p class="text-zinc-500 uppercase">All-Time Matrix</p>
-                <p class="text-emerald-400 font-bold text-sm mt-0.5">${formatINR(getMatrixSavings())}</p>
-              </div>
-              <div>
-                <p class="text-zinc-500 uppercase">All-Time Booster</p>
-                <p class="text-blue-400 font-bold text-sm mt-0.5">${formatINR(getTotalBoosters())}</p>
-              </div>
-              <div>
-                <p class="text-zinc-500 uppercase">All-Time Penalties</p>
-                <p class="text-amber-400 font-bold text-sm mt-0.5">${formatINR(getTotalPenaltiesPaid())}</p>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      function renderDashboard() {
-        const matrix = getMatrixSavings();
-        const pct = (matrix / TOTAL_TARGET * 100);
-        const remaining = TOTAL_TARGET - matrix;
-        const boxesCompleted = getMatrixBoxesCompleted();
-        const remainingBoxes = TOTAL_BOXES - boxesCompleted;
-        const todayBoxes = getTodayBoxesCompleted();
-        const pace = getDailyPace();
-        const streak = getStreakData();
-
-        return `
-        <div class="space-y-5">
-          <div class="glass-card p-5 sm:p-6 space-y-3">
-            <div class="flex justify-between items-end">
-              <div>
-                <p class="text-xs uppercase tracking-widest text-zinc-500">Matrix Progress</p>
-                <p class="text-2xl sm:text-3xl font-bold text-white">${formatINR(matrix)} <span class="text-base font-normal text-zinc-400">/ ${formatINR(TOTAL_TARGET)}</span></p>
-              </div>
-              <p class="text-xl sm:text-2xl font-bold text-emerald-400">${pct.toFixed(1)}%</p>
-            </div>
-            <div class="w-full h-3 bg-zinc-800 rounded-full overflow-hidden">
-              <div class="progress-bar h-full bg-emerald-500 rounded-full" style="width: ${pct}%"></div>
-            </div>
-            <div class="flex justify-between text-xs text-zinc-400">
-              <span>${boxesCompleted} / ${TOTAL_BOXES} boxes completed</span>
-              <span>Remaining: ${formatINR(remaining)}</span>
-            </div>
-            <div class="pt-2 border-t border-zinc-800 flex justify-between items-center">
-              <span class="text-xs text-zinc-400">Today's pace</span>
-              <span class="text-sm font-semibold ${isTodayLimitReached() ? 'text-amber-400' : 'text-emerald-400'}">${todayBoxes} / ${pace} boxes</span>
-            </div>
-          </div>
-
-          ${renderCountdownCard()}
-          ${renderFinancialPanel()}
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="glass-card p-4">
-              <p class="text-[10px] uppercase text-zinc-500 mb-1">Streak</p>
-              <p class="text-2xl font-bold text-white">${streak.currentStreak} <span class="text-sm font-normal text-zinc-400">days</span></p>
-              <p class="text-xs text-zinc-400 mt-0.5">Best: ${streak.bestStreak} · Active days: ${streak.totalActiveDays}</p>
-              <div class="mt-2 flex gap-1">
-                ${streak.completedDates.slice(-7).map(d => `<span class="w-2.5 h-2.5 rounded-full ${d === todayStr() ? 'bg-amber-400' : 'bg-emerald-500'}"></span>`).join('')}
-              </div>
-            </div>
-            <div class="glass-card p-4">
-              <p class="text-[10px] uppercase text-zinc-500 mb-1">Pace Estimator</p>
-              <div class="flex items-center gap-2 mt-1">
-                <select id="paceSelect" class="bg-zinc-800 text-sm rounded-lg px-2 py-1.5 border border-zinc-700 flex-1">
-                  <option value="1" ${pace===1?'selected':''}>1 box/day</option>
-                  <option value="2" ${pace===2?'selected':''}>2 boxes/day</option>
-                  <option value="3" ${pace===3?'selected':''}>3 boxes/day</option>
-                  <option value="5" ${pace===5?'selected':''}>5 boxes/day</option>
-                  <option value="10" ${pace===10?'selected':''}>10 boxes/day</option>
-                </select>
-                <span class="text-xs text-zinc-400">Left: ${remainingBoxes}</span>
-              </div>
-              <p id="paceEstimate" class="text-sm text-emerald-400 mt-2 font-medium">~${Math.ceil(remainingBoxes/pace)} days</p>
-            </div>
-          </div>
-        </div>`;
-      }
-
-      function renderMatrix() {
-        const completed = getMatrixBoxesCompleted();
-        const matrixSavings = getMatrixSavings();
-        const todayBoxes = getTodayBoxesCompleted();
-        const pace = getDailyPace();
-        const limitReached = todayBoxes >= pace;
-        const remainingToday = Math.max(0, pace - todayBoxes);
-        const nextBox = getNextBox();
-        const completedList = getCompletedBoxesInOrder();
-
-        return `
-        <div class="space-y-4">
-          <div class="glass-card p-4">
-            <div class="flex flex-wrap gap-3 justify-between text-xs">
-              ${DENOMS.map(d => `<span class="text-zinc-300">₹${d.value} – ${d.count} boxes</span>`).join('')}
-              <span class="text-emerald-400 font-semibold">Total – ₹1,00,000</span>
-            </div>
-            <div class="flex justify-between mt-2 text-sm">
-              <span class="text-zinc-400">Completed: ${completed} / 240</span>
-              <span class="text-emerald-400 font-semibold">${formatINR(matrixSavings)} saved</span>
-            </div>
-            <div class="mt-2 pt-2 border-t border-zinc-800 flex justify-between items-center">
-              <span class="text-xs text-zinc-400">Today's limit (pace)</span>
-              <span class="text-xs font-semibold ${limitReached ? 'text-amber-400' : 'text-emerald-400'}">
-                ${limitReached ? '✅ Daily limit reached — come back tomorrow' : `You can check ${remainingToday} more box${remainingToday !== 1 ? 'es' : ''} today`}
-              </span>
-            </div>
-          </div>
-
-          ${nextBox && !limitReached ? `
-            <div class="glass-card p-5 text-center space-y-3">
-              <p class="text-xs uppercase tracking-widest text-zinc-500">Next Amount to Save</p>
-              <p class="text-4xl font-bold text-emerald-400">${formatINR(nextBox.value)}</p>
-              <button id="checkNextBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl text-base w-full">
-                ✓ Mark ${formatINR(nextBox.value)} as Saved
-              </button>
-            </div>
-          ` : ''}
-
-          ${nextBox && limitReached ? `
-            <div class="glass-card p-4 text-center space-y-2 border border-amber-900/50">
-              <p class="text-xs uppercase tracking-widest text-zinc-500">Next Amount to Save</p>
-              <p class="text-3xl font-bold text-amber-400">${formatINR(nextBox.value)}</p>
-              <p class="text-sm text-amber-400">🔒 You've reached today's pace of ${pace} box${pace !== 1 ? 'es' : ''}. Come back tomorrow.</p>
-            </div>
-          ` : ''}
-
-          ${!nextBox ? `
-            <div class="glass-card p-6 text-center border border-emerald-900/50">
-              <p class="text-2xl">🏆</p>
-              <p class="text-emerald-400 font-bold mt-1">All 240 boxes completed!</p>
-              <p class="text-xs text-zinc-400 mt-1">You've saved the full ₹1,00,000.</p>
-            </div>
-          ` : ''}
-
-          ${completedList.length > 0 ? `
-            <div class="glass-card p-3">
-              <p class="text-xs uppercase tracking-widest text-zinc-500 mb-2">Completed Boxes (${completedList.length})</p>
-              <div class="matrix-grid">
-                ${completedList.map(b => `
-                  <div class="matrix-box completed" data-box-id="${b.id}">
-                    <span class="check">✓</span>
-                    <span class="denom-label">₹${b.value}</span>
-                  </div>
-                `).join('')}
-              </div>
-              <p class="text-[10px] text-zinc-500 mt-2">Tap a completed box to undo it.</p>
-            </div>
-          ` : `
-            <div class="glass-card p-4 text-center text-sm text-zinc-500">
-              No boxes completed yet. Start with the amount above.
-            </div>
-          `}
-        </div>`;
-      }
-
-      function renderStreak() {
-        const streak = getStreakData();
-        const missed = state.missedDates || [];
-        const today = todayStr();
-        let calendarHtml = '';
-        for (let i = 29; i >= 0; i--) {
-          const d = addDays(today, -i);
-          const active = streak.completedDates.includes(d);
-          const isMissed = missed.includes(d);
-          const isToday = d === today;
-          calendarHtml += `<div class="calendar-day ${active ? 'active' : (isMissed ? 'missed' : '')} ${isToday ? 'today' : ''}">${new Date(d+'T00:00:00').getDate()}</div>`;
-        }
-        return `
-        <div class="space-y-4">
-          <div class="glass-card p-5 space-y-2">
-            <p class="text-xs uppercase tracking-widest text-zinc-500">Matrix Streak</p>
-            <div class="flex gap-6 flex-wrap">
-              <div><p class="text-3xl font-bold text-white">${streak.currentStreak}</p><p class="text-xs text-zinc-400">Current</p></div>
-              <div><p class="text-3xl font-bold text-emerald-400">${streak.bestStreak}</p><p class="text-xs text-zinc-400">Best</p></div>
-              <div><p class="text-3xl font-bold text-blue-400">${streak.totalActiveDays}</p><p class="text-xs text-zinc-400">Active days</p></div>
-              <div><p class="text-3xl font-bold text-red-400">${missed.length}</p><p class="text-xs text-zinc-400">Missed days</p></div>
-            </div>
-            <p class="text-xs text-zinc-400 pt-2">Today: ${streak.completedDates.includes(today) ? '✅ Active' : '⏳ Not yet'}</p>
-          </div>
-          <div class="glass-card p-4">
-            <p class="text-xs uppercase tracking-widest text-zinc-500 mb-3">Last 30 Days</p>
-            <div class="grid grid-cols-7 gap-1">${calendarHtml}</div>
-            <div class="flex gap-4 mt-3 text-[10px] text-zinc-400">
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Active</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-zinc-600"></span> Missed</span>
-              <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full ring-1 ring-amber-400"></span> Today</span>
-            </div>
-          </div>
-        </div>`;
-      }
-
-      function renderBooster() {
-        const total = getTotalBoosters();
-        const sorted = [...state.boosters].sort((a,b) => b.timestamp.localeCompare(a.timestamp));
-        return `
-        <div class="space-y-4">
-          <div class="glass-card p-5 space-y-3">
-            <p class="text-xs uppercase tracking-widest text-zinc-500">Booster Savings</p>
-            <p class="text-3xl font-bold text-blue-400">${formatINR(total)}</p>
-            <div class="flex gap-2 flex-wrap">
-              <input id="boosterAmount" type="number" placeholder="Amount (₹)" class="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 text-sm flex-1 min-w-[100px]" min="1">
-              <input id="boosterDesc" type="text" placeholder="Description" class="bg-zinc-800 border border-zinc-700 rounded-xl px-3 py-2 text-sm flex-1 min-w-[140px]">
-              <button id="addBoosterBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">Add</button>
-            </div>
-          </div>
-          <div class="glass-card p-4">
-            <p class="text-xs uppercase tracking-widest text-zinc-500 mb-2">Ledger</p>
-            ${sorted.length === 0 ? '<p class="text-sm text-zinc-500">No booster entries yet.</p>' :
-              sorted.map(b => `
-                <div class="flex justify-between items-center py-2 border-b border-zinc-800 last:border-0 text-sm">
-                  <div>
-                    <span class="text-blue-400 font-semibold">${formatINR(b.amount)}</span>
-                    <span class="text-zinc-400 ml-2">${b.description || '—'}</span>
-                    <p class="text-[10px] text-zinc-500">${b.date} ${b.time || ''}</p>
-                  </div>
-                  <button class="delete-booster text-red-400 text-xs hover:text-red-300" data-id="${b.id}">Delete</button>
-                </div>
-              `).join('')}
-          </div>
-        </div>`;
-      }
-
-      function renderPenalty() {
-        const totalGen = getTotalPenaltiesGenerated();
-        const totalPaid = getTotalPenaltiesPaid();
-        const outstanding = getOutstandingPenalties();
-        const missedCount = state.missedDates.length;
-        const sorted = [...state.penalties].sort((a,b) => b.date.localeCompare(a.date));
-        return `
-        <div class="space-y-4">
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="glass-card p-3"><p class="text-[10px] uppercase text-zinc-500">Generated</p><p class="text-lg font-bold text-red-400">${formatINR(totalGen)}</p></div>
-            <div class="glass-card p-3"><p class="text-[10px] uppercase text-zinc-500">Paid</p><p class="text-lg font-bold text-red-300">${formatINR(totalPaid)}</p></div>
-            <div class="glass-card p-3"><p class="text-[10px] uppercase text-zinc-500">Outstanding</p><p class="text-lg font-bold text-amber-400">${formatINR(outstanding)}</p></div>
-            <div class="glass-card p-3"><p class="text-[10px] uppercase text-zinc-500">Missed days</p><p class="text-lg font-bold text-zinc-300">${missedCount}</p></div>
-          </div>
-          <div class="glass-card p-4">
-            <p class="text-xs uppercase tracking-widest text-zinc-500 mb-2">Penalty History</p>
-            ${sorted.length === 0 ? '<p class="text-sm text-zinc-500">No penalties generated.</p>' :
-              sorted.map(p => `
-                <div class="flex justify-between items-center py-2 border-b border-zinc-800 last:border-0 text-sm">
-                  <div>
-                    <span class="text-red-400 font-semibold">${formatINR(p.amount)}</span>
-                    <span class="text-zinc-400 ml-2">${p.date}</span>
-                    ${p.paid ? `<span class="text-emerald-400 text-xs ml-2">Paid ${p.paidDate}</span>` : '<span class="text-amber-400 text-xs ml-2">Unpaid</span>'}
-                  </div>
-                  ${!p.paid ? `<button class="mark-paid text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded-lg" data-id="${p.id}">Mark Paid</button>` : ''}
-                </div>
-              `).join('')}
-          </div>
-        </div>`;
-      }
-
-      function renderActivity() {
-        const dateMap = new Map();
-        state.boxes.filter(b => b.completed && b.timestamp).forEach(b => {
-          const d = b.timestamp.slice(0,10);
-          if (!dateMap.has(d)) dateMap.set(d, { matrix: 0, boxes: 0, boosters: 0, penaltyGen: 0, penaltyPaid: 0 });
-          const rec = dateMap.get(d); rec.matrix += b.value; rec.boxes++;
-        });
-        state.boosters.forEach(b => {
-          if (!dateMap.has(b.date)) dateMap.set(b.date, { matrix: 0, boxes: 0, boosters: 0, penaltyGen: 0, penaltyPaid: 0 });
-          dateMap.get(b.date).boosters += b.amount;
-        });
-        state.penalties.forEach(p => {
-          if (!dateMap.has(p.date)) dateMap.set(p.date, { matrix: 0, boxes: 0, boosters: 0, penaltyGen: 0, penaltyPaid: 0 });
-          dateMap.get(p.date).penaltyGen += p.amount;
-          if (p.paid && p.paidDate) {
-            if (!dateMap.has(p.paidDate)) dateMap.set(p.paidDate, { matrix: 0, boxes: 0, boosters: 0, penaltyGen: 0, penaltyPaid: 0 });
-            dateMap.get(p.paidDate).penaltyPaid += p.amount;
-          }
-        });
-        const sortedDates = Array.from(dateMap.keys()).sort().reverse();
-        return `
-        <div class="space-y-3">
-          <p class="text-xs uppercase tracking-widest text-zinc-500">Daily Activity</p>
-          ${sortedDates.length === 0 ? '<p class="text-sm text-zinc-500">No activity yet.</p>' :
-            sortedDates.map(d => {
-              const r = dateMap.get(d);
-              const totalActual = r.matrix + r.boosters;
-              return `
-                <div class="glass-card p-4 text-sm space-y-1">
-                  <div class="flex justify-between font-medium">
-                    <span>${new Date(d+'T00:00:00').toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short', year:'numeric' })}</span>
-                    <span class="text-zinc-400">${r.boxes} boxes</span>
-                  </div>
-                  <div class="grid grid-cols-2 gap-x-4 gap-y-0.5 text-xs text-zinc-400">
-                    <span>Matrix: <span class="text-emerald-400">${formatINR(r.matrix)}</span></span>
-                    <span>Booster: <span class="text-blue-400">${formatINR(r.boosters)}</span></span>
-                    <span>Penalty gen: <span class="text-red-400">${formatINR(r.penaltyGen)}</span></span>
-                    <span>Penalty paid: <span class="text-red-300">${formatINR(r.penaltyPaid)}</span></span>
-                  </div>
-                  <div class="flex justify-between pt-1 border-t border-zinc-800 text-xs">
-                    <span class="text-zinc-400">Actual savings: <span class="text-white font-semibold">${formatINR(totalActual)}</span></span>
-                    <span class="${r.boxes > 0 ? 'text-emerald-400' : 'text-zinc-500'}">${r.boxes > 0 ? 'Streak active' : 'Missed'}</span>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-        </div>`;
-      }
-
-      function renderReports() {
-        const matrix = getMatrixSavings();
-        const boosters = getTotalBoosters();
-        const actual = matrix + boosters;
-        const penaltyGen = getTotalPenaltiesGenerated();
-        const penaltyPaid = getTotalPenaltiesPaid();
-        const outstanding = getOutstandingPenalties();
-        const boxesDone = getMatrixBoxesCompleted();
-        const streak = getStreakData();
-        const dailyAvg = boxesDone > 0 ? (matrix / Math.max(1, streak.totalActiveDays)) : 0;
-        const c = getCountdownData();
-        return `
-        <div class="space-y-4">
-          <div class="glass-card p-5 space-y-2">
-            <p class="text-xs uppercase tracking-widest text-zinc-500">Financial Summary</p>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-              <span class="text-zinc-400">Matrix savings</span><span class="text-emerald-400 font-semibold text-right">${formatINR(matrix)}</span>
-              <span class="text-zinc-400">Booster savings</span><span class="text-blue-400 font-semibold text-right">${formatINR(boosters)}</span>
-              <span class="text-zinc-400">Actual savings</span><span class="text-white font-bold text-right">${formatINR(actual)}</span>
-              <span class="text-zinc-400">Penalties generated</span><span class="text-red-400 text-right">${formatINR(penaltyGen)}</span>
-              <span class="text-zinc-400">Penalties paid</span><span class="text-red-300 text-right">${formatINR(penaltyPaid)}</span>
-              <span class="text-zinc-400">Outstanding</span><span class="text-amber-400 text-right">${formatINR(outstanding)}</span>
-              <span class="text-zinc-400">Boxes completed</span><span class="text-white text-right">${boxesDone} / 240</span>
-              <span class="text-zinc-400">Daily average (matrix)</span><span class="text-white text-right">${formatINR(Math.round(dailyAvg))}</span>
-            </div>
-          </div>
-          <div class="glass-card p-5 space-y-2">
-            <p class="text-xs uppercase tracking-widest text-zinc-500">Countdown Report</p>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-              <span class="text-zinc-400">Target date</span><span class="text-white text-right">${new Date(c.targetDate+'T00:00:00').toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</span>
-              <span class="text-zinc-400">Days remaining</span><span class="${c.daysRemaining < 0 ? 'text-red-400' : 'text-white'} text-right">${c.daysRemaining}</span>
-              <span class="text-zinc-400">Required pace</span><span class="text-white text-right">${c.requiredBoxesPerDay === Infinity ? '—' : c.requiredBoxesPerDay.toFixed(2)} boxes/day</span>
-              <span class="text-zinc-400">Required ₹/day</span><span class="text-white text-right">${formatINR(Math.round(c.requiredDailySavings))}</span>
-              <span class="text-zinc-400">Status</span><span class="${c.status === 'behind' || c.status === 'overdue' ? 'text-red-400' : c.status === 'ahead' ? 'text-blue-400' : 'text-emerald-400'} text-right capitalize">${c.status}</span>
-            </div>
-          </div>
-          <div class="glass-card p-5">
-            <p class="text-xs uppercase tracking-widest text-zinc-500 mb-2">Export</p>
-            <div class="flex gap-2 flex-wrap">
-              <button id="exportJson" class="bg-zinc-800 hover:bg-zinc-700 text-sm px-3 py-2 rounded-xl">Export JSON</button>
-              <button id="exportCsv" class="bg-zinc-800 hover:bg-zinc-700 text-sm px-3 py-2 rounded-xl">Export CSV</button>
-            </div>
-          </div>
-        </div>`;
-      }
-
-      function renderCoach() {
-        const matrix = getMatrixSavings();
-        const pct = (matrix / TOTAL_TARGET * 100);
-        const streak = getStreakData();
-        const outstanding = getOutstandingPenalties();
-        const todayMatrix = state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === todayStr()).reduce((s,b)=>s+b.value,0);
-        const totalBoosters = getTotalBoosters();
-        const todayBoxes = getTodayBoxesCompleted();
-        const pace = getDailyPace();
-        const limitReached = todayBoxes >= pace;
-        const c = getCountdownData();
-        const reqPace = (c.requiredBoxesPerDay === Infinity) ? '—' : c.requiredBoxesPerDay.toFixed(1);
-
-        let msg = '';
-        if (pct >= 100) msg = '🏆 Congratulations! You have completed the ₹1,00,000 challenge!';
-        else if (c.status === 'overdue') msg = `⏰ Target date passed with ${c.remainingBoxes} boxes left. Set a new target date.`;
-        else if (c.status === 'behind') msg = `⚠️ ${Math.abs(c.boxesDelta)} boxes behind. Need ${reqPace} boxes/day.`;
-        else if (limitReached) msg = `✅ Daily pace hit (${pace} boxes). Come back tomorrow!`;
-        else if (pct >= 50) msg = `🎉 You've crossed 50%! ${formatINR(matrix)} saved.`;
-        else if (outstanding > 0) msg = `You have ${formatINR(outstanding)} in outstanding penalties.`;
-        else if (streak.currentStreak >= 7) msg = `🔥 ${streak.currentStreak}-day streak! Keep it up!`;
-        else if (todayMatrix > 0) msg = `Excellent! You saved ${formatINR(todayMatrix)} today. Total: ${formatINR(matrix)}.`;
-        else if (streak.totalActiveDays > 0) msg = `Good morning! ${c.daysRemaining > 0 ? c.daysRemaining + ' days left. ' : ''}Try at least one box today.`;
-        else msg = `Welcome! Start with your first ₹100 box.`;
-
-        return `
-        <div class="glass-card p-6 space-y-4">
-          <p class="text-xs uppercase tracking-widest text-zinc-500">AI Savings Coach</p>
-          <div class="bg-zinc-900/80 rounded-2xl p-4 text-sm leading-relaxed border border-zinc-800">
-            <p class="text-white">${msg}</p>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-xs text-zinc-400">
-            <span>Matrix: ${formatINR(matrix)}</span>
-            <span>Boosters: ${formatINR(totalBoosters)}</span>
-            <span>Streak: ${streak.currentStreak} days</span>
-            <span>Outstanding: ${formatINR(outstanding)}</span>
-            <span>Days left: ${c.daysRemaining}</span>
-            <span>Required pace: ${reqPace}/day</span>
-          </div>
-        </div>`;
-      }
-
-      function renderSettings() {
-        const s = state.settings;
-        return `
-        <div class="glass-card p-5 space-y-5">
-          <p class="text-xs uppercase tracking-widest text-zinc-500">Settings</p>
-          <div class="space-y-3">
-            <div class="flex justify-between items-center">
-              <label class="text-sm text-zinc-300">Starting penalty (₹)</label>
-              <input id="settingStartPenalty" type="number" value="${s.startPenalty}" class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 w-20 text-sm text-right">
-            </div>
-            <div class="flex justify-between items-center">
-              <label class="text-sm text-zinc-300">Penalty increment (₹)</label>
-              <input id="settingPenaltyIncrement" type="number" value="${s.penaltyIncrement}" class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 w-20 text-sm text-right">
-            </div>
-            <div class="flex justify-between items-center">
-              <label class="text-sm text-zinc-300">Daily pace (boxes/day)</label>
-              <input id="settingDailyPace" type="number" value="${s.dailyPace || 1}" min="1" max="240" class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 w-20 text-sm text-right">
-            </div>
-            <div class="flex justify-between items-center">
-              <label class="text-sm text-zinc-300">Challenge start date</label>
-              <input id="settingStartDate" type="date" value="${s.challengeStart}" class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 text-sm">
-            </div>
-            <div class="flex justify-between items-center">
-              <label class="text-sm text-zinc-300">Target completion date</label>
-              <input id="settingTargetDate" type="date" value="${s.targetDate || DEFAULT_SETTINGS.targetDate}" class="bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 text-sm">
-            </div>
-          </div>
-
-          <div class="pt-3 border-t border-zinc-800 space-y-2">
-            <div class="flex justify-between items-center">
-              <label class="text-sm text-zinc-300">Dashboard password</label>
-              <span class="text-xs text-zinc-500">🔒 Protected</span>
-            </div>
-            <p class="text-[10px] text-zinc-500">For security, the current password is never displayed. To change it, enter the current password and a new one below.</p>
-            <input id="settingOldPassword" type="password" placeholder="Current password" autocomplete="off"
-              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-            <input id="settingNewPassword" type="password" placeholder="New password (min 4 chars)" autocomplete="new-password"
-              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-            <input id="settingConfirmPassword" type="password" placeholder="Confirm new password" autocomplete="new-password"
-              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm">
-            <button id="changePasswordBtn" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2 rounded-lg text-sm">
-              Change Password
-            </button>
-          </div>
-
-          <div class="flex gap-3 pt-2 flex-wrap border-t border-zinc-800">
-            <button id="saveSettingsBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">Save Settings</button>
-            <button id="resetChallengeBtn" class="bg-red-600 hover:bg-red-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">Reset Challenge</button>
-            <button id="importDataBtn" class="bg-zinc-700 hover:bg-zinc-600 text-white font-semibold px-4 py-2 rounded-xl text-sm">Import JSON</button>
-          </div>
-          <input type="file" id="importFile" accept=".json" class="hidden">
-        </div>`;
-      }
-
-      let currentTab = 'dashboard';
-      function renderCurrentTab() {
-        const container = document.getElementById('tabContent');
-        let html = '';
-        switch (currentTab) {
-          case 'dashboard': html = renderDashboard(); break;
-          case 'matrix': html = renderMatrix(); break;
-          case 'streak': html = renderStreak(); break;
-          case 'booster': html = renderBooster(); break;
-          case 'penalty': html = renderPenalty(); break;
-          case 'activity': html = renderActivity(); break;
-          case 'reports': html = renderReports(); break;
-          case 'coach': html = renderCoach(); break;
-          case 'settings': html = renderSettings(); break;
-        }
-        container.innerHTML = html;
-        document.getElementById('headerMatrix').textContent = formatINR(getMatrixSavings());
-        attachTabEvents();
-      }
-
-      async function changePasswordFlow() {
-        const oldPw = document.getElementById('settingOldPassword').value;
-        const newPw = document.getElementById('settingNewPassword').value;
-        const confirmPw = document.getElementById('settingConfirmPassword').value;
-
-        if (!(await checkPassword(oldPw))) {
-          showToast('Current password is incorrect', 'error');
-          return;
-        }
-        if (newPw.length < 4) {
-          showToast('New password must be at least 4 characters', 'error');
-          return;
-        }
-        if (newPw !== confirmPw) {
-          showToast('New passwords do not match', 'error');
-          return;
-        }
-        await setPassword(newPw);
-        showToast('Password changed successfully', 'success');
-        renderCurrentTab();
-      }
-
-      function attachTabEvents() {
-        const unlockBtn = document.getElementById('unlockFinBtn');
-        if (unlockBtn) unlockBtn.addEventListener('click', () => {
-          showPasswordModal(() => { finUnlocked = true; showToast('Unlocked', 'success'); renderCurrentTab(); });
-        });
-        const lockBtn = document.getElementById('lockFinBtn');
-        if (lockBtn) lockBtn.addEventListener('click', () => {
-          finUnlocked = false; showToast('Locked', 'info'); renderCurrentTab();
-        });
-        document.querySelectorAll('.period-tab').forEach(tab => {
-          tab.addEventListener('click', () => { activePeriod = tab.dataset.period; renderCurrentTab(); });
-        });
-
-        const checkNextBtn = document.getElementById('checkNextBtn');
-        if (checkNextBtn) checkNextBtn.addEventListener('click', () => {
-          const nextBox = getNextBox();
-          if (!nextBox) return;
-          const pace = getDailyPace();
-          const todayBoxes = getTodayBoxesCompleted();
-          if (todayBoxes >= pace) {
-            showToast(`Daily pace reached (${pace}). Come back tomorrow!`, 'error');
-            return;
-          }
-          nextBox.completed = true;
-          nextBox.timestamp = nowISO();
-          showToast(`Saved ${formatINR(nextBox.value)}! (${todayBoxes + 1}/${pace})`, 'success');
-          saveState();
-          renderCurrentTab();
-        });
-
-        document.querySelectorAll('.matrix-box.completed').forEach(box => {
-          box.addEventListener('click', (e) => {
-            e.preventDefault();
-            const id = parseInt(box.dataset.boxId, 10);
-            const b = state.boxes.find(x => x.id === id);
-            if (!b || !b.completed) return;
-            showConfirm('Undo Box', `Uncheck this ${formatINR(b.value)} box?`, () => {
-              b.completed = false;
-              b.timestamp = null;
-              saveState();
-              renderCurrentTab();
-            });
-          });
-        });
-
-        const paceSelect = document.getElementById('paceSelect');
-        if (paceSelect) paceSelect.addEventListener('change', () => {
-          const newPace = parseInt(paceSelect.value, 10);
-          const todayBoxes = getTodayBoxesCompleted();
-          if (todayBoxes > newPace) { showToast(`Already ${todayBoxes} today.`, 'error'); paceSelect.value = getDailyPace(); return; }
-          state.settings.dailyPace = newPace; saveState();
-          showToast(`Pace: ${newPace}/day`, 'success'); renderCurrentTab();
-        });
-
-        const editTargetBtn = document.getElementById('editTargetDateBtn');
-        if (editTargetBtn) editTargetBtn.addEventListener('click', () => {
-          const current = state.settings.targetDate || DEFAULT_SETTINGS.targetDate;
-          const input = window.prompt('Target date (YYYY-MM-DD):', current);
-          if (input === null) return;
-          const val = input.trim();
-          if (!/^\d{4}-\d{2}-\d{2}$/.test(val) || isNaN(new Date(val+'T00:00:00').getTime())) {
-            showToast('Invalid date', 'error'); return;
-          }
-          state.settings.targetDate = val; saveState();
-          showToast('Target updated', 'success'); renderCurrentTab();
-        });
-
-        const addBtn = document.getElementById('addBoosterBtn');
-        if (addBtn) addBtn.addEventListener('click', () => {
-          const amountInput = document.getElementById('boosterAmount');
-          const descInput = document.getElementById('boosterDesc');
-          const amount = parseFloat(amountInput.value);
-          if (!amount || amount <= 0) { showToast('Invalid amount', 'error'); return; }
-          const now = new Date();
-          state.boosters.push({
-            id: uid(), amount: Math.round(amount),
-            date: now.toISOString().slice(0,10), time: now.toTimeString().slice(0,5),
-            description: descInput.value.trim() || '', timestamp: nowISO()
-          });
-          saveState(); showToast(`+${formatINR(amount)}`, 'success'); renderCurrentTab();
-        });
-
-        document.querySelectorAll('.delete-booster').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const id = e.target.dataset.id;
-            showConfirm('Delete', 'Remove this entry?', () => {
-              state.boosters = state.boosters.filter(b => b.id !== id);
-              saveState(); renderCurrentTab();
-            });
-          });
-        });
-
-        document.querySelectorAll('.mark-paid').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const p = state.penalties.find(x => x.id === e.target.dataset.id);
-            if (p) { p.paid = true; p.paidDate = todayStr(); saveState(); renderCurrentTab(); }
-          });
-        });
-
-        const exportJson = document.getElementById('exportJson');
-        if (exportJson) exportJson.addEventListener('click', () => {
-          const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-          const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-          a.download = 'savings_backup.json'; a.click(); URL.revokeObjectURL(a.href);
-          showToast('Exported', 'success');
-        });
-        const exportCsv = document.getElementById('exportCsv');
-        if (exportCsv) exportCsv.addEventListener('click', () => {
-          let csv = 'Date,Type,Amount,Description\n';
-          state.boxes.filter(b=>b.completed&&b.timestamp).forEach(b => {
-            csv += `${b.timestamp.slice(0,10)},Matrix,${b.value},Box ₹${b.value}\n`;
-          });
-          state.boosters.forEach(b => { csv += `${b.date},Booster,${b.amount},${b.description||''}\n`; });
-          state.penalties.forEach(p => { csv += `${p.date},Penalty,${p.amount},${p.paid?'Paid':'Unpaid'}\n`; });
-          const blob = new Blob([csv], { type: 'text/csv' });
-          const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-          a.download = 'savings_export.csv'; a.click(); URL.revokeObjectURL(a.href);
-          showToast('Exported', 'success');
-        });
-
-        const saveBtn = document.getElementById('saveSettingsBtn');
-        if (saveBtn) saveBtn.addEventListener('click', () => {
-          const sp = parseInt(document.getElementById('settingStartPenalty').value, 10);
-          const pi = parseInt(document.getElementById('settingPenaltyIncrement').value, 10);
-          const dp = parseInt(document.getElementById('settingDailyPace').value, 10);
-          const sd = document.getElementById('settingStartDate').value;
-          const td = document.getElementById('settingTargetDate').value;
-          if (sp > 0) state.settings.startPenalty = sp;
-          if (pi > 0) state.settings.penaltyIncrement = pi;
-          if (dp > 0) {
-            const todayBoxes = getTodayBoxesCompleted();
-            if (todayBoxes > dp) { showToast(`Can't be below ${todayBoxes}.`, 'error'); return; }
-            state.settings.dailyPace = dp;
-          }
-          if (sd) state.settings.challengeStart = sd;
-          if (td) {
-            if (!/^\d{4}-\d{2}-\d{2}$/.test(td)) { showToast('Invalid date', 'error'); return; }
-            state.settings.targetDate = td;
-          }
-          saveState(); showToast('Settings saved', 'success'); renderCurrentTab();
-        });
-
-        const changePwBtn = document.getElementById('changePasswordBtn');
-        if (changePwBtn) changePwBtn.addEventListener('click', changePasswordFlow);
-
-        const resetBtn = document.getElementById('resetChallengeBtn');
-        if (resetBtn) resetBtn.addEventListener('click', () => {
-          showConfirm('Reset Challenge', 'This erases ALL data. Sure?', () => {
-            localStorage.removeItem(STORAGE_KEY); location.reload();
-          });
-        });
-
-        const importBtn = document.getElementById('importDataBtn');
-        if (importBtn) importBtn.addEventListener('click', () => document.getElementById('importFile').click());
-        const importFile = document.getElementById('importFile');
-        if (importFile) importFile.addEventListener('change', (e) => {
-          const file = e.target.files[0]; if (!file) return;
-          const reader = new FileReader();
-          reader.onload = async (ev) => {
-            try {
-              const parsed = JSON.parse(ev.target.result);
-              if (parsed.version === 1 && Array.isArray(parsed.boxes) && parsed.boxes.length === TOTAL_BOXES) {
-                state = parsed;
-                state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
-                if (!state.settings.dailyPace) state.settings.dailyPace = 1;
-                if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
-                if (!Array.isArray(state.boosters)) state.boosters = [];
-                if (!Array.isArray(state.penalties)) state.penalties = [];
-                if (!Array.isArray(state.missedDates)) state.missedDates = [];
-                if (!state.settings.dashboardPasswordHash) {
-                  const legacyPlain = state.settings.dashboardPassword;
-                  state.settings.dashboardPasswordHash = await hashPassword(legacyPlain || DEFAULT_PASSWORD);
-                }
-                delete state.settings.dashboardPassword;
-                saveState(); showToast('Imported', 'success'); renderCurrentTab();
-              } else showToast('Invalid file', 'error');
-            } catch (err) { showToast('Invalid JSON', 'error'); }
-          };
-          reader.readAsText(file);
-        });
-      }
-
-      function setupNav() {
-        document.querySelectorAll('#mainNav button').forEach(btn => {
-          btn.addEventListener('click', () => {
-            document.querySelectorAll('#mainNav button').forEach(b => {
-              b.classList.remove('tab-active', 'text-emerald-400');
-              b.classList.add('text-zinc-400');
-            });
-            btn.classList.add('tab-active', 'text-emerald-400');
-            btn.classList.remove('text-zinc-400');
-            currentTab = btn.dataset.tab;
-            renderCurrentTab();
-          });
-        });
-      }
-
-      async function boot() {
-        await loadState();
-        reconcileMissedDays();
-        saveState();
-        setupNav();
-        renderCurrentTab();
-        setTimeout(checkPenaltyPopup, 800);
-      }
-
-      boot();
-    })();
-  </script>
+            delete state.settings.dashboardPassword;
+            saveState();
+            toast('Imported');
+            renderTab();
+          } else toast('Invalid file');
+        } catch (e) { toast('Invalid JSON'); }
+      };
+      r.readAsText(file);
+    };
+  }
+
+  function setupNav() {
+    document.querySelectorAll('#mainNav button').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTab = btn.dataset.tab;
+        renderTab();
+      };
+    });
+  }
+
+  async function boot() {
+    await loadState();
+    reconcileMissedDays();
+    saveState();
+    setupNav();
+    renderTab();
+    setTimeout(checkPenaltyPopup, 800);
+  }
+
+  boot();
+})();
+</script>
 </body>
 </html>
