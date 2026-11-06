@@ -7,9 +7,72 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Lakh Challenge">
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icon-192.png">
 <title>₹ Lakh Challenge</title>
+
+<!-- INLINE MANIFEST (No external file needed) -->
+<script>
+  const svgIcon = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+      <rect width="512" height="512" fill="#000000"/>
+      <text x="256" y="380" font-family="Arial, sans-serif" font-weight="900" font-size="380" fill="#ffffff" text-anchor="middle">₹</text>
+    </svg>
+  `)}`;
+
+  const manifest = {
+    name: "₹ Lakh Challenge",
+    short_name: "Lakh Challenge",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#000000",
+    theme_color: "#000000",
+    icons: [
+      {
+        src: svgIcon,
+        sizes: "any",
+        type: "image/svg+xml",
+        purpose: "any"
+      }
+    ]
+  };
+
+  const manifestString = JSON.stringify(manifest);
+  const manifestBlob = new Blob([manifestString], { type: 'application/json' });
+  const manifestURL = URL.createObjectURL(manifestBlob);
+  
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = manifestURL;
+  document.head.appendChild(link);
+
+  // Inline Apple Touch Icon
+  const appleLink = document.createElement('link');
+  appleLink.rel = 'apple-touch-icon';
+  appleLink.href = svgIcon;
+  document.head.appendChild(appleLink);
+
+  // Generate Service Worker on the fly
+  window.addEventListener('load', () => {
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        self.addEventListener('install', (e) => {
+          self.skipWaiting();
+        });
+        self.addEventListener('activate', (e) => {
+          self.clients.claim();
+        });
+        self.addEventListener('fetch', (e) => {
+          e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+        });
+      `;
+      const swBlob = new Blob([swCode], { type: 'application/javascript' });
+      const swURL = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swURL)
+        .then(reg => console.log('SW registered inline'))
+        .catch(err => console.log('SW failed', err));
+    }
+  });
+</script>
+
 <style>
   /* ============ THEME VARIABLES ============ */
   :root {
@@ -422,15 +485,6 @@
 <script>
 (function() {
   'use strict';
-
-  // ---- Service Worker Registration ----
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/sw.js')
-        .then(function(reg) { console.log('SW registered:', reg.scope); })
-        .catch(function(err) { console.log('SW failed:', err); });
-    });
-  }
 
   window.onerror = function(msg, src, line, col, err) {
     showFatal('Runtime error: ' + msg + '\n\nLine ' + line + ':' + col + '\n\n' + (err && err.stack ? err.stack : ''));
