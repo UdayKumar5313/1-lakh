@@ -1,243 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>₹1 LAKH CHALLENGE – MONO TRACKER</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { background: #000; color: #fff; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-      line-height: 1.5;
-      font-feature-settings: 'tnum';
-    }
-    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>₹1 Lakh Challenge</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #000; color: #fff; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  .mono { font-family: "SF Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 100px; }
 
-    /* Layout */
-    .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 100px; }
-    .stack > * + * { margin-top: 16px; }
-    .stack-sm > * + * { margin-top: 10px; }
-    .stack-lg > * + * { margin-top: 24px; }
+  .hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px; }
+  .hdr h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+  .hdr p { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #666; margin-top: 6px; font-weight: 500; }
+  .bal { text-align: right; }
+  .bal small { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #666; margin-bottom: 4px; font-weight: 500; }
+  .bal b { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
 
-    /* Header */
-    .hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 16px; }
-    .hdr h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
-    .hdr p { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #666; margin-top: 6px; font-weight: 500; }
-    .hdr .bal { text-align: right; }
-    .hdr .bal small { display: block; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #666; margin-bottom: 4px; font-weight: 500; }
-    .hdr .bal b { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav button {
+    flex-shrink: 0; background: transparent; border: 1px solid #222;
+    color: #888; font-size: 12px; font-weight: 600; padding: 8px 14px;
+    border-radius: 8px; cursor: pointer; font-family: inherit; white-space: nowrap;
+  }
+  .nav button:hover { color: #fff; border-color: #333; }
+  .nav button.active { background: #fff; color: #000; border-color: #fff; }
 
-    /* Nav */
-    .nav { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; scrollbar-width: none; }
-    .nav::-webkit-scrollbar { display: none; }
-    .nav button {
-      flex-shrink: 0; background: transparent; border: 1px solid #222;
-      color: #888; font-size: 12px; font-weight: 600; padding: 8px 14px;
-      border-radius: 8px; cursor: pointer; transition: all 0.15s;
-      font-family: inherit; white-space: nowrap;
-    }
-    .nav button:hover { color: #fff; border-color: #333; }
-    .nav button.active { background: #fff; color: #000; border-color: #fff; }
+  .card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 14px; padding: 20px; }
+  .card-tight { padding: 14px; }
+  .stack > * + * { margin-top: 16px; }
+  .stack-sm > * + * { margin-top: 10px; }
+  .stack-lg > * + * { margin-top: 24px; }
 
-    /* Cards */
-    .card {
-      background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 14px; padding: 20px;
-    }
-    .card-tight { padding: 14px; }
-    .card-tighter { padding: 12px; }
+  .label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #666; font-weight: 600; }
+  .label-lg { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; font-weight: 600; }
+  .big { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  .big-lg { font-size: 40px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+  .h2 { font-size: 16px; font-weight: 700; }
+  .muted { color: #666; }
+  .dim { color: #888; }
 
-    /* Typography helpers */
-    .label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #666; font-weight: 600; }
-    .label-lg { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #888; font-weight: 600; }
-    .big { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
-    .big-lg { font-size: 40px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
-    .h2 { font-size: 16px; font-weight: 700; letter-spacing: -0.01em; }
-    .muted { color: #666; }
-    .dim { color: #888; }
+  .div { height: 1px; background: #1a1a1a; margin: 14px 0; }
 
-    /* Divider */
-    .div { height: 1px; background: #1a1a1a; margin: 14px 0; }
+  .bar { height: 6px; background: #1a1a1a; border-radius: 3px; overflow: hidden; }
+  .bar > div { height: 100%; background: #fff; border-radius: 3px; transition: width 0.4s ease; }
 
-    /* Progress bar */
-    .bar { height: 6px; background: #1a1a1a; border-radius: 3px; overflow: hidden; }
-    .bar > div { height: 100%; background: #fff; border-radius: 3px; transition: width 0.4s ease; }
+  .row { display: flex; gap: 10px; }
+  .row-b { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  @media (max-width: 480px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
 
-    /* Grid utilities */
-    .row { display: flex; gap: 10px; }
-    .row-b { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    @media (max-width: 480px) {
-      .grid-3 { grid-template-columns: repeat(3, 1fr); }
-      .grid-4 { grid-template-columns: repeat(2, 1fr); }
-    }
+  .stat { background: #000; border: 1px solid #1a1a1a; border-radius: 10px; padding: 12px; }
+  .stat .label { display: block; margin-bottom: 6px; }
+  .stat b { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
 
-    /* Stat tiles */
-    .stat { background: #000; border: 1px solid #1a1a1a; border-radius: 10px; padding: 12px; }
-    .stat .label { display: block; margin-bottom: 6px; }
-    .stat b { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+  .m-grid { display: grid; grid-template-columns: repeat(15, 1fr); gap: 3px; }
+  .m-box {
+    aspect-ratio: 1; border-radius: 3px; background: #111; border: 1px solid #1f1f1f;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 600; color: #555; cursor: pointer;
+    user-select: none; -webkit-tap-highlight-color: transparent;
+    font-family: "SF Mono", Menlo, Consolas, monospace; line-height: 1; overflow: hidden;
+  }
+  @media (min-width: 480px) { .m-box { font-size: 10px; border-radius: 4px; } }
+  .m-box:active { transform: scale(0.92); }
+  .m-box.done { background: #fff; border-color: #fff; color: #000; font-weight: 700; }
 
-    /* Matrix grid */
-    .m-grid {
-      display: grid;
-      grid-template-columns: repeat(15, 1fr);
-      gap: 3px;
-    }
-    .m-box {
-      aspect-ratio: 1;
-      border-radius: 3px;
-      background: #111;
-      border: 1px solid #1f1f1f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: 600;
-      color: #555;
-      cursor: pointer;
-      transition: all 0.15s;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-      font-family: 'JetBrains Mono', monospace;
-      line-height: 1;
-      padding: 0;
-      overflow: hidden;
-    }
-    @media (min-width: 480px) {
-      .m-box { font-size: 10px; border-radius: 4px; }
-    }
-    .m-box:active { transform: scale(0.92); }
-    .m-box.done {
-      background: #fff;
-      border-color: #fff;
-      color: #000;
-      font-weight: 700;
-    }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    border: none; border-radius: 10px; font-family: inherit;
+    font-weight: 600; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: #fff; color: #000; padding: 14px 20px; font-size: 14px; width: 100%; }
+  .btn-primary:hover { background: #e5e5e5; }
+  .btn-secondary { background: transparent; color: #fff; border: 1px solid #333; padding: 10px 16px; font-size: 13px; }
+  .btn-secondary:hover { border-color: #555; }
+  .btn-ghost { background: transparent; color: #888; border: 1px solid #1a1a1a; padding: 8px 14px; font-size: 12px; }
+  .btn-ghost:hover { color: #fff; border-color: #333; }
+  .btn-danger { background: transparent; color: #fff; border: 1px solid #333; padding: 10px 16px; font-size: 13px; }
+  .btn-danger:hover { background: #1a1a1a; }
+  .btn-sm { padding: 6px 12px; font-size: 11px; }
 
-    /* Buttons */
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      border: none; border-radius: 10px; font-family: inherit;
-      font-weight: 600; cursor: pointer; transition: all 0.15s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn-primary {
-      background: #fff; color: #000; padding: 14px 20px; font-size: 14px; width: 100%;
-    }
-    .btn-primary:hover { background: #e5e5e5; }
-    .btn-secondary {
-      background: transparent; color: #fff; border: 1px solid #333;
-      padding: 10px 16px; font-size: 13px;
-    }
-    .btn-secondary:hover { border-color: #555; }
-    .btn-ghost {
-      background: transparent; color: #888; border: 1px solid #1a1a1a;
-      padding: 8px 14px; font-size: 12px;
-    }
-    .btn-ghost:hover { color: #fff; border-color: #333; }
-    .btn-danger {
-      background: transparent; color: #fff; border: 1px solid #333;
-      padding: 10px 16px; font-size: 13px;
-    }
-    .btn-danger:hover { background: #1a1a1a; }
-    .btn-sm { padding: 6px 12px; font-size: 11px; }
+  .inp {
+    background: #000; border: 1px solid #222; color: #fff; padding: 10px 12px;
+    border-radius: 10px; font-family: inherit; font-size: 14px; width: 100%;
+    outline: none;
+  }
+  .inp:focus { border-color: #666; }
+  .inp::placeholder { color: #444; }
+  select.inp { cursor: pointer; }
+  input[type="date"].inp { color-scheme: dark; }
+  input[type="number"].inp { font-family: "SF Mono", Menlo, Consolas, monospace; }
 
-    /* Inputs */
-    .inp {
-      background: #000; border: 1px solid #222; color: #fff;
-      padding: 10px 12px; border-radius: 10px; font-family: inherit;
-      font-size: 14px; width: 100%; outline: none; transition: border 0.15s;
-    }
-    .inp:focus { border-color: #666; }
-    .inp::placeholder { color: #444; }
-    select.inp { appearance: none; cursor: pointer; }
-    input[type="date"].inp { color-scheme: dark; }
-    input[type="number"].inp { font-family: 'JetBrains Mono', monospace; }
+  .pill-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill { background: transparent; border: 1px solid #222; color: #888; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .pill:hover { color: #fff; border-color: #444; }
+  .pill.active { background: #fff; color: #000; border-color: #fff; }
 
-    /* Select pills */
-    .pill-row { display: flex; gap: 6px; flex-wrap: wrap; }
-    .pill {
-      background: transparent; border: 1px solid #222; color: #888;
-      padding: 7px 14px; border-radius: 8px; font-size: 12px;
-      font-weight: 600; cursor: pointer; transition: all 0.15s;
-      font-family: inherit;
-    }
-    .pill:hover { color: #fff; border-color: #444; }
-    .pill.active { background: #fff; color: #000; border-color: #fff; }
+  .list-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #151515; gap: 12px; }
+  .list-row:last-child { border-bottom: none; }
 
-    /* List rows */
-    .list-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 0; border-bottom: 1px solid #151515; gap: 12px;
-    }
-    .list-row:last-child { border-bottom: none; }
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; border-radius: 6px; background: #0f0f0f; color: #444; font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .cal-day.done { background: #fff; color: #000; }
+  .cal-day.missed { background: #1a1a1a; color: #666; }
+  .cal-day.today { outline: 1px solid #fff; outline-offset: -1px; }
 
-    /* Calendar */
-    .cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-    .cal-day {
-      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 600; border-radius: 6px;
-      background: #0f0f0f; color: #444; font-family: 'JetBrains Mono', monospace;
-    }
-    .cal-day.done { background: #fff; color: #000; }
-    .cal-day.missed { background: #1a1a1a; color: #666; }
-    .cal-day.today { outline: 1px solid #fff; outline-offset: -1px; }
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
+  .modal-bg.show { display: flex; }
+  .modal { background: #0a0a0a; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 400px; padding: 24px; }
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .modal p { color: #888; font-size: 14px; line-height: 1.5; }
 
-    /* Modal */
-    .modal-bg {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-      display: none; align-items: center; justify-content: center;
-      padding: 16px; z-index: 100;
-    }
-    .modal-bg.show { display: flex; }
-    .modal {
-      background: #0a0a0a; border: 1px solid #222; border-radius: 16px;
-      width: 100%; max-width: 400px; padding: 24px;
-    }
-    .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-    .modal p { color: #888; font-size: 14px; line-height: 1.5; }
+  #toasts { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 200; width: 100%; max-width: 360px; padding: 0 16px; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .toast { background: #fff; color: #000; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
 
-    /* Toast */
-    #toasts {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      z-index: 200; width: 100%; max-width: 360px; padding: 0 16px;
-      display: flex; flex-direction: column; gap: 8px; pointer-events: none;
-    }
-    .toast {
-      background: #fff; color: #000; padding: 12px 16px; border-radius: 10px;
-      font-size: 13px; font-weight: 600; text-align: center;
-      animation: slideUp 0.2s ease-out;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+  .empty { text-align: center; padding: 32px 16px; color: #555; font-size: 13px; }
+  .badge { display: inline-flex; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; border: 1px solid #222; color: #888; }
+  .badge-fill { background: #fff; color: #000; border-color: #fff; }
 
-    /* Empty state */
-    .empty { text-align: center; padding: 32px 16px; color: #555; font-size: 13px; }
-
-    /* Badge */
-    .badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 8px; border-radius: 6px; font-size: 10px;
-      font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
-      border: 1px solid #222; color: #888;
-    }
-    .badge-fill { background: #fff; color: #000; border-color: #fff; }
-    .badge-muted { color: #555; }
-  </style>
+  .error-screen {
+    position: fixed; inset: 0; background: #000; color: #fff; padding: 24px;
+    font-family: monospace; font-size: 13px; z-index: 9999; overflow: auto;
+    line-height: 1.6; white-space: pre-wrap;
+  }
+  .error-screen h2 { color: #fff; font-size: 16px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #333; }
+</style>
 </head>
 <body>
 
-<div class="wrap">
+<div class="error-screen" id="fatalError" style="display:none;">
+  <h2>⚠️ Startup Error</h2>
+  <div id="fatalErrorMsg"></div>
+</div>
+
+<div class="wrap" id="mainApp">
   <header class="hdr">
     <div>
       <h1>₹1 LAKH<br>CHALLENGE</h1>
@@ -261,36 +169,33 @@
     <button data-tab="settings">Settings</button>
   </nav>
 
-  <main id="tabContent"></main>
+  <main id="tabContent"><div class="empty">Loading…</div></main>
 </div>
 
-<!-- Modal: Penalty -->
 <div id="penaltyModal" class="modal-bg">
   <div class="modal">
     <h3>Missed Streak</h3>
     <p id="penaltyModalText" style="margin-bottom:20px;"></p>
-    <div class="row" style="margin-top:20px;">
+    <div class="row">
       <button id="penaltyPayBtn" class="btn btn-primary" style="flex:1;">Mark Paid</button>
       <button id="penaltyLaterBtn" class="btn btn-secondary" style="flex:1;">Later</button>
     </div>
   </div>
 </div>
 
-<!-- Modal: Password -->
 <div id="passwordModal" class="modal-bg">
   <div class="modal">
     <h3>Unlock Details</h3>
     <p style="margin-bottom:16px;">Enter password to view financial details.</p>
     <input id="passwordInput" type="password" class="inp" placeholder="Password" autocomplete="off" style="margin-bottom:8px;">
     <p id="passwordError" style="display:none; color:#fff; font-size:12px; margin-bottom:12px;">Incorrect password</p>
-    <div class="row" style="margin-top:12px;">
+    <div class="row">
       <button id="passwordSubmit" class="btn btn-primary" style="flex:1;">Unlock</button>
       <button id="passwordCancel" class="btn btn-secondary" style="flex:1;">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- Modal: Confirm -->
 <div id="confirmModal" class="modal-bg">
   <div class="modal">
     <h3 id="confirmTitle">Confirm</h3>
@@ -308,6 +213,22 @@
 (function() {
   'use strict';
 
+  // ============ GLOBAL ERROR CATCH ============
+  window.onerror = function(msg, src, line, col, err) {
+    showFatal('Runtime error: ' + msg + '\n\nLine ' + line + ':' + col + '\n\n' + (err && err.stack ? err.stack : ''));
+    return false;
+  };
+  function showFatal(msg) {
+    try {
+      document.getElementById('fatalErrorMsg').textContent = msg;
+      document.getElementById('fatalError').style.display = 'block';
+      document.getElementById('mainApp').style.display = 'none';
+    } catch (e) {
+      document.body.innerHTML = '<pre style="color:#fff; background:#000; padding:20px;">' + msg + '</pre>';
+    }
+  }
+
+  // ============ CONFIG ============
   const DENOMS = [
     { value: 100, count: 20 },
     { value: 200, count: 40 },
@@ -315,169 +236,231 @@
   ];
   const TOTAL_BOXES = 240;
   const TOTAL_TARGET = 100000;
-  const STORAGE_KEY = 'saveChallenge_mono_v1';
+  const STORAGE_KEY = 'savings_mono_v2';
   const DEFAULT_PASSWORD = '1234';
 
-  // ---- Hash (timeout-safe) ----
-  async function hashPassword(pw) {
-    const data = new TextEncoder().encode(pw);
-    if (window.crypto && window.crypto.subtle && typeof window.crypto.subtle.digest === 'function') {
-      try {
-        const subtle = crypto.subtle.digest('SHA-256', data);
-        const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1500));
-        const buf = await Promise.race([subtle, timeout]);
-        return 'sha256:' + Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-      } catch (e) { console.warn('subtle fallback:', e.message); }
-    }
-    let h1 = 0x811c9dc5 >>> 0, h2 = (0x811c9dc5 ^ 0x5bd1e995) >>> 0;
-    for (let i = 0; i < data.length; i++) {
-      h1 ^= data[i]; h1 = Math.imul(h1, 0x01000193) >>> 0;
-      h2 ^= data[i]; h2 = Math.imul(h2, 0x01000193) >>> 0;
+  // ============ SIMPLE SYNC HASH (no crypto.subtle, no async) ============
+  // Deterministic, non-cryptographic hash — sufficient for a local personal app.
+  function hashStr(s) {
+    let h1 = 0x811c9dc5 >>> 0;
+    let h2 = 0xdeadbeef >>> 0;
+    for (let i = 0; i < s.length; i++) {
+      const c = s.charCodeAt(i);
+      h1 ^= c; h1 = Math.imul(h1, 0x01000193) >>> 0;
+      h2 ^= c; h2 = Math.imul(h2, 0x85ebca6b) >>> 0;
       h2 = ((h2 << 13) | (h2 >>> 19)) >>> 0;
     }
-    return 'fnv:' + h1.toString(16).padStart(8,'0') + h2.toString(16).padStart(8,'0');
+    return h1.toString(16).padStart(8,'0') + h2.toString(16).padStart(8,'0');
   }
 
+  // ============ SAFE STORAGE ============
+  let storageOK = true;
+  function storageGet(k) {
+    try { return localStorage.getItem(k); } catch (e) { storageOK = false; return null; }
+  }
+  function storageSet(k, v) {
+    try { localStorage.setItem(k, v); } catch (e) { storageOK = false; }
+  }
+  function storageRemove(k) {
+    try { localStorage.removeItem(k); } catch (e) {}
+  }
+
+  // ============ HELPERS ============
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function nowISO() { return new Date().toISOString(); }
+  function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function addDays(ds, n) {
+    const parts = ds.split('-');
+    const d = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    d.setDate(d.getDate() + n);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function daysBetween(a, b) {
+    const p1 = a.split('-'), p2 = b.split('-');
+    const d1 = new Date(+p1[0], +p1[1]-1, +p1[2]);
+    const d2 = new Date(+p2[0], +p2[1]-1, +p2[2]);
+    return Math.round((d2 - d1) / 86400000);
+  }
+  function validDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
+
+  // ============ STATE ============
   const DEFAULT_SETTINGS = {
     startPenalty: 50,
     penaltyIncrement: 50,
     dailyPace: 1,
-    challengeStart: new Date().toISOString().slice(0,10),
-    targetDate: (() => { const d = new Date(); d.setDate(d.getDate() + 240); return d.toISOString().slice(0,10); })(),
-    dashboardPasswordHash: null
+    challengeStart: todayStr(),
+    targetDate: addDays(todayStr(), 240),
+    passwordHash: hashStr(DEFAULT_PASSWORD)
   };
-
-  let finUnlocked = false;
-  let activePeriod = 'today';
-  let currentTab = 'dashboard';
-  let confirmCallback = null;
 
   let state = {
-    version: 1,
+    version: 2,
     boxes: [], boosters: [], penalties: [], missedDates: [],
-    settings: { ...DEFAULT_SETTINGS },
+    settings: Object.assign({}, DEFAULT_SETTINGS),
     lastPenaltyPopupDate: null
   };
-
-  // ---- Helpers ----
-  const todayStr = () => new Date().toISOString().slice(0,10);
-  const nowISO = () => new Date().toISOString();
-  const fmt = n => '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 });
-  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-  function addDays(ds, n) {
-    const d = new Date(ds + 'T00:00:00');
-    if (isNaN(d)) return 'Invalid';
-    d.setDate(d.getDate() + n);
-    if (isNaN(d)) return 'Invalid';
-    return d.toISOString().slice(0,10);
-  }
-  function daysBetween(a, b) {
-    const d1 = new Date(a + 'T00:00:00'), d2 = new Date(b + 'T00:00:00');
-    if (isNaN(d1) || isNaN(d2)) return 0;
-    return Math.round((d2 - d1) / 86400000);
-  }
-  const validDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(new Date(s + 'T00:00:00'));
 
   function initBoxes() {
     const arr = [];
     let id = 0;
-    DENOMS.forEach(d => {
-      for (let i = 0; i < d.count; i++) arr.push({ id: id++, value: d.value, completed: false, timestamp: null });
-    });
+    for (let d = 0; d < DENOMS.length; d++) {
+      for (let i = 0; i < DENOMS[d].count; i++) {
+        arr.push({ id: id++, value: DENOMS[d].value, completed: false, timestamp: null });
+      }
+    }
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
     }
     return arr;
   }
 
-  // ---- Load/Save ----
-  async function loadState() {
+  function loadState() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = storageGet(STORAGE_KEY);
       if (raw) {
         const p = JSON.parse(raw);
-        if (p && p.version === 1 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
+        if (p && p.version === 2 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
           state = p;
-          state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
-          if (!state.settings.dailyPace) state.settings.dailyPace = 1;
-          if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
-          ['boosters','penalties','missedDates'].forEach(k => { if (!Array.isArray(state[k])) state[k] = []; });
-          if (state.settings.dashboardPassword && !state.settings.dashboardPasswordHash) {
-            state.settings.dashboardPasswordHash = await hashPassword(state.settings.dashboardPassword);
-            delete state.settings.dashboardPassword;
-            saveState();
-          }
-          delete state.settings.dashboardPassword;
+          state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings || {});
+          if (!state.settings.passwordHash) state.settings.passwordHash = hashStr(DEFAULT_PASSWORD);
+          if (!Array.isArray(state.boosters)) state.boosters = [];
+          if (!Array.isArray(state.penalties)) state.penalties = [];
+          if (!Array.isArray(state.missedDates)) state.missedDates = [];
           return;
         }
       }
-    } catch (e) { console.warn('load:', e); }
+    } catch (e) {
+      console.warn('Load failed:', e);
+    }
     state.boxes = initBoxes();
-    state.boosters = []; state.penalties = []; state.missedDates = [];
-    state.settings = { ...DEFAULT_SETTINGS };
-    state.settings.dashboardPasswordHash = await hashPassword(DEFAULT_PASSWORD);
+    state.boosters = [];
+    state.penalties = [];
+    state.missedDates = [];
+    state.settings = Object.assign({}, DEFAULT_SETTINGS);
+    state.lastPenaltyPopupDate = null;
     saveState();
   }
+
   function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    try {
+      storageSet(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { console.warn('Save failed:', e); }
   }
 
   function reconcileMissedDays() {
-    const start = state.settings.challengeStart, today = todayStr();
-    if (!validDate(start) || start > today) return;
+    const start = state.settings.challengeStart;
+    const today = todayStr();
+    if (!validDate(start) || start >= today) return;
     const missed = [];
-    let d = start, guard = 0;
-    while (d < today) {
-      if (++guard > 5000) break;
-      if (!state.boxes.some(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === d)) missed.push(d);
-      d = addDays(d, 1);
-      if (!validDate(d)) break;
-    }
-    const existing = new Set(state.penalties.map(p => p.date));
-    const added = [];
-    missed.forEach(md => {
-      if (!existing.has(md)) {
-        let cons = 0, chk = md, g = 0;
-        while (missed.includes(chk) && ++g < 5000) { cons++; chk = addDays(chk, -1); if (!validDate(chk)) break; }
-        added.push({ id: uid(), date: md, amount: state.settings.startPenalty + (cons - 1) * state.settings.penaltyIncrement, paid: false, paidDate: null, timestamp: nowISO() });
+    let d = start;
+    let guard = 0;
+    while (d < today && guard++ < 5000) {
+      let found = false;
+      for (let i = 0; i < state.boxes.length; i++) {
+        const b = state.boxes[i];
+        if (b.completed && b.timestamp && b.timestamp.slice(0,10) === d) { found = true; break; }
       }
-    });
-    if (added.length) state.penalties.push(...added);
+      if (!found) missed.push(d);
+      const next = addDays(d, 1);
+      if (next === d) break;
+      d = next;
+    }
+    const existing = {};
+    for (let i = 0; i < state.penalties.length; i++) existing[state.penalties[i].date] = true;
+    for (let i = 0; i < missed.length; i++) {
+      const md = missed[i];
+      if (!existing[md]) {
+        let cons = 0, chk = md, g = 0;
+        while (missed.indexOf(chk) !== -1 && g++ < 5000) {
+          cons++;
+          chk = addDays(chk, -1);
+          if (!validDate(chk)) break;
+        }
+        const amount = state.settings.startPenalty + (cons - 1) * state.settings.penaltyIncrement;
+        state.penalties.push({
+          id: uid(), date: md, amount: amount, paid: false, paidDate: null, timestamp: nowISO()
+        });
+      }
+    }
     state.missedDates = missed;
     saveState();
   }
 
-  // ---- Getters ----
-  const matrixSaved = () => state.boxes.filter(b => b.completed).reduce((s,b) => s + b.value, 0);
-  const matrixDone = () => state.boxes.filter(b => b.completed).length;
-  const boostersTotal = () => state.boosters.reduce((s,b) => s + b.amount, 0);
-  const penaltiesGen = () => state.penalties.reduce((s,p) => s + p.amount, 0);
-  const penaltiesPaid = () => state.penalties.filter(p => p.paid).reduce((s,p) => s + p.amount, 0);
-  const outstanding = () => penaltiesGen() - penaltiesPaid();
-  const todayDone = () => {
+  // ============ GETTERS ============
+  function matrixSaved() {
+    let s = 0;
+    for (let i = 0; i < state.boxes.length; i++) if (state.boxes[i].completed) s += state.boxes[i].value;
+    return s;
+  }
+  function matrixDone() {
+    let c = 0;
+    for (let i = 0; i < state.boxes.length; i++) if (state.boxes[i].completed) c++;
+    return c;
+  }
+  function boostersTotal() {
+    let s = 0;
+    for (let i = 0; i < state.boosters.length; i++) s += state.boosters[i].amount;
+    return s;
+  }
+  function penaltiesGen() {
+    let s = 0;
+    for (let i = 0; i < state.penalties.length; i++) s += state.penalties[i].amount;
+    return s;
+  }
+  function penaltiesPaid() {
+    let s = 0;
+    for (let i = 0; i < state.penalties.length; i++) if (state.penalties[i].paid) s += state.penalties[i].amount;
+    return s;
+  }
+  function outstanding() { return penaltiesGen() - penaltiesPaid(); }
+  function todayDone() {
     const t = todayStr();
-    return state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === t).length;
-  };
-  const pace = () => state.settings.dailyPace || 1;
-  const nextBox = () => state.boxes.find(b => !b.completed) || null;
-  const completedList = () => state.boxes.filter(b => b.completed && b.timestamp).sort((a,b) => a.timestamp.localeCompare(b.timestamp));
-
+    let c = 0;
+    for (let i = 0; i < state.boxes.length; i++) {
+      const b = state.boxes[i];
+      if (b.completed && b.timestamp && b.timestamp.slice(0,10) === t) c++;
+    }
+    return c;
+  }
+  function getPace() { return state.settings.dailyPace || 1; }
+  function nextBox() {
+    for (let i = 0; i < state.boxes.length; i++) if (!state.boxes[i].completed) return state.boxes[i];
+    return null;
+  }
+  function completedList() {
+    const out = [];
+    for (let i = 0; i < state.boxes.length; i++) {
+      const b = state.boxes[i];
+      if (b.completed && b.timestamp) out.push(b);
+    }
+    out.sort(function(a, b) { return a.timestamp < b.timestamp ? -1 : 1; });
+    return out;
+  }
   function getStreak() {
-    const dates = new Set(state.boxes.filter(b => b.completed && b.timestamp).map(b => b.timestamp.slice(0,10)));
-    const sorted = Array.from(dates).sort();
+    const dates = {};
+    for (let i = 0; i < state.boxes.length; i++) {
+      const b = state.boxes[i];
+      if (b.completed && b.timestamp) dates[b.timestamp.slice(0,10)] = true;
+    }
+    const sorted = Object.keys(dates).sort();
     let cur = 0, best = 0, run = 0, prev = null;
-    let chk = dates.has(todayStr()) ? todayStr() : addDays(todayStr(), -1);
-    while (dates.has(chk)) { cur++; chk = addDays(chk, -1); if (!validDate(chk)) break; }
-    sorted.forEach(d => {
+    let chk = dates[todayStr()] ? todayStr() : addDays(todayStr(), -1);
+    let g = 0;
+    while (dates[chk] && g++ < 5000) { cur++; chk = addDays(chk, -1); if (!validDate(chk)) break; }
+    for (let i = 0; i < sorted.length; i++) {
+      const d = sorted[i];
       if (prev) run = (daysBetween(prev, d) === 1) ? run + 1 : 1;
       else run = 1;
       if (run > best) best = run;
       prev = d;
-    });
-    return { current: cur, best, total: dates.size, dates: sorted };
+    }
+    return { current: cur, best: best, total: sorted.length, dates: sorted };
   }
-
   function getCountdown() {
     const today = todayStr();
     const target = validDate(state.settings.targetDate) ? state.settings.targetDate : DEFAULT_SETTINGS.targetDate;
@@ -498,328 +481,203 @@
     else if (delta <= -5) status = 'behind';
     const reqSavings = (daysLeft > 0 && remAmount > 0) ? Math.ceil(remAmount / daysLeft) : 0;
     let projected = null;
-    if (remBoxes > 0 && pace() > 0) projected = addDays(today, Math.ceil(remBoxes / pace()));
+    if (remBoxes > 0 && getPace() > 0) projected = addDays(today, Math.ceil(remBoxes / getPace()));
     else if (remBoxes === 0) projected = today;
-    return { daysLeft, target, remBoxes, remAmount, reqPace, reqSavings, delta, status, projected };
+    return { daysLeft: daysLeft, target: target, remBoxes: remBoxes, remAmount: remAmount, reqPace: reqPace, reqSavings: reqSavings, delta: delta, status: status, projected: projected };
   }
-
   function periodRange(p) {
     const t = todayStr();
     if (p === 'today') return { from: t, to: t };
     if (p === 'week') {
-      const d = new Date(), day = d.getDay();
-      const s = new Date(d); s.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
-      return { from: s.toISOString().slice(0,10), to: t };
+      const now = new Date();
+      const day = now.getDay();
+      const diff = day === 0 ? -6 : 1 - day;
+      const s = new Date(now);
+      s.setDate(now.getDate() + diff);
+      return { from: s.getFullYear() + '-' + String(s.getMonth()+1).padStart(2,'0') + '-' + String(s.getDate()).padStart(2,'0'), to: t };
     }
     if (p === 'month') {
-      const s = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-      return { from: s.toISOString().slice(0,10), to: t };
+      const now = new Date();
+      return { from: now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-01', to: t };
     }
     return { from: state.settings.challengeStart || t, to: t };
   }
-
   function breakdown(from, to) {
     let matrix = 0, mB = 0, boost = 0, bC = 0, pPaid = 0, pPaidC = 0, pGen = 0, pGenC = 0;
-    state.boxes.forEach(b => {
+    for (let i = 0; i < state.boxes.length; i++) {
+      const b = state.boxes[i];
       if (b.completed && b.timestamp) {
         const d = b.timestamp.slice(0,10);
         if (d >= from && d <= to) { matrix += b.value; mB++; }
       }
-    });
-    state.boosters.forEach(b => { if (b.date >= from && b.date <= to) { boost += b.amount; bC++; } });
-    state.penalties.forEach(p => {
+    }
+    for (let i = 0; i < state.boosters.length; i++) {
+      const b = state.boosters[i];
+      if (b.date >= from && b.date <= to) { boost += b.amount; bC++; }
+    }
+    for (let i = 0; i < state.penalties.length; i++) {
+      const p = state.penalties[i];
       if (p.date >= from && p.date <= to) { pGen += p.amount; pGenC++; }
       if (p.paid && p.paidDate && p.paidDate >= from && p.paidDate <= to) { pPaid += p.amount; pPaidC++; }
-    });
-    return { matrix, mB, boost, bC, pPaid, pPaidC, pGen, pGenC, total: matrix + boost + pPaid };
+    }
+    return { matrix: matrix, mB: mB, boost: boost, bC: bC, pPaid: pPaid, pPaidC: pPaidC, pGen: pGen, pGenC: pGenC, total: matrix + boost + pPaid };
   }
 
-  // ---- Toast ----
+  // ============ UI HELPERS ============
   function toast(msg) {
     const el = document.createElement('div');
     el.className = 'toast';
     el.textContent = msg;
     document.getElementById('toasts').appendChild(el);
-    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 2400);
+    setTimeout(function() { el.remove(); }, 2400);
   }
-
-  // ---- Confirm ----
+  let confirmCallback = null;
   function confirmBox(title, msg, onYes) {
     document.getElementById('confirmTitle').textContent = title;
     document.getElementById('confirmMessage').textContent = msg;
     document.getElementById('confirmModal').classList.add('show');
     confirmCallback = onYes;
-    document.getElementById('confirmYes').onclick = () => {
-      document.getElementById('confirmModal').classList.remove('show');
-      if (confirmCallback) confirmCallback();
-      confirmCallback = null;
-    };
-    document.getElementById('confirmNo').onclick = () => {
-      document.getElementById('confirmModal').classList.remove('show');
-      confirmCallback = null;
-    };
   }
 
-  // ---- Password modal ----
-  async function checkPw(entered) {
-    const h = state.settings.dashboardPasswordHash;
-    if (h) return (await hashPassword(entered)) === h;
-    if (state.settings.dashboardPassword) return entered === state.settings.dashboardPassword;
-    return entered === DEFAULT_PASSWORD;
-  }
-  async function setPw(pw) {
-    state.settings.dashboardPasswordHash = await hashPassword(pw);
-    delete state.settings.dashboardPassword;
-    saveState();
-  }
-  function passwordModal(onSuccess) {
-    const modal = document.getElementById('passwordModal');
-    const input = document.getElementById('passwordInput');
-    const err = document.getElementById('passwordError');
-    input.value = ''; err.style.display = 'none';
-    modal.classList.add('show');
-    setTimeout(() => input.focus(), 100);
-    const submit = async () => {
-      if (await checkPw(input.value)) {
-        if (!state.settings.dashboardPasswordHash && input.value) await setPw(input.value);
-        modal.classList.remove('show');
-        onSuccess && onSuccess();
-      } else {
-        err.style.display = 'block'; input.value = ''; input.focus();
-      }
-    };
-    document.getElementById('passwordSubmit').onclick = submit;
-    document.getElementById('passwordCancel').onclick = () => modal.classList.remove('show');
-    input.onkeydown = e => { if (e.key === 'Enter') submit(); else if (e.key === 'Escape') modal.classList.remove('show'); };
-  }
-
-  // ---- Penalty popup ----
-  function checkPenaltyPopup() {
-    const t = todayStr();
-    if (state.lastPenaltyPopupDate === t) return;
-    const unpaid = state.penalties.filter(p => !p.paid);
-    if (!unpaid.length) return;
-    const latest = unpaid[unpaid.length - 1];
-    document.getElementById('penaltyModalText').innerHTML =
-      `You missed <b>${latest.date}</b>. Penalty: <b>${fmt(latest.amount)}</b>.`;
-    document.getElementById('penaltyModal').classList.add('show');
-    state.lastPenaltyPopupDate = t;
-    saveState();
-    document.getElementById('penaltyPayBtn').onclick = () => {
-      latest.paid = true; latest.paidDate = t; saveState();
-      document.getElementById('penaltyModal').classList.remove('show');
-      toast('Penalty paid: ' + fmt(latest.amount));
-      renderTab();
-    };
-    document.getElementById('penaltyLaterBtn').onclick = () => {
-      document.getElementById('penaltyModal').classList.remove('show');
-    };
-  }
-
-  // ============ RENDER ============
+  // ============ RENDER: DASHBOARD ============
   function renderDashboard() {
     const m = matrixSaved();
     const pct = (m / TOTAL_TARGET * 100);
     const done = matrixDone();
     const rem = TOTAL_BOXES - done;
     const tDone = todayDone();
-    const p = pace();
+    const p = getPace();
     const st = getStreak();
     const c = getCountdown();
-    const statusText = c.status === 'behind' ? `${Math.abs(c.delta)} boxes behind` :
-                       c.status === 'ahead' ? `${c.delta} boxes ahead` :
+    const statusText = c.status === 'behind' ? Math.abs(c.delta) + ' boxes behind' :
+                       c.status === 'ahead' ? c.delta + ' boxes ahead' :
                        c.status === 'overdue' ? 'Overdue' : 'On track';
 
-    return `
-    <div class="stack-lg">
-      <div class="card">
-        <div class="row-b" style="margin-bottom:14px;">
-          <div>
-            <div class="label">Progress</div>
-            <div class="big mono" style="margin-top:6px;">${fmt(m)}</div>
-          </div>
-          <div style="text-align:right;">
-            <div class="label">of</div>
-            <div class="h2 mono" style="margin-top:6px; color:#888;">${fmt(TOTAL_TARGET)}</div>
-          </div>
-        </div>
-        <div class="bar"><div style="width:${pct}%"></div></div>
-        <div class="row-b" style="margin-top:12px;">
-          <span class="label">${done} / ${TOTAL_BOXES}</span>
-          <span class="label">${pct.toFixed(1)}%</span>
-        </div>
-        <div class="div"></div>
-        <div class="row-b">
-          <span class="dim" style="font-size:13px;">Today</span>
-          <span class="mono" style="font-weight:700; font-size:14px;">${tDone} / ${p}</span>
-        </div>
-      </div>
+    let html = '<div class="stack-lg">';
 
-      <div class="card">
-        <div class="row-b" style="margin-bottom:14px;">
-          <div class="label-lg">Countdown</div>
-          <span class="badge ${c.status==='on-track' ? 'badge-fill' : ''}">${statusText}</span>
-        </div>
-        <div class="grid-3">
-          <div class="stat">
-            <span class="label">Days Left</span>
-            <b class="mono">${c.daysLeft < 0 ? Math.abs(c.daysLeft) + ' ⏰' : c.daysLeft}</b>
-          </div>
-          <div class="stat">
-            <span class="label">Boxes</span>
-            <b class="mono">${c.remBoxes}</b>
-          </div>
-          <div class="stat">
-            <span class="label">₹/Day</span>
-            <b class="mono">${fmt(c.reqSavings)}</b>
-          </div>
-        </div>
-        <div class="div"></div>
-        <div class="row-b">
-          <span class="dim" style="font-size:13px;">Required pace</span>
-          <span class="mono" style="font-size:13px; font-weight:600;">${c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)} /day</span>
-        </div>
-        <div class="row-b" style="margin-top:8px;">
-          <span class="dim" style="font-size:13px;">Target date</span>
-          <span class="mono" style="font-size:13px;">${c.target}</span>
-        </div>
-        ${c.projected && validDate(c.projected) ? `
-        <div class="row-b" style="margin-top:8px;">
-          <span class="dim" style="font-size:13px;">Projected finish</span>
-          <span class="mono" style="font-size:13px;">${c.projected}</span>
-        </div>` : ''}
-      </div>
+    // Progress card
+    html += '<div class="card">';
+    html += '<div class="row-b" style="margin-bottom:14px;">';
+    html += '<div><div class="label">Progress</div><div class="big mono" style="margin-top:6px;">' + fmt(m) + '</div></div>';
+    html += '<div style="text-align:right;"><div class="label">of</div><div class="h2 mono" style="margin-top:6px; color:#888;">' + fmt(TOTAL_TARGET) + '</div></div>';
+    html += '</div>';
+    html += '<div class="bar"><div style="width:' + pct + '%"></div></div>';
+    html += '<div class="row-b" style="margin-top:12px;"><span class="label">' + done + ' / ' + TOTAL_BOXES + '</span><span class="label">' + pct.toFixed(1) + '%</span></div>';
+    html += '<div class="div"></div>';
+    html += '<div class="row-b"><span class="dim" style="font-size:13px;">Today</span><span class="mono" style="font-weight:700; font-size:14px;">' + tDone + ' / ' + p + '</span></div>';
+    html += '</div>';
 
-      <div class="grid-2">
-        <div class="card card-tight">
-          <div class="label">Streak</div>
-          <div class="big" style="margin-top:8px;">${st.current}</div>
-          <div class="dim" style="font-size:12px; margin-top:4px;">Best ${st.best} · Total ${st.total}</div>
-        </div>
-        <div class="card card-tight">
-          <div class="label">Pace</div>
-          <select id="paceSelect" class="inp mono" style="margin-top:8px; padding:8px 10px;">
-            ${[1,2,3,5,10].map(n => `<option value="${n}" ${p===n?'selected':''}>${n} / day</option>`).join('')}
-          </select>
-          <div class="dim" style="font-size:12px; margin-top:6px;">~${Math.ceil(rem / p)} days to finish</div>
-        </div>
-      </div>
+    // Countdown card
+    html += '<div class="card">';
+    html += '<div class="row-b" style="margin-bottom:14px;"><div class="label-lg">Countdown</div><span class="badge ' + (c.status === 'on-track' ? 'badge-fill' : '') + '">' + statusText + '</span></div>';
+    html += '<div class="grid-3">';
+    html += '<div class="stat"><span class="label">Days Left</span><b class="mono">' + (c.daysLeft < 0 ? Math.abs(c.daysLeft) : c.daysLeft) + '</b></div>';
+    html += '<div class="stat"><span class="label">Boxes</span><b class="mono">' + c.remBoxes + '</b></div>';
+    html += '<div class="stat"><span class="label">₹/Day</span><b class="mono">' + fmt(c.reqSavings) + '</b></div>';
+    html += '</div>';
+    html += '<div class="div"></div>';
+    html += '<div class="row-b"><span class="dim" style="font-size:13px;">Required pace</span><span class="mono" style="font-size:13px; font-weight:600;">' + (c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)) + ' /day</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Target</span><span class="mono" style="font-size:13px;">' + c.target + '</span></div>';
+    if (c.projected && validDate(c.projected)) {
+      html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Projected</span><span class="mono" style="font-size:13px;">' + c.projected + '</span></div>';
+    }
+    html += '</div>';
 
-      ${renderFinancialPanel()}
-    </div>`;
+    // Streak + pace
+    html += '<div class="grid-2">';
+    html += '<div class="card card-tight"><div class="label">Streak</div><div class="big" style="margin-top:8px;">' + st.current + '</div><div class="dim" style="font-size:12px; margin-top:4px;">Best ' + st.best + ' · Total ' + st.total + '</div></div>';
+    html += '<div class="card card-tight"><div class="label">Pace</div><select id="paceSelect" class="inp mono" style="margin-top:8px; padding:8px 10px;">';
+    const paces = [1,2,3,5,10];
+    for (let i = 0; i < paces.length; i++) {
+      html += '<option value="' + paces[i] + '"' + (p === paces[i] ? ' selected' : '') + '>' + paces[i] + ' / day</option>';
+    }
+    html += '</select><div class="dim" style="font-size:12px; margin-top:6px;">~' + Math.ceil(rem / p) + ' days</div></div>';
+    html += '</div>';
+
+    // Financial panel
+    html += renderFinancialPanel();
+    html += '</div>';
+    return html;
   }
 
   function renderFinancialPanel() {
     if (!finUnlocked) {
-      return `
-      <div class="card">
-        <div class="row-b" style="margin-bottom:14px;">
-          <div class="label-lg">Detailed Collections</div>
-          <button id="unlockFinBtn" class="btn btn-ghost btn-sm">🔒 Unlock</button>
-        </div>
-        <div class="dim" style="font-size:13px;">Track every rupee across matrix, boosters, and penalties.</div>
-        <div class="grid-3" style="margin-top:16px; opacity:0.3;">
-          <div class="stat"><span class="label">Today</span><b class="mono">₹•••</b></div>
-          <div class="stat"><span class="label">Week</span><b class="mono">₹•••</b></div>
-          <div class="stat"><span class="label">Month</span><b class="mono">₹•••</b></div>
-        </div>
-      </div>`;
+      let html = '<div class="card">';
+      html += '<div class="row-b" style="margin-bottom:14px;"><div class="label-lg">Detailed Collections</div><button id="unlockFinBtn" class="btn btn-ghost btn-sm">🔒 Unlock</button></div>';
+      html += '<div class="dim" style="font-size:13px;">Track every rupee across matrix, boosters, and penalties.</div>';
+      html += '<div class="grid-3" style="margin-top:16px; opacity:0.3;">';
+      html += '<div class="stat"><span class="label">Today</span><b class="mono">₹•••</b></div>';
+      html += '<div class="stat"><span class="label">Week</span><b class="mono">₹•••</b></div>';
+      html += '<div class="stat"><span class="label">Month</span><b class="mono">₹•••</b></div>';
+      html += '</div></div>';
+      return html;
     }
     const r = periodRange(activePeriod);
     const b = breakdown(r.from, r.to);
-    return `
-    <div class="card">
-      <div class="row-b" style="margin-bottom:14px;">
-        <div>
-          <div class="label-lg">Detailed Collections</div>
-          <div class="dim mono" style="font-size:11px; margin-top:4px;">${r.from} → ${r.to}</div>
-        </div>
-        <button id="lockFinBtn" class="btn btn-ghost btn-sm">Lock</button>
-      </div>
-
-      <div class="pill-row" style="margin-bottom:16px;">
-        ${['today','week','month','all'].map(p =>
-          `<button class="pill ${activePeriod===p?'active':''}" data-period="${p}">${p === 'today' ? 'Today' : p === 'week' ? 'Week' : p === 'month' ? 'Month' : 'All'}</button>`
-        ).join('')}
-      </div>
-
-      <div style="text-align:center; padding:20px 0; border-bottom:1px solid #1a1a1a;">
-        <div class="label">Total Collected</div>
-        <div class="big-lg mono" style="margin-top:8px;">${fmt(b.total)}</div>
-      </div>
-
-      <div class="grid-3" style="margin-top:16px;">
-        <div class="stat"><span class="label">Matrix</span><b class="mono">${fmt(b.matrix)}</b><div class="dim" style="font-size:10px; margin-top:2px;">${b.mB} boxes</div></div>
-        <div class="stat"><span class="label">Booster</span><b class="mono">${fmt(b.boost)}</b><div class="dim" style="font-size:10px; margin-top:2px;">${b.bC} entries</div></div>
-        <div class="stat"><span class="label">Penalty</span><b class="mono">${fmt(b.pPaid)}</b><div class="dim" style="font-size:10px; margin-top:2px;">${b.pPaidC} paid</div></div>
-      </div>
-
-      <div class="div"></div>
-      <div class="row-b"><span class="dim" style="font-size:13px;">Penalties generated</span><span class="mono" style="font-weight:600;">${fmt(b.pGen)}</span></div>
-      <div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Outstanding</span><span class="mono" style="font-weight:600;">${fmt(outstanding())}</span></div>
-    </div>`;
+    let html = '<div class="card">';
+    html += '<div class="row-b" style="margin-bottom:14px;"><div><div class="label-lg">Detailed Collections</div><div class="dim mono" style="font-size:11px; margin-top:4px;">' + r.from + ' → ' + r.to + '</div></div><button id="lockFinBtn" class="btn btn-ghost btn-sm">Lock</button></div>';
+    html += '<div class="pill-row" style="margin-bottom:16px;">';
+    const periods = [['today','Today'],['week','Week'],['month','Month'],['all','All']];
+    for (let i = 0; i < periods.length; i++) {
+      html += '<button class="pill' + (activePeriod === periods[i][0] ? ' active' : '') + '" data-period="' + periods[i][0] + '">' + periods[i][1] + '</button>';
+    }
+    html += '</div>';
+    html += '<div style="text-align:center; padding:20px 0; border-bottom:1px solid #1a1a1a;"><div class="label">Total Collected</div><div class="big-lg mono" style="margin-top:8px;">' + fmt(b.total) + '</div></div>';
+    html += '<div class="grid-3" style="margin-top:16px;">';
+    html += '<div class="stat"><span class="label">Matrix</span><b class="mono">' + fmt(b.matrix) + '</b><div class="dim" style="font-size:10px; margin-top:2px;">' + b.mB + ' boxes</div></div>';
+    html += '<div class="stat"><span class="label">Booster</span><b class="mono">' + fmt(b.boost) + '</b><div class="dim" style="font-size:10px; margin-top:2px;">' + b.bC + ' entries</div></div>';
+    html += '<div class="stat"><span class="label">Penalty</span><b class="mono">' + fmt(b.pPaid) + '</b><div class="dim" style="font-size:10px; margin-top:2px;">' + b.pPaidC + ' paid</div></div>';
+    html += '</div>';
+    html += '<div class="div"></div>';
+    html += '<div class="row-b"><span class="dim" style="font-size:13px;">Penalties generated</span><span class="mono" style="font-weight:600;">' + fmt(b.pGen) + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Outstanding</span><span class="mono" style="font-weight:600;">' + fmt(outstanding()) + '</span></div>';
+    html += '</div>';
+    return html;
   }
 
+  // ============ RENDER: MATRIX ============
   function renderMatrix() {
     const done = matrixDone();
     const saved = matrixSaved();
     const tDone = todayDone();
-    const p = pace();
+    const p = getPace();
     const limit = tDone >= p;
     const rem = Math.max(0, p - tDone);
     const nb = nextBox();
     const list = completedList();
+    let html = '<div class="stack">';
 
-    return `
-    <div class="stack">
-      <div class="card card-tight">
-        <div class="row-b">
-          <span class="dim" style="font-size:13px;">Completed</span>
-          <span class="mono" style="font-weight:600;">${done} / ${TOTAL_BOXES}</span>
-        </div>
-        <div class="row-b" style="margin-top:6px;">
-          <span class="dim" style="font-size:13px;">Saved</span>
-          <span class="mono" style="font-weight:600;">${fmt(saved)}</span>
-        </div>
-        <div class="div" style="margin:12px 0;"></div>
-        <div class="row-b">
-          <span class="dim" style="font-size:13px;">Today</span>
-          <span class="mono" style="font-weight:600;">${limit ? `${tDone}/${p} · limit` : `${rem} more available`}</span>
-        </div>
-      </div>
+    html += '<div class="card card-tight">';
+    html += '<div class="row-b"><span class="dim" style="font-size:13px;">Completed</span><span class="mono" style="font-weight:600;">' + done + ' / ' + TOTAL_BOXES + '</span></div>';
+    html += '<div class="row-b" style="margin-top:6px;"><span class="dim" style="font-size:13px;">Saved</span><span class="mono" style="font-weight:600;">' + fmt(saved) + '</span></div>';
+    html += '<div class="div" style="margin:12px 0;"></div>';
+    html += '<div class="row-b"><span class="dim" style="font-size:13px;">Today</span><span class="mono" style="font-weight:600;">' + (limit ? tDone + '/' + p + ' · limit' : rem + ' more available') + '</span></div>';
+    html += '</div>';
 
-      ${nb && !limit ? `
-      <div class="card" style="text-align:center;">
-        <div class="label">Next to save</div>
-        <div class="big-lg mono" style="margin:12px 0;">${fmt(nb.value)}</div>
-        <button id="checkNextBtn" class="btn btn-primary">Mark ${fmt(nb.value)} as Saved</button>
-      </div>` : ''}
+    if (nb && !limit) {
+      html += '<div class="card" style="text-align:center;"><div class="label">Next to save</div><div class="big-lg mono" style="margin:12px 0;">' + fmt(nb.value) + '</div><button id="checkNextBtn" class="btn btn-primary">Mark ' + fmt(nb.value) + ' as Saved</button></div>';
+    }
+    if (nb && limit) {
+      html += '<div class="card" style="text-align:center;"><div class="label">Next to save</div><div class="big-lg mono" style="margin:12px 0; color:#555;">' + fmt(nb.value) + '</div><div class="dim" style="font-size:13px;">Daily limit reached. Come back tomorrow.</div></div>';
+    }
+    if (!nb) {
+      html += '<div class="card" style="text-align:center;"><div style="font-size:32px;">🏆</div><div style="font-weight:700; margin-top:8px;">Complete!</div><div class="dim" style="font-size:13px; margin-top:4px;">All 240 boxes · ₹1,00,000</div></div>';
+    }
 
-      ${nb && limit ? `
-      <div class="card" style="text-align:center;">
-        <div class="label">Next to save</div>
-        <div class="big-lg mono" style="margin:12px 0; color:#555;">${fmt(nb.value)}</div>
-        <div class="dim" style="font-size:13px;">Daily limit reached. Come back tomorrow.</div>
-      </div>` : ''}
-
-      ${!nb ? `
-      <div class="card" style="text-align:center;">
-        <div style="font-size:32px;">🏆</div>
-        <div style="font-weight:700; margin-top:8px;">Complete!</div>
-        <div class="dim" style="font-size:13px; margin-top:4px;">All 240 boxes · ₹1,00,000 saved</div>
-      </div>` : ''}
-
-      ${list.length ? `
-      <div class="card">
-        <div class="label" style="margin-bottom:12px;">Completed (${list.length}) · tap to undo</div>
-        <div class="m-grid">
-          ${list.map(b => `<div class="m-box done" data-box-id="${b.id}">${b.value}</div>`).join('')}
-        </div>
-      </div>` : `
-      <div class="empty">No boxes completed yet.</div>`}
-    </div>`;
+    if (list.length) {
+      html += '<div class="card"><div class="label" style="margin-bottom:12px;">Completed (' + list.length + ') · tap to undo</div><div class="m-grid">';
+      for (let i = 0; i < list.length; i++) {
+        html += '<div class="m-box done" data-box-id="' + list[i].id + '">' + list[i].value + '</div>';
+      }
+      html += '</div></div>';
+    } else {
+      html += '<div class="empty">No boxes completed yet.</div>';
+    }
+    html += '</div>';
+    return html;
   }
 
+  // ============ RENDER: STREAK ============
   function renderStreak() {
     const st = getStreak();
     const missed = state.missedDates || [];
@@ -828,140 +686,130 @@
     for (let i = 29; i >= 0; i--) {
       const d = addDays(today, -i);
       if (!validDate(d)) continue;
-      const isDone = st.dates.includes(d);
-      const isMissed = missed.includes(d);
+      const isDone = st.dates.indexOf(d) !== -1;
+      const isMissed = missed.indexOf(d) !== -1;
       const isToday = d === today;
-      cal += `<div class="cal-day ${isDone ? 'done' : isMissed ? 'missed' : ''} ${isToday ? 'today' : ''}">${new Date(d+'T00:00:00').getDate()}</div>`;
+      const parts = d.split('-');
+      cal += '<div class="cal-day ' + (isDone ? 'done' : isMissed ? 'missed' : '') + ' ' + (isToday ? 'today' : '') + '">' + (+parts[2]) + '</div>';
     }
-    return `
-    <div class="stack">
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:16px;">Matrix Streak</div>
-        <div class="grid-4">
-          <div class="stat"><span class="label">Current</span><b class="mono">${st.current}</b></div>
-          <div class="stat"><span class="label">Best</span><b class="mono">${st.best}</b></div>
-          <div class="stat"><span class="label">Active</span><b class="mono">${st.total}</b></div>
-          <div class="stat"><span class="label">Missed</span><b class="mono">${missed.length}</b></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:12px;">Last 30 Days</div>
-        <div class="cal">${cal}</div>
-        <div class="row" style="margin-top:14px; font-size:11px; color:#666; gap:16px;">
-          <span><span style="display:inline-block; width:8px; height:8px; background:#fff; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Done</span>
-          <span><span style="display:inline-block; width:8px; height:8px; background:#1a1a1a; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Missed</span>
-          <span><span style="display:inline-block; width:8px; height:8px; border:1px solid #fff; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Today</span>
-        </div>
-      </div>
-    </div>`;
+    let html = '<div class="stack">';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:16px;">Matrix Streak</div><div class="grid-4">';
+    html += '<div class="stat"><span class="label">Current</span><b class="mono">' + st.current + '</b></div>';
+    html += '<div class="stat"><span class="label">Best</span><b class="mono">' + st.best + '</b></div>';
+    html += '<div class="stat"><span class="label">Active</span><b class="mono">' + st.total + '</b></div>';
+    html += '<div class="stat"><span class="label">Missed</span><b class="mono">' + missed.length + '</b></div>';
+    html += '</div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:12px;">Last 30 Days</div><div class="cal">' + cal + '</div>';
+    html += '<div class="row" style="margin-top:14px; font-size:11px; color:#666; gap:16px;">';
+    html += '<span><span style="display:inline-block; width:8px; height:8px; background:#fff; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Done</span>';
+    html += '<span><span style="display:inline-block; width:8px; height:8px; background:#1a1a1a; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Missed</span>';
+    html += '<span><span style="display:inline-block; width:8px; height:8px; border:1px solid #fff; border-radius:2px; margin-right:6px; vertical-align:middle;"></span>Today</span>';
+    html += '</div></div></div>';
+    return html;
   }
 
+  // ============ RENDER: BOOSTER ============
   function renderBooster() {
     const total = boostersTotal();
-    const sorted = [...state.boosters].sort((a,b) => b.timestamp.localeCompare(a.timestamp));
-    return `
-    <div class="stack">
-      <div class="card">
-        <div class="label-lg">Total Booster</div>
-        <div class="big-lg mono" style="margin:10px 0 18px;">${fmt(total)}</div>
-        <div class="stack-sm">
-          <input id="boosterAmount" type="number" class="inp mono" placeholder="Amount (₹)" min="1">
-          <input id="boosterDesc" type="text" class="inp" placeholder="Description (optional)">
-          <button id="addBoosterBtn" class="btn btn-primary">Add Booster</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:12px;">Ledger</div>
-        ${sorted.length ? sorted.map(b => `
-          <div class="list-row">
-            <div>
-              <div class="mono" style="font-weight:700;">${fmt(b.amount)}</div>
-              <div class="dim" style="font-size:12px; margin-top:2px;">${b.description || '—'}</div>
-              <div style="font-size:11px; color:#444; margin-top:2px;" class="mono">${b.date}${b.time ? ' · ' + b.time : ''}</div>
-            </div>
-            <button class="btn btn-ghost btn-sm delete-booster" data-id="${b.id}">Del</button>
-          </div>`).join('') : '<div class="empty">No boosters yet</div>'}
-      </div>
-    </div>`;
+    const sorted = state.boosters.slice().sort(function(a, b) { return a.timestamp < b.timestamp ? 1 : -1; });
+    let html = '<div class="stack">';
+    html += '<div class="card"><div class="label-lg">Total Booster</div><div class="big-lg mono" style="margin:10px 0 18px;">' + fmt(total) + '</div><div class="stack-sm">';
+    html += '<input id="boosterAmount" type="number" class="inp mono" placeholder="Amount (₹)" min="1">';
+    html += '<input id="boosterDesc" type="text" class="inp" placeholder="Description (optional)">';
+    html += '<button id="addBoosterBtn" class="btn btn-primary">Add Booster</button>';
+    html += '</div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:12px;">Ledger</div>';
+    if (sorted.length) {
+      for (let i = 0; i < sorted.length; i++) {
+        const b = sorted[i];
+        html += '<div class="list-row"><div><div class="mono" style="font-weight:700;">' + fmt(b.amount) + '</div><div class="dim" style="font-size:12px; margin-top:2px;">' + (b.description || '—') + '</div><div style="font-size:11px; color:#444; margin-top:2px;" class="mono">' + b.date + (b.time ? ' · ' + b.time : '') + '</div></div><button class="btn btn-ghost btn-sm delete-booster" data-id="' + b.id + '">Del</button></div>';
+      }
+    } else {
+      html += '<div class="empty">No boosters yet</div>';
+    }
+    html += '</div></div>';
+    return html;
   }
 
+  // ============ RENDER: PENALTY ============
   function renderPenalty() {
     const gen = penaltiesGen(), paid = penaltiesPaid(), out = outstanding();
     const missed = state.missedDates.length;
-    const sorted = [...state.penalties].sort((a,b) => b.date.localeCompare(a.date));
-    return `
-    <div class="stack">
-      <div class="grid-2">
-        <div class="stat"><span class="label">Generated</span><b class="mono">${fmt(gen)}</b></div>
-        <div class="stat"><span class="label">Paid</span><b class="mono">${fmt(paid)}</b></div>
-        <div class="stat"><span class="label">Outstanding</span><b class="mono">${fmt(out)}</b></div>
-        <div class="stat"><span class="label">Missed</span><b class="mono">${missed}</b></div>
-      </div>
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:12px;">History</div>
-        ${sorted.length ? sorted.map(p => `
-          <div class="list-row">
-            <div>
-              <div class="mono" style="font-weight:700;">${fmt(p.amount)}</div>
-              <div class="dim" style="font-size:12px; margin-top:2px;">${p.date} · ${p.paid ? 'Paid ' + p.paidDate : 'Unpaid'}</div>
-            </div>
-            ${!p.paid ? `<button class="btn btn-ghost btn-sm mark-paid" data-id="${p.id}">Pay</button>` : `<span class="badge">Paid</span>`}
-          </div>`).join('') : '<div class="empty">No penalties</div>'}
-      </div>
-    </div>`;
+    const sorted = state.penalties.slice().sort(function(a, b) { return a.date < b.date ? 1 : -1; });
+    let html = '<div class="stack">';
+    html += '<div class="grid-2">';
+    html += '<div class="stat"><span class="label">Generated</span><b class="mono">' + fmt(gen) + '</b></div>';
+    html += '<div class="stat"><span class="label">Paid</span><b class="mono">' + fmt(paid) + '</b></div>';
+    html += '<div class="stat"><span class="label">Outstanding</span><b class="mono">' + fmt(out) + '</b></div>';
+    html += '<div class="stat"><span class="label">Missed</span><b class="mono">' + missed + '</b></div>';
+    html += '</div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:12px;">History</div>';
+    if (sorted.length) {
+      for (let i = 0; i < sorted.length; i++) {
+        const p = sorted[i];
+        html += '<div class="list-row"><div><div class="mono" style="font-weight:700;">' + fmt(p.amount) + '</div><div class="dim" style="font-size:12px; margin-top:2px;">' + p.date + ' · ' + (p.paid ? 'Paid ' + p.paidDate : 'Unpaid') + '</div></div>';
+        if (!p.paid) html += '<button class="btn btn-ghost btn-sm mark-paid" data-id="' + p.id + '">Pay</button>';
+        else html += '<span class="badge">Paid</span>';
+        html += '</div>';
+      }
+    } else {
+      html += '<div class="empty">No penalties</div>';
+    }
+    html += '</div></div>';
+    return html;
   }
 
+  // ============ RENDER: ACTIVITY ============
   function renderActivity() {
-    const map = new Map();
-    const init = () => ({ matrix:0, boxes:0, boost:0, pGen:0, pPaid:0 });
-    state.boxes.forEach(b => {
+    const map = {};
+    function ensure(d) { if (!map[d]) map[d] = { matrix: 0, boxes: 0, boost: 0, pGen: 0, pPaid: 0 }; return map[d]; }
+    for (let i = 0; i < state.boxes.length; i++) {
+      const b = state.boxes[i];
       if (b.completed && b.timestamp) {
-        const d = b.timestamp.slice(0,10);
-        if (!map.has(d)) map.set(d, init());
-        const r = map.get(d); r.matrix += b.value; r.boxes++;
+        const r = ensure(b.timestamp.slice(0,10));
+        r.matrix += b.value; r.boxes++;
       }
-    });
-    state.boosters.forEach(b => {
-      if (!map.has(b.date)) map.set(b.date, init());
-      map.get(b.date).boost += b.amount;
-    });
-    state.penalties.forEach(p => {
-      if (!map.has(p.date)) map.set(p.date, init());
-      map.get(p.date).pGen += p.amount;
-      if (p.paid && p.paidDate) {
-        if (!map.has(p.paidDate)) map.set(p.paidDate, init());
-        map.get(p.paidDate).pPaid += p.amount;
-      }
-    });
-    const dates = Array.from(map.keys()).filter(validDate).sort().reverse();
-    return `
-    <div class="stack">
-      <div class="label-lg">Activity Log</div>
-      ${dates.length ? dates.map(d => {
-        const r = map.get(d);
+    }
+    for (let i = 0; i < state.boosters.length; i++) {
+      const b = state.boosters[i];
+      ensure(b.date).boost += b.amount;
+    }
+    for (let i = 0; i < state.penalties.length; i++) {
+      const p = state.penalties[i];
+      ensure(p.date).pGen += p.amount;
+      if (p.paid && p.paidDate) ensure(p.paidDate).pPaid += p.amount;
+    }
+    const dates = Object.keys(map).filter(validDate).sort().reverse();
+    let html = '<div class="stack"><div class="label-lg">Activity Log</div>';
+    if (dates.length) {
+      for (let i = 0; i < dates.length; i++) {
+        const d = dates[i];
+        const r = map[d];
         const actual = r.matrix + r.boost;
-        return `
-        <div class="card card-tight">
-          <div class="row-b" style="margin-bottom:10px;">
-            <span style="font-weight:600; font-size:14px;">${new Date(d+'T00:00:00').toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short' })}</span>
-            <span class="mono" style="font-size:12px; color:#888;">${r.boxes} boxes</span>
-          </div>
-          <div style="font-size:12px; color:#888; line-height:1.7;">
-            <div class="row-b"><span>Matrix</span><span class="mono">${fmt(r.matrix)}</span></div>
-            <div class="row-b"><span>Booster</span><span class="mono">${fmt(r.boost)}</span></div>
-            ${r.pGen ? `<div class="row-b"><span>Penalty gen</span><span class="mono">${fmt(r.pGen)}</span></div>` : ''}
-            ${r.pPaid ? `<div class="row-b"><span>Penalty paid</span><span class="mono">${fmt(r.pPaid)}</span></div>` : ''}
-          </div>
-          <div class="div" style="margin:10px 0;"></div>
-          <div class="row-b">
-            <span style="font-size:12px; color:#888;">Actual</span>
-            <span class="mono" style="font-weight:700;">${fmt(actual)}</span>
-          </div>
-        </div>`;
-      }).join('') : '<div class="empty">No activity yet</div>'}
-    </div>`;
+        const parts = d.split('-');
+        const dateObj = new Date(+parts[0], +parts[1]-1, +parts[2]);
+        const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dateObj.getDay()];
+        const monthName = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dateObj.getMonth()];
+        html += '<div class="card card-tight">';
+        html += '<div class="row-b" style="margin-bottom:10px;"><span style="font-weight:600; font-size:14px;">' + dayName + ', ' + (+parts[2]) + ' ' + monthName + '</span><span class="mono" style="font-size:12px; color:#888;">' + r.boxes + ' boxes</span></div>';
+        html += '<div style="font-size:12px; color:#888; line-height:1.7;">';
+        html += '<div class="row-b"><span>Matrix</span><span class="mono">' + fmt(r.matrix) + '</span></div>';
+        html += '<div class="row-b"><span>Booster</span><span class="mono">' + fmt(r.boost) + '</span></div>';
+        if (r.pGen) html += '<div class="row-b"><span>Penalty gen</span><span class="mono">' + fmt(r.pGen) + '</span></div>';
+        if (r.pPaid) html += '<div class="row-b"><span>Penalty paid</span><span class="mono">' + fmt(r.pPaid) + '</span></div>';
+        html += '</div>';
+        html += '<div class="div" style="margin:10px 0;"></div>';
+        html += '<div class="row-b"><span style="font-size:12px; color:#888;">Actual</span><span class="mono" style="font-weight:700;">' + fmt(actual) + '</span></div>';
+        html += '</div>';
+      }
+    } else {
+      html += '<div class="empty">No activity yet</div>';
+    }
+    html += '</div>';
+    return html;
   }
 
+  // ============ RENDER: REPORTS ============
   function renderReports() {
     const m = matrixSaved(), b = boostersTotal(), actual = m + b;
     const pGen = penaltiesGen(), pPaid = penaltiesPaid(), out = outstanding();
@@ -969,248 +817,230 @@
     const st = getStreak();
     const avg = done > 0 ? m / Math.max(1, st.total) : 0;
     const c = getCountdown();
-    return `
-    <div class="stack">
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:14px;">Financial Summary</div>
-        <div class="row-b"><span class="dim">Matrix</span><span class="mono" style="font-weight:600;">${fmt(m)}</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Boosters</span><span class="mono" style="font-weight:600;">${fmt(b)}</span></div>
-        <div class="div"></div>
-        <div class="row-b"><span style="font-weight:600;">Actual saved</span><span class="mono big" style="font-size:22px;">${fmt(actual)}</span></div>
-      </div>
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:14px;">Penalties</div>
-        <div class="row-b"><span class="dim">Generated</span><span class="mono" style="font-weight:600;">${fmt(pGen)}</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Paid</span><span class="mono" style="font-weight:600;">${fmt(pPaid)}</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Outstanding</span><span class="mono" style="font-weight:600;">${fmt(out)}</span></div>
-      </div>
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:14px;">Countdown</div>
-        <div class="row-b"><span class="dim">Target</span><span class="mono" style="font-weight:600;">${c.target}</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Days left</span><span class="mono" style="font-weight:600;">${c.daysLeft}</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Required pace</span><span class="mono" style="font-weight:600;">${c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)}/day</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Required ₹/day</span><span class="mono" style="font-weight:600;">${fmt(c.reqSavings)}</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Boxes done</span><span class="mono" style="font-weight:600;">${done} / 240</span></div>
-        <div class="row-b" style="margin-top:8px;"><span class="dim">Daily avg</span><span class="mono" style="font-weight:600;">${fmt(Math.round(avg))}</span></div>
-      </div>
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:14px;">Export</div>
-        <div class="row">
-          <button id="exportJson" class="btn btn-secondary" style="flex:1;">JSON</button>
-          <button id="exportCsv" class="btn btn-secondary" style="flex:1;">CSV</button>
-        </div>
-      </div>
-    </div>`;
+    let html = '<div class="stack">';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Financial Summary</div>';
+    html += '<div class="row-b"><span class="dim">Matrix</span><span class="mono" style="font-weight:600;">' + fmt(m) + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Boosters</span><span class="mono" style="font-weight:600;">' + fmt(b) + '</span></div>';
+    html += '<div class="div"></div>';
+    html += '<div class="row-b"><span style="font-weight:600;">Actual saved</span><span class="mono big" style="font-size:22px;">' + fmt(actual) + '</span></div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Penalties</div>';
+    html += '<div class="row-b"><span class="dim">Generated</span><span class="mono" style="font-weight:600;">' + fmt(pGen) + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Paid</span><span class="mono" style="font-weight:600;">' + fmt(pPaid) + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Outstanding</span><span class="mono" style="font-weight:600;">' + fmt(out) + '</span></div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Countdown</div>';
+    html += '<div class="row-b"><span class="dim">Target</span><span class="mono" style="font-weight:600;">' + c.target + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Days left</span><span class="mono" style="font-weight:600;">' + c.daysLeft + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Required pace</span><span class="mono" style="font-weight:600;">' + (c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)) + '/day</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Required ₹/day</span><span class="mono" style="font-weight:600;">' + fmt(c.reqSavings) + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Boxes done</span><span class="mono" style="font-weight:600;">' + done + ' / 240</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Daily avg</span><span class="mono" style="font-weight:600;">' + fmt(Math.round(avg)) + '</span></div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Export</div><div class="row">';
+    html += '<button id="exportJson" class="btn btn-secondary" style="flex:1;">JSON</button>';
+    html += '<button id="exportCsv" class="btn btn-secondary" style="flex:1;">CSV</button>';
+    html += '</div></div></div>';
+    return html;
   }
 
+  // ============ RENDER: COACH ============
   function renderCoach() {
     const m = matrixSaved();
     const pct = (m / TOTAL_TARGET * 100);
     const st = getStreak();
     const out = outstanding();
-    const tM = state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === todayStr()).reduce((s,b) => s + b.value, 0);
+    let tM = 0;
+    for (let i = 0; i < state.boxes.length; i++) {
+      const b = state.boxes[i];
+      if (b.completed && b.timestamp && b.timestamp.slice(0,10) === todayStr()) tM += b.value;
+    }
     const tB = boostersTotal();
     const tDone = todayDone();
-    const p = pace();
+    const p = getPace();
     const limit = tDone >= p;
     const c = getCountdown();
     const rp = c.reqPace === Infinity ? '—' : c.reqPace.toFixed(1);
-
     let msg;
-    if (pct >= 100) msg = '🏆 Challenge complete! You saved the full ₹1,00,000.';
-    else if (c.status === 'overdue') msg = `Target date passed. ${c.remBoxes} boxes left. Set a new target.`;
-    else if (c.status === 'behind') msg = `${Math.abs(c.delta)} boxes behind. Need ${rp}/day to catch up.`;
-    else if (limit) msg = `Daily pace hit (${p} boxes). Come back tomorrow.`;
-    else if (pct >= 50) msg = `Over halfway. ${fmt(m)} of ${fmt(TOTAL_TARGET)} saved.`;
-    else if (out > 0) msg = `${fmt(out)} in outstanding penalties. Settle up when you can.`;
-    else if (st.current >= 7) msg = `${st.current}-day streak. Keep going.`;
-    else if (tM > 0) msg = `Saved ${fmt(tM)} today. Total: ${fmt(m)}.`;
-    else if (st.total > 0) msg = `${c.daysLeft} days left. Try one box today.`;
+    if (pct >= 100) msg = '🏆 Challenge complete!';
+    else if (c.status === 'overdue') msg = 'Target passed. ' + c.remBoxes + ' boxes left. Set a new target.';
+    else if (c.status === 'behind') msg = Math.abs(c.delta) + ' boxes behind. Need ' + rp + '/day.';
+    else if (limit) msg = 'Daily pace hit (' + p + '). Come back tomorrow.';
+    else if (pct >= 50) msg = 'Over halfway. ' + fmt(m) + ' of ' + fmt(TOTAL_TARGET) + ' saved.';
+    else if (out > 0) msg = fmt(out) + ' in outstanding penalties.';
+    else if (st.current >= 7) msg = st.current + '-day streak. Keep going.';
+    else if (tM > 0) msg = 'Saved ' + fmt(tM) + ' today. Total: ' + fmt(m) + '.';
+    else if (st.total > 0) msg = c.daysLeft + ' days left. Try one box today.';
     else msg = 'Welcome. Start with your first ₹100 box.';
-
-    return `
-    <div class="stack">
-      <div class="card">
-        <div class="label-lg">Coach</div>
-        <div style="margin-top:16px; font-size:16px; line-height:1.6; font-weight:500;">${msg}</div>
-      </div>
-      <div class="card">
-        <div class="grid-2">
-          <div class="stat"><span class="label">Matrix</span><b class="mono">${fmt(m)}</b></div>
-          <div class="stat"><span class="label">Booster</span><b class="mono">${fmt(tB)}</b></div>
-          <div class="stat"><span class="label">Streak</span><b class="mono">${st.current}d</b></div>
-          <div class="stat"><span class="label">Outstanding</span><b class="mono">${fmt(out)}</b></div>
-          <div class="stat"><span class="label">Days Left</span><b class="mono">${c.daysLeft}</b></div>
-          <div class="stat"><span class="label">Pace Req.</span><b class="mono">${rp}</b></div>
-        </div>
-      </div>
-    </div>`;
+    let html = '<div class="stack">';
+    html += '<div class="card"><div class="label-lg">Coach</div><div style="margin-top:16px; font-size:16px; line-height:1.6; font-weight:500;">' + msg + '</div></div>';
+    html += '<div class="card"><div class="grid-2">';
+    html += '<div class="stat"><span class="label">Matrix</span><b class="mono">' + fmt(m) + '</b></div>';
+    html += '<div class="stat"><span class="label">Booster</span><b class="mono">' + fmt(tB) + '</b></div>';
+    html += '<div class="stat"><span class="label">Streak</span><b class="mono">' + st.current + 'd</b></div>';
+    html += '<div class="stat"><span class="label">Outstanding</span><b class="mono">' + fmt(out) + '</b></div>';
+    html += '<div class="stat"><span class="label">Days Left</span><b class="mono">' + c.daysLeft + '</b></div>';
+    html += '<div class="stat"><span class="label">Pace Req.</span><b class="mono">' + rp + '</b></div>';
+    html += '</div></div></div>';
+    return html;
   }
 
+  // ============ RENDER: SETTINGS ============
   function renderSettings() {
     const s = state.settings;
-    return `
-    <div class="stack">
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:16px;">Penalty</div>
-        <div class="stack-sm">
-          <div class="row-b">
-            <label class="dim" style="font-size:13px;">Starting amount</label>
-            <input id="settingStartPenalty" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" value="${s.startPenalty}">
-          </div>
-          <div class="row-b">
-            <label class="dim" style="font-size:13px;">Increment per miss</label>
-            <input id="settingPenaltyIncrement" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" value="${s.penaltyIncrement}">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:16px;">Challenge</div>
-        <div class="stack-sm">
-          <div class="row-b">
-            <label class="dim" style="font-size:13px;">Daily pace</label>
-            <input id="settingDailyPace" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" min="1" max="240" value="${s.dailyPace || 1}">
-          </div>
-          <div class="row-b">
-            <label class="dim" style="font-size:13px;">Start date</label>
-            <input id="settingStartDate" type="date" class="inp mono" style="width:160px; padding:8px 10px;" value="${s.challengeStart}">
-          </div>
-          <div class="row-b">
-            <label class="dim" style="font-size:13px;">Target date</label>
-            <input id="settingTargetDate" type="date" class="inp mono" style="width:160px; padding:8px 10px;" value="${s.targetDate || DEFAULT_SETTINGS.targetDate}">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="label-lg" style="margin-bottom:6px;">Password</div>
-        <p class="dim" style="font-size:12px; margin-bottom:12px;">To change, enter current and new password.</p>
-        <div class="stack-sm">
-          <input id="settingOldPassword" type="password" class="inp" placeholder="Current password" autocomplete="off">
-          <input id="settingNewPassword" type="password" class="inp" placeholder="New password (min 4)" autocomplete="new-password">
-          <input id="settingConfirmPassword" type="password" class="inp" placeholder="Confirm new password" autocomplete="new-password">
-          <button id="changePasswordBtn" class="btn btn-secondary">Change Password</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="row" style="gap:8px; flex-wrap:wrap;">
-          <button id="saveSettingsBtn" class="btn btn-primary" style="flex:1;">Save</button>
-          <button id="importDataBtn" class="btn btn-secondary" style="flex:1;">Import</button>
-          <button id="resetChallengeBtn" class="btn btn-danger" style="flex:1;">Reset</button>
-        </div>
-        <input type="file" id="importFile" accept=".json" style="display:none;">
-      </div>
-    </div>`;
+    let html = '<div class="stack">';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:16px;">Penalty</div><div class="stack-sm">';
+    html += '<div class="row-b"><label class="dim" style="font-size:13px;">Starting amount</label><input id="settingStartPenalty" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" value="' + s.startPenalty + '"></div>';
+    html += '<div class="row-b"><label class="dim" style="font-size:13px;">Increment</label><input id="settingPenaltyIncrement" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" value="' + s.penaltyIncrement + '"></div>';
+    html += '</div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:16px;">Challenge</div><div class="stack-sm">';
+    html += '<div class="row-b"><label class="dim" style="font-size:13px;">Daily pace</label><input id="settingDailyPace" type="number" class="inp mono" style="width:100px; padding:8px 10px; text-align:right;" min="1" max="240" value="' + (s.dailyPace || 1) + '"></div>';
+    html += '<div class="row-b"><label class="dim" style="font-size:13px;">Start date</label><input id="settingStartDate" type="date" class="inp mono" style="width:160px; padding:8px 10px;" value="' + s.challengeStart + '"></div>';
+    html += '<div class="row-b"><label class="dim" style="font-size:13px;">Target date</label><input id="settingTargetDate" type="date" class="inp mono" style="width:160px; padding:8px 10px;" value="' + s.targetDate + '"></div>';
+    html += '</div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:6px;">Password</div><p class="dim" style="font-size:12px; margin-bottom:12px;">To change, enter current and new password.</p><div class="stack-sm">';
+    html += '<input id="settingOldPassword" type="password" class="inp" placeholder="Current password" autocomplete="off">';
+    html += '<input id="settingNewPassword" type="password" class="inp" placeholder="New password (min 4)" autocomplete="new-password">';
+    html += '<input id="settingConfirmPassword" type="password" class="inp" placeholder="Confirm new password" autocomplete="new-password">';
+    html += '<button id="changePasswordBtn" class="btn btn-secondary">Change Password</button>';
+    html += '</div></div>';
+    html += '<div class="card"><div class="row" style="gap:8px; flex-wrap:wrap;">';
+    html += '<button id="saveSettingsBtn" class="btn btn-primary" style="flex:1;">Save</button>';
+    html += '<button id="importDataBtn" class="btn btn-secondary" style="flex:1;">Import</button>';
+    html += '<button id="resetChallengeBtn" class="btn btn-danger" style="flex:1;">Reset</button>';
+    html += '</div><input type="file" id="importFile" accept=".json" style="display:none;"></div>';
+    html += '</div>';
+    return html;
   }
+
+  // ============ MAIN RENDER ============
+  let finUnlocked = false;
+  let activePeriod = 'today';
+  let currentTab = 'dashboard';
 
   function renderTab() {
     const c = document.getElementById('tabContent');
-    switch (currentTab) {
-      case 'dashboard': c.innerHTML = renderDashboard(); break;
-      case 'matrix': c.innerHTML = renderMatrix(); break;
-      case 'streak': c.innerHTML = renderStreak(); break;
-      case 'booster': c.innerHTML = renderBooster(); break;
-      case 'penalty': c.innerHTML = renderPenalty(); break;
-      case 'activity': c.innerHTML = renderActivity(); break;
-      case 'reports': c.innerHTML = renderReports(); break;
-      case 'coach': c.innerHTML = renderCoach(); break;
-      case 'settings': c.innerHTML = renderSettings(); break;
+    let html = '';
+    try {
+      switch (currentTab) {
+        case 'dashboard': html = renderDashboard(); break;
+        case 'matrix': html = renderMatrix(); break;
+        case 'streak': html = renderStreak(); break;
+        case 'booster': html = renderBooster(); break;
+        case 'penalty': html = renderPenalty(); break;
+        case 'activity': html = renderActivity(); break;
+        case 'reports': html = renderReports(); break;
+        case 'coach': html = renderCoach(); break;
+        case 'settings': html = renderSettings(); break;
+      }
+      c.innerHTML = html;
+      document.getElementById('headerMatrix').textContent = fmt(matrixSaved());
+      bindEvents();
+    } catch (e) {
+      c.innerHTML = '<div class="card"><div style="color:#fff; font-family:monospace; font-size:12px; white-space:pre-wrap;">Render error: ' + e.message + '\n\n' + (e.stack || '') + '</div></div>';
+      console.error('Render error:', e);
     }
-    document.getElementById('headerMatrix').textContent = fmt(matrixSaved());
-    bindEvents();
-  }
-
-  async function changePassword() {
-    const oldPw = document.getElementById('settingOldPassword').value;
-    const nwPw = document.getElementById('settingNewPassword').value;
-    const cfPw = document.getElementById('settingConfirmPassword').value;
-    if (!(await checkPw(oldPw))) return toast('Current password incorrect');
-    if (nwPw.length < 4) return toast('Password must be 4+ chars');
-    if (nwPw !== cfPw) return toast('Passwords do not match');
-    await setPw(nwPw);
-    toast('Password changed');
-    renderTab();
   }
 
   function bindEvents() {
-    const el = id => document.getElementById(id);
+    const el = function(id) { return document.getElementById(id); };
 
-    if (el('unlockFinBtn')) el('unlockFinBtn').onclick = () => passwordModal(() => { finUnlocked = true; toast('Unlocked'); renderTab(); });
-    if (el('lockFinBtn')) el('lockFinBtn').onclick = () => { finUnlocked = false; toast('Locked'); renderTab(); };
+    if (el('unlockFinBtn')) el('unlockFinBtn').onclick = function() { passwordModal(function() { finUnlocked = true; toast('Unlocked'); renderTab(); }); };
+    if (el('lockFinBtn')) el('lockFinBtn').onclick = function() { finUnlocked = false; toast('Locked'); renderTab(); };
 
-    document.querySelectorAll('.pill[data-period]').forEach(p => {
-      p.onclick = () => { activePeriod = p.dataset.period; renderTab(); };
-    });
+    const pills = document.querySelectorAll('.pill[data-period]');
+    for (let i = 0; i < pills.length; i++) {
+      (function(p) {
+        p.onclick = function() { activePeriod = p.getAttribute('data-period'); renderTab(); };
+      })(pills[i]);
+    }
 
-    if (el('checkNextBtn')) el('checkNextBtn').onclick = () => {
+    if (el('checkNextBtn')) el('checkNextBtn').onclick = function() {
       const nb = nextBox();
       if (!nb) return;
-      const p = pace(), t = todayDone();
-      if (t >= p) return toast('Daily limit reached');
+      const p = getPace(), t = todayDone();
+      if (t >= p) { toast('Daily limit reached'); return; }
       nb.completed = true;
       nb.timestamp = nowISO();
-      toast(`Saved ${fmt(nb.value)} (${t + 1}/${p})`);
+      toast('Saved ' + fmt(nb.value) + ' (' + (t + 1) + '/' + p + ')');
       saveState();
       renderTab();
     };
 
-    document.querySelectorAll('.m-box.done').forEach(b => {
-      b.onclick = () => {
-        const id = parseInt(b.dataset.boxId, 10);
-        const box = state.boxes.find(x => x.id === id);
-        if (!box || !box.completed) return;
-        confirmBox('Undo', `Uncheck ${fmt(box.value)}?`, () => {
-          box.completed = false; box.timestamp = null;
-          saveState(); renderTab();
-        });
-      };
-    });
+    const doneBoxes = document.querySelectorAll('.m-box.done');
+    for (let i = 0; i < doneBoxes.length; i++) {
+      (function(box) {
+        box.onclick = function() {
+          const id = parseInt(box.getAttribute('data-box-id'), 10);
+          let target = null;
+          for (let j = 0; j < state.boxes.length; j++) if (state.boxes[j].id === id) { target = state.boxes[j]; break; }
+          if (!target || !target.completed) return;
+          confirmBox('Undo', 'Uncheck ' + fmt(target.value) + '?', function() {
+            target.completed = false;
+            target.timestamp = null;
+            saveState();
+            renderTab();
+          });
+        };
+      })(doneBoxes[i]);
+    }
 
-    if (el('paceSelect')) el('paceSelect').onchange = () => {
+    if (el('paceSelect')) el('paceSelect').onchange = function() {
       const np = parseInt(el('paceSelect').value, 10);
       const t = todayDone();
-      if (t > np) { toast(`Already ${t} today`); el('paceSelect').value = pace(); return; }
+      if (t > np) { toast('Already ' + t + ' today'); el('paceSelect').value = getPace(); return; }
       state.settings.dailyPace = np;
       saveState();
-      toast(`Pace: ${np}/day`);
+      toast('Pace: ' + np + '/day');
       renderTab();
     };
 
-    if (el('addBoosterBtn')) el('addBoosterBtn').onclick = () => {
+    if (el('addBoosterBtn')) el('addBoosterBtn').onclick = function() {
       const amt = parseFloat(el('boosterAmount').value);
       const desc = el('boosterDesc').value.trim();
-      if (!amt || amt <= 0) return toast('Invalid amount');
+      if (!amt || amt <= 0) { toast('Invalid amount'); return; }
       const now = new Date();
       state.boosters.push({
-        id: uid(), amount: Math.round(amt),
-        date: now.toISOString().slice(0,10),
-        time: now.toTimeString().slice(0,5),
-        description: desc, timestamp: nowISO()
+        id: uid(),
+        amount: Math.round(amt),
+        date: todayStr(),
+        time: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0'),
+        description: desc,
+        timestamp: nowISO()
       });
       saveState();
-      toast(`+${fmt(amt)}`);
+      toast('+' + fmt(amt));
       renderTab();
     };
 
-    document.querySelectorAll('.delete-booster').forEach(b => {
-      b.onclick = () => {
-        confirmBox('Delete', 'Remove this entry?', () => {
-          state.boosters = state.boosters.filter(x => x.id !== b.dataset.id);
-          saveState(); renderTab();
-        });
-      };
-    });
+    const delBtns = document.querySelectorAll('.delete-booster');
+    for (let i = 0; i < delBtns.length; i++) {
+      (function(btn) {
+        btn.onclick = function() {
+          const id = btn.getAttribute('data-id');
+          confirmBox('Delete', 'Remove this entry?', function() {
+            const next = [];
+            for (let j = 0; j < state.boosters.length; j++) if (state.boosters[j].id !== id) next.push(state.boosters[j]);
+            state.boosters = next;
+            saveState();
+            renderTab();
+          });
+        };
+      })(delBtns[i]);
+    }
 
-    document.querySelectorAll('.mark-paid').forEach(b => {
-      b.onclick = () => {
-        const p = state.penalties.find(x => x.id === b.dataset.id);
-        if (p) { p.paid = true; p.paidDate = todayStr(); saveState(); renderTab(); }
-      };
-    });
+    const payBtns = document.querySelectorAll('.mark-paid');
+    for (let i = 0; i < payBtns.length; i++) {
+      (function(btn) {
+        btn.onclick = function() {
+          const id = btn.getAttribute('data-id');
+          for (let j = 0; j < state.penalties.length; j++) {
+            if (state.penalties[j].id === id) { state.penalties[j].paid = true; state.penalties[j].paidDate = todayStr(); break; }
+          }
+          saveState();
+          renderTab();
+        };
+      })(payBtns[i]);
+    }
 
-    if (el('exportJson')) el('exportJson').onclick = () => {
+    if (el('exportJson')) el('exportJson').onclick = function() {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1219,13 +1049,20 @@
       URL.revokeObjectURL(a.href);
       toast('Exported');
     };
-    if (el('exportCsv')) el('exportCsv').onclick = () => {
+    if (el('exportCsv')) el('exportCsv').onclick = function() {
       let csv = 'Date,Type,Amount,Description\n';
-      state.boxes.filter(b => b.completed && b.timestamp).forEach(b => {
-        csv += `${b.timestamp.slice(0,10)},Matrix,${b.value},Box\n`;
-      });
-      state.boosters.forEach(b => { csv += `${b.date},Booster,${b.amount},${b.description || ''}\n`; });
-      state.penalties.forEach(p => { csv += `${p.date},Penalty,${p.amount},${p.paid ? 'Paid' : 'Unpaid'}\n`; });
+      for (let i = 0; i < state.boxes.length; i++) {
+        const b = state.boxes[i];
+        if (b.completed && b.timestamp) csv += b.timestamp.slice(0,10) + ',Matrix,' + b.value + ',Box\n';
+      }
+      for (let i = 0; i < state.boosters.length; i++) {
+        const b = state.boosters[i];
+        csv += b.date + ',Booster,' + b.amount + ',' + (b.description || '').replace(/,/g, ';') + '\n';
+      }
+      for (let i = 0; i < state.penalties.length; i++) {
+        const p = state.penalties[i];
+        csv += p.date + ',Penalty,' + p.amount + ',' + (p.paid ? 'Paid' : 'Unpaid') + '\n';
+      }
       const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -1235,7 +1072,7 @@
       toast('Exported');
     };
 
-    if (el('saveSettingsBtn')) el('saveSettingsBtn').onclick = () => {
+    if (el('saveSettingsBtn')) el('saveSettingsBtn').onclick = function() {
       const sp = parseInt(el('settingStartPenalty').value, 10);
       const pi = parseInt(el('settingPenaltyIncrement').value, 10);
       const dp = parseInt(el('settingDailyPace').value, 10);
@@ -1244,7 +1081,7 @@
       if (sp > 0) state.settings.startPenalty = sp;
       if (pi > 0) state.settings.penaltyIncrement = pi;
       if (dp > 0) {
-        if (todayDone() > dp) return toast(`Can't be below ${todayDone()}`);
+        if (todayDone() > dp) { toast("Can't be below " + todayDone()); return; }
         state.settings.dailyPace = dp;
       }
       if (sd && validDate(sd)) state.settings.challengeStart = sd;
@@ -1254,61 +1091,148 @@
       renderTab();
     };
 
-    if (el('changePasswordBtn')) el('changePasswordBtn').onclick = changePassword;
+    if (el('changePasswordBtn')) el('changePasswordBtn').onclick = function() {
+      const oldPw = el('settingOldPassword').value;
+      const nwPw = el('settingNewPassword').value;
+      const cfPw = el('settingConfirmPassword').value;
+      if (hashStr(oldPw) !== state.settings.passwordHash) { toast('Current password incorrect'); return; }
+      if (nwPw.length < 4) { toast('Password 4+ chars required'); return; }
+      if (nwPw !== cfPw) { toast('Passwords do not match'); return; }
+      state.settings.passwordHash = hashStr(nwPw);
+      saveState();
+      toast('Password changed');
+      renderTab();
+    };
 
-    if (el('resetChallengeBtn')) el('resetChallengeBtn').onclick = () => {
-      confirmBox('Reset', 'Erase all data?', () => {
-        localStorage.removeItem(STORAGE_KEY);
+    if (el('resetChallengeBtn')) el('resetChallengeBtn').onclick = function() {
+      confirmBox('Reset', 'Erase all data?', function() {
+        storageRemove(STORAGE_KEY);
         location.reload();
       });
     };
 
-    if (el('importDataBtn')) el('importDataBtn').onclick = () => el('importFile').click();
-    if (el('importFile')) el('importFile').onchange = (e) => {
+    if (el('importDataBtn')) el('importDataBtn').onclick = function() { el('importFile').click(); };
+    if (el('importFile')) el('importFile').onchange = function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const r = new FileReader();
-      r.onload = async (ev) => {
+      r.onload = function(ev) {
         try {
           const p = JSON.parse(ev.target.result);
-          if (p.version === 1 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
+          if (p.version === 2 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
             state = p;
-            state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
-            if (!state.settings.dailyPace) state.settings.dailyPace = 1;
-            if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
-            ['boosters','penalties','missedDates'].forEach(k => { if (!Array.isArray(state[k])) state[k] = []; });
-            if (!state.settings.dashboardPasswordHash) {
-              state.settings.dashboardPasswordHash = await hashPassword(state.settings.dashboardPassword || DEFAULT_PASSWORD);
-            }
-            delete state.settings.dashboardPassword;
+            state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings || {});
+            if (!state.settings.passwordHash) state.settings.passwordHash = hashStr(DEFAULT_PASSWORD);
+            if (!Array.isArray(state.boosters)) state.boosters = [];
+            if (!Array.isArray(state.penalties)) state.penalties = [];
+            if (!Array.isArray(state.missedDates)) state.missedDates = [];
             saveState();
             toast('Imported');
             renderTab();
-          } else toast('Invalid file');
+          } else {
+            toast('Invalid file');
+          }
         } catch (e) { toast('Invalid JSON'); }
       };
       r.readAsText(file);
     };
   }
 
-  function setupNav() {
-    document.querySelectorAll('#mainNav button').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('#mainNav button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentTab = btn.dataset.tab;
-        renderTab();
-      };
-    });
+  // Confirm modal buttons
+  document.getElementById('confirmYes').onclick = function() {
+    document.getElementById('confirmModal').classList.remove('show');
+    if (confirmCallback) { const cb = confirmCallback; confirmCallback = null; cb(); }
+  };
+  document.getElementById('confirmNo').onclick = function() {
+    document.getElementById('confirmModal').classList.remove('show');
+    confirmCallback = null;
+  };
+
+  // Password modal
+  function checkPw(entered) {
+    return hashStr(entered) === state.settings.passwordHash;
+  }
+  function passwordModal(onSuccess) {
+    const modal = document.getElementById('passwordModal');
+    const input = document.getElementById('passwordInput');
+    const err = document.getElementById('passwordError');
+    input.value = '';
+    err.style.display = 'none';
+    modal.classList.add('show');
+    setTimeout(function() { try { input.focus(); } catch(e){} }, 100);
+    function submit() {
+      if (checkPw(input.value)) {
+        modal.classList.remove('show');
+        if (onSuccess) onSuccess();
+      } else {
+        err.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    }
+    document.getElementById('passwordSubmit').onclick = submit;
+    document.getElementById('passwordCancel').onclick = function() { modal.classList.remove('show'); };
+    input.onkeydown = function(e) {
+      if (e.key === 'Enter') submit();
+      else if (e.key === 'Escape') modal.classList.remove('show');
+    };
   }
 
-  async function boot() {
-    await loadState();
-    reconcileMissedDays();
+  function checkPenaltyPopup() {
+    const t = todayStr();
+    if (state.lastPenaltyPopupDate === t) return;
+    const unpaid = [];
+    for (let i = 0; i < state.penalties.length; i++) if (!state.penalties[i].paid) unpaid.push(state.penalties[i]);
+    if (!unpaid.length) return;
+    const latest = unpaid[unpaid.length - 1];
+    document.getElementById('penaltyModalText').innerHTML = 'You missed <b>' + latest.date + '</b>. Penalty: <b>' + fmt(latest.amount) + '</b>.';
+    document.getElementById('penaltyModal').classList.add('show');
+    state.lastPenaltyPopupDate = t;
     saveState();
-    setupNav();
-    renderTab();
-    setTimeout(checkPenaltyPopup, 800);
+    document.getElementById('penaltyPayBtn').onclick = function() {
+      latest.paid = true;
+      latest.paidDate = t;
+      saveState();
+      document.getElementById('penaltyModal').classList.remove('show');
+      toast('Penalty paid: ' + fmt(latest.amount));
+      renderTab();
+    };
+    document.getElementById('penaltyLaterBtn').onclick = function() {
+      document.getElementById('penaltyModal').classList.remove('show');
+    };
+  }
+
+  // ============ NAV ============
+  function setupNav() {
+    const btns = document.querySelectorAll('#mainNav button');
+    for (let i = 0; i < btns.length; i++) {
+      (function(btn) {
+        btn.onclick = function() {
+          for (let j = 0; j < btns.length; j++) btns[j].classList.remove('active');
+          btn.classList.add('active');
+          currentTab = btn.getAttribute('data-tab');
+          renderTab();
+        };
+      })(btns[i]);
+    }
+  }
+
+  // ============ BOOT ============
+  function boot() {
+    try {
+      if (!storageOK) {
+        toast('⚠️ Storage unavailable — data will not persist');
+      }
+      loadState();
+      reconcileMissedDays();
+      saveState();
+      setupNav();
+      renderTab();
+      setTimeout(function() { try { checkPenaltyPopup(); } catch (e) { console.warn('penalty:', e); } }, 800);
+    } catch (e) {
+      showFatal('Boot error: ' + e.message + '\n\n' + (e.stack || ''));
+      console.error('Boot error:', e);
+    }
   }
 
   boot();
