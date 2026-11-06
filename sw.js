@@ -1,3 +1,11 @@
+self.addEventListener('install', function(e) {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', function(e) {
+  self.clients.claim();
+});
+
 self.addEventListener('fetch', function(event) {
-  // A simple fetch handler is required for Android Chrome to allow installation
+  // This empty fetch handler is required to trigger the PWA install prompt
 });
