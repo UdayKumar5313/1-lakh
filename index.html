@@ -361,7 +361,6 @@
     <button data-tab="penalty">Penalty</button>
     <button data-tab="activity">Activity</button>
     <button data-tab="reports">Reports</button>
-    <button data-tab="coach">Coach</button>
     <button data-tab="settings">Settings</button>
   </nav>
 
@@ -439,7 +438,7 @@
   ];
   const TOTAL_BOXES = 240;
   const LEVEL_TARGET = 100000; // each level is ₹1 lakh
-  const STORAGE_KEY = 'savings_mono_v3'; // bumped for new schema
+  const STORAGE_KEY = 'savings_mono_v3';
   const THEME_KEY = 'savings_theme_v1';
   const DEFAULT_PASSWORD = '1234';
 
@@ -522,7 +521,6 @@
   function validDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
 
   function lakhLabel(level) {
-    // 1 -> "₹1 Lakh", 2 -> "₹2 Lakh"
     return '₹' + level + ' Lakh';
   }
 
@@ -535,11 +533,6 @@
     passwordHash: hashStr(DEFAULT_PASSWORD)
   };
 
-  // New schema v3:
-  // - state.currentLevel: number (1, 2, 3, ...)
-  // - state.boxes: current level's 240 boxes
-  // - state.levels: archive of completed levels [{ level, boxes, completedAt }]
-  // - boosters/penalties/missedDates are global across levels
   let state = {
     version: 3,
     currentLevel: 1,
@@ -608,12 +601,10 @@
     let guard = 0;
     while (d < today && guard++ < 5000) {
       let found = false;
-      // Check current level
       for (let i = 0; i < state.boxes.length; i++) {
         const b = state.boxes[i];
         if (b.completed && b.timestamp && b.timestamp.slice(0,10) === d) { found = true; break; }
       }
-      // Check archived levels
       if (!found) {
         for (let L = 0; L < state.levels.length; L++) {
           const boxes = state.levels[L].boxes || [];
@@ -681,7 +672,6 @@
   function totalTarget() { return state.currentLevel * LEVEL_TARGET; }
 
   function checkLevelUp() {
-    // Returns true if a level just completed
     if (levelBoxesDone() < TOTAL_BOXES) return false;
     const lv = state.currentLevel;
     state.levels.push({
@@ -1025,7 +1015,6 @@
     html += '<div class="row-b" style="margin-bottom:14px;"><div class="label-lg">Levels</div><span class="badge badge-fill">Level ' + cur + ' active</span></div>';
     html += '<div class="stack-sm">';
 
-    // Archived levels
     for (let i = 0; i < state.levels.length; i++) {
       const L = state.levels[i];
       const boxes = L.boxes || [];
@@ -1040,7 +1029,6 @@
       html += '</div>';
     }
 
-    // Current level
     const curSaved = levelBoxesSaved();
     const curDone = levelBoxesDone();
     html += '<div class="list-row" style="padding:10px 0; background:var(--surface-2); border:1px solid var(--border-2); border-radius:8px; padding:12px;">';
@@ -1051,7 +1039,6 @@
     html += '<span class="mono" style="font-weight:700;">' + Math.round((curDone / TOTAL_BOXES) * 100) + '%</span>';
     html += '</div>';
 
-    // Preview next
     html += '<div class="list-row" style="padding:10px 0; opacity:0.5;">';
     html += '<div>';
     html += '<div style="font-weight:700; font-size:14px;">' + lakhLabel(cur + 1) + ' Level</div>';
@@ -1221,7 +1208,6 @@
     let html = '<div class="stack">';
     html += renderLevelsCard();
 
-    // Archive detail
     if (state.levels.length) {
       html += '<div class="card"><div class="label-lg" style="margin-bottom:12px;">Completed Levels</div>';
       for (let i = 0; i < state.levels.length; i++) {
@@ -1362,7 +1348,6 @@
   function renderReports() {
     const m = totalSaved(), b = boostersTotal(), actual = m + b;
     const pGen = penaltiesGen(), pPaid = penaltiesPaid(), out = outstanding();
-    const st = getStreak();
     const t = getSmartTarget();
     const tl = getTimeline();
     let html = '<div class="stack">';
@@ -1396,36 +1381,6 @@
     html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Export</div><div class="row">';
     html += '<button id="exportJson" class="btn btn-secondary" style="flex:1;">JSON</button>';
     html += '<button id="exportCsv" class="btn btn-secondary" style="flex:1;">CSV</button>';
-    html += '</div></div></div>';
-    return html;
-  }
-
-  function renderCoach() {
-    const m = totalSaved();
-    const st = getStreak();
-    const out = outstanding();
-    const tB = boostersTotal();
-    const c = getCountdown();
-    const t = getSmartTarget();
-
-    let msg;
-    if (t.remaining <= 0) msg = '🏆 Level ' + state.currentLevel + ' complete! Advancing to next level.';
-    else if (t.todaySaved >= t.todayTarget && t.todayTarget > 0) msg = '✓ Daily target hit. You saved ' + fmt(t.todaySaved) + ' today. ' + c.daysLeft + ' days left in level ' + state.currentLevel + '.';
-    else if (t.daysLeft <= 0) msg = '⏰ Target date reached. ' + fmt(t.remaining) + ' still remaining in this level.';
-    else if (t.streak >= 7) msg = '🔥 ' + t.streak + '-day streak. Save ' + fmt(t.todayTarget) + ' today to keep it alive.';
-    else if (t.missed > 0 && t.missPenaltyFactor > 1.05) msg = 'You missed ' + t.missed + ' day' + (t.missed === 1 ? '' : 's') + '. Today\'s target is ' + fmt(t.todayTarget) + ' to catch up.';
-    else if (t.todaySaved > 0) msg = 'Saved ' + fmt(t.todaySaved) + ' today. ' + fmt(t.todayTarget) + ' more to hit today\'s target.';
-    else msg = 'Save ' + fmt(t.todayTarget) + ' today to stay on track.';
-
-    let html = '<div class="stack">';
-    html += '<div class="card card-hero"><div class="label-lg">Coach · Level ' + state.currentLevel + '</div><div style="margin-top:16px; font-size:16px; line-height:1.6; font-weight:500;">' + msg + '</div></div>';
-    html += '<div class="card"><div class="grid-2">';
-    html += '<div class="stat"><span class="label">All-time saved</span><b class="mono">' + fmt(m) + '</b></div>';
-    html += '<div class="stat"><span class="label">Booster</span><b class="mono">' + fmt(tB) + '</b></div>';
-    html += '<div class="stat"><span class="label">Streak</span><b class="mono">' + st.current + 'd</b></div>';
-    html += '<div class="stat"><span class="label">Outstanding</span><b class="mono">' + fmt(out) + '</b></div>';
-    html += '<div class="stat"><span class="label">Days Left</span><b class="mono">' + c.daysLeft + '</b></div>';
-    html += '<div class="stat"><span class="label">Today Target</span><b class="mono">' + fmt(t.todayTarget) + '</b></div>';
     html += '</div></div></div>';
     return html;
   }
@@ -1476,7 +1431,6 @@
         case 'penalty': html = renderPenalty(); break;
         case 'activity': html = renderActivity(); break;
         case 'reports': html = renderReports(); break;
-        case 'coach': html = renderCoach(); break;
         case 'settings': html = renderSettings(); break;
       }
       c.innerHTML = html;
@@ -1489,7 +1443,7 @@
   }
 
   function triggerLevelUpModal() {
-    const lv = state.currentLevel - 1; // just-completed level
+    const lv = state.currentLevel - 1;
     document.getElementById('levelUpTitle').textContent = 'Level ' + lv + ' Complete!';
     document.getElementById('levelUpMsg').innerHTML = 'You saved <b>' + fmt(LEVEL_TARGET) + '</b> in Level ' + lv + '.<br>Total all-time: <b>' + fmt(totalSaved()) + '</b>.<br><br>Now starting Level ' + state.currentLevel + ' (' + lakhLabel(state.currentLevel) + ').';
     document.getElementById('levelUpModal').classList.add('show');
@@ -1526,7 +1480,6 @@
       nb.completed = true;
       nb.timestamp = nowISO();
       toast('Saved ' + fmt(nb.value) + ' (' + (t + 1) + '/' + p + ' pace)');
-      // Check if level completes
       const completed = checkLevelUp();
       saveState();
       renderTab();
@@ -1781,7 +1734,6 @@
       if (!storageOK) toast('⚠️ Storage unavailable — data will not persist');
       loadState();
       reconcileMissedDays();
-      // If level already complete from a previous session (e.g. finished exactly on last box then closed)
       const completed = checkLevelUp();
       saveState();
       setupNav();
