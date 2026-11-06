@@ -166,10 +166,43 @@
       const STORAGE_KEY = 'saveChallenge_v1';
       const DEFAULT_PASSWORD = '1234';
 
-      // SHA-256 hash (async). Used so the plain password never lives in localStorage.
+      // --- Password hashing with fallback for non-secure contexts (file://) ---
       async function hashPassword(pw) {
-        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        const data = new TextEncoder().encode(pw);
+        if (window.crypto && window.crypto.subtle) {
+          try {
+            const buf = await crypto.subtle.digest('SHA-256', data);
+            return 'sha256:' + Array.from(new Uint8Array(buf))
+              .map(b => b.toString(16).padStart(2, '0')).join('');
+          } catch (e) { /* fall through to fallback */ }
+        }
+        // Fallback hash (NOT cryptographically secure; used only when subtle unavailable,
+        // e.g. opening this file via file://). For real security serve over HTTPS/localhost.
+        let h1 = 0x811c9dc5 >>> 0;
+        let h2 = (0x811c9dc5 ^ 0x5bd1e995) >>> 0;
+        for (let i = 0; i < data.length; i++) {
+          h1 ^= data[i]; h1 = Math.imul(h1, 0x01000193) >>> 0;
+          h2 ^= data[i]; h2 = Math.imul(h2, 0x01000193) >>> 0;
+          h2 = ((h2 << 13) | (h2 >>> 19)) >>> 0;
+        }
+        return 'fnv:' + h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
+      }
+
+      async function checkPassword(entered) {
+        const storedHash = state.settings.dashboardPasswordHash;
+        const legacyPlain = state.settings.dashboardPassword;
+        if (storedHash) {
+          const h = await hashPassword(entered);
+          return h === storedHash;
+        }
+        if (legacyPlain) return entered === legacyPlain;
+        return entered === DEFAULT_PASSWORD;
+      }
+
+      async function setPassword(pw) {
+        state.settings.dashboardPasswordHash = await hashPassword(pw);
+        delete state.settings.dashboardPassword;
+        saveState();
       }
 
       const DEFAULT_SETTINGS = {
@@ -186,7 +219,6 @@
         currency: 'INR',
         notifications: true,
         darkMode: true,
-        // passwordHash is set on first boot; the plain default is never stored or shown.
         dashboardPasswordHash: null
       };
 
@@ -219,7 +251,6 @@
         const d2 = new Date(b + 'T00:00:00');
         return Math.round((d2 - d1) / 86400000);
       }
-
       function startOfWeek(d = new Date()) {
         const day = d.getDay();
         const diff = (day === 0 ? -6 : 1 - day);
@@ -246,7 +277,7 @@
         return arr;
       }
 
-      function loadState() {
+      async function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
           if (raw) {
@@ -261,11 +292,10 @@
               if (!Array.isArray(state.missedDates)) state.missedDates = [];
               // Migrate legacy plaintext password to hash
               if (state.settings.dashboardPassword && !state.settings.dashboardPasswordHash) {
-                hashPassword(state.settings.dashboardPassword).then(h => {
-                  state.settings.dashboardPasswordHash = h;
-                  delete state.settings.dashboardPassword;
-                  saveState();
-                });
+                const h = await hashPassword(state.settings.dashboardPassword);
+                state.settings.dashboardPasswordHash = h;
+                delete state.settings.dashboardPassword;
+                saveState();
               }
               delete state.settings.dashboardPassword;
               return;
@@ -278,11 +308,8 @@
         state.missedDates = [];
         state.settings = { ...DEFAULT_SETTINGS };
         state.lastPenaltyPopupDate = null;
-        // First-run: set default password as a hash.
-        hashPassword(DEFAULT_PASSWORD).then(h => {
-          state.settings.dashboardPasswordHash = h;
-          saveState();
-        });
+        // First-run: set default password as a hash BEFORE returning (awaited, no race)
+        state.settings.dashboardPasswordHash = await hashPassword(DEFAULT_PASSWORD);
         saveState();
       }
 
@@ -326,34 +353,20 @@
       function getMatrixSavings() {
         return state.boxes.filter(b => b.completed).reduce((s, b) => s + b.value, 0);
       }
-      function getMatrixBoxesCompleted() {
-        return state.boxes.filter(b => b.completed).length;
-      }
-      function getTotalBoosters() {
-        return state.boosters.reduce((s, b) => s + b.amount, 0);
-      }
-      function getTotalPenaltiesGenerated() {
-        return state.penalties.reduce((s, p) => s + p.amount, 0);
-      }
-      function getTotalPenaltiesPaid() {
-        return state.penalties.filter(p => p.paid).reduce((s, p) => s + p.amount, 0);
-      }
-      function getOutstandingPenalties() {
-        return getTotalPenaltiesGenerated() - getTotalPenaltiesPaid();
-      }
+      function getMatrixBoxesCompleted() { return state.boxes.filter(b => b.completed).length; }
+      function getTotalBoosters() { return state.boosters.reduce((s, b) => s + b.amount, 0); }
+      function getTotalPenaltiesGenerated() { return state.penalties.reduce((s, p) => s + p.amount, 0); }
+      function getTotalPenaltiesPaid() { return state.penalties.filter(p => p.paid).reduce((s, p) => s + p.amount, 0); }
+      function getOutstandingPenalties() { return getTotalPenaltiesGenerated() - getTotalPenaltiesPaid(); }
       function getTodayBoxesCompleted() {
         const t = todayStr();
         return state.boxes.filter(b => b.completed && b.timestamp && b.timestamp.slice(0,10) === t).length;
       }
       function getDailyPace() { return state.settings.dailyPace || 1; }
       function isTodayLimitReached() { return getTodayBoxesCompleted() >= getDailyPace(); }
-
-      function getNextBox() {
-        return state.boxes.find(b => !b.completed) || null;
-      }
+      function getNextBox() { return state.boxes.find(b => !b.completed) || null; }
       function getCompletedBoxesInOrder() {
-        return state.boxes
-          .filter(b => b.completed && b.timestamp)
+        return state.boxes.filter(b => b.completed && b.timestamp)
           .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
       }
 
@@ -522,19 +535,11 @@
         setTimeout(() => input.focus(), 100);
 
         const submit = async () => {
-          const enteredHash = await hashPassword(input.value);
-          const storedHash = state.settings.dashboardPasswordHash;
-          const legacyPlain = state.settings.dashboardPassword;
-          const matches = storedHash
-            ? enteredHash === storedHash
-            : (legacyPlain ? input.value === legacyPlain : input.value === DEFAULT_PASSWORD);
-
-          if (matches) {
+          const ok = await checkPassword(input.value);
+          if (ok) {
             // Auto-migrate legacy plaintext on successful unlock
-            if (!storedHash && enteredHash) {
-              state.settings.dashboardPasswordHash = enteredHash;
-              delete state.settings.dashboardPassword;
-              saveState();
+            if (!state.settings.dashboardPasswordHash && input.value) {
+              await setPassword(input.value);
             }
             modal.classList.add('hidden'); modal.classList.remove('flex');
             if (onSuccess) onSuccess();
@@ -1076,11 +1081,12 @@
         const pace = getDailyPace();
         const limitReached = todayBoxes >= pace;
         const c = getCountdownData();
+        const reqPace = (c.requiredBoxesPerDay === Infinity) ? '—' : c.requiredBoxesPerDay.toFixed(1);
 
         let msg = '';
         if (pct >= 100) msg = '🏆 Congratulations! You have completed the ₹1,00,000 challenge!';
         else if (c.status === 'overdue') msg = `⏰ Target date passed with ${c.remainingBoxes} boxes left. Set a new target date.`;
-        else if (c.status === 'behind') msg = `⚠️ ${Math.abs(c.boxesDelta)} boxes behind. Need ${c.requiredBoxesPerDay.toFixed(1)} boxes/day.`;
+        else if (c.status === 'behind') msg = `⚠️ ${Math.abs(c.boxesDelta)} boxes behind. Need ${reqPace} boxes/day.`;
         else if (limitReached) msg = `✅ Daily pace hit (${pace} boxes). Come back tomorrow!`;
         else if (pct >= 50) msg = `🎉 You've crossed 50%! ${formatINR(matrix)} saved.`;
         else if (outstanding > 0) msg = `You have ${formatINR(outstanding)} in outstanding penalties.`;
@@ -1101,7 +1107,7 @@
             <span>Streak: ${streak.currentStreak} days</span>
             <span>Outstanding: ${formatINR(outstanding)}</span>
             <span>Days left: ${c.daysRemaining}</span>
-            <span>Required pace: ${c.requiredBoxesPerDay === Infinity ? '—' : c.requiredBoxesPerDay.toFixed(1)}/day</span>
+            <span>Required pace: ${reqPace}/day</span>
           </div>
         </div>`;
       }
@@ -1178,6 +1184,28 @@
         container.innerHTML = html;
         document.getElementById('headerMatrix').textContent = formatINR(getMatrixSavings());
         attachTabEvents();
+      }
+
+      async function changePasswordFlow() {
+        const oldPw = document.getElementById('settingOldPassword').value;
+        const newPw = document.getElementById('settingNewPassword').value;
+        const confirmPw = document.getElementById('settingConfirmPassword').value;
+
+        if (!(await checkPassword(oldPw))) {
+          showToast('Current password is incorrect', 'error');
+          return;
+        }
+        if (newPw.length < 4) {
+          showToast('New password must be at least 4 characters', 'error');
+          return;
+        }
+        if (newPw !== confirmPw) {
+          showToast('New passwords do not match', 'error');
+          return;
+        }
+        await setPassword(newPw);
+        showToast('Password changed successfully', 'success');
+        renderCurrentTab();
       }
 
       function attachTabEvents() {
@@ -1322,39 +1350,8 @@
           saveState(); showToast('Settings saved', 'success'); renderCurrentTab();
         });
 
-        // Dedicated change-password flow — never displays current password.
         const changePwBtn = document.getElementById('changePasswordBtn');
-        if (changePwBtn) changePwBtn.addEventListener('click', async () => {
-          const oldPw = document.getElementById('settingOldPassword').value;
-          const newPw = document.getElementById('settingNewPassword').value;
-          const confirmPw = document.getElementById('settingConfirmPassword').value;
-
-          const oldHash = await hashPassword(oldPw);
-          const storedHash = state.settings.dashboardPasswordHash;
-          const legacyPlain = state.settings.dashboardPassword;
-          const valid = storedHash
-            ? oldHash === storedHash
-            : (legacyPlain ? oldPw === legacyPlain : oldPw === DEFAULT_PASSWORD);
-
-          if (!valid) {
-            showToast('Current password is incorrect', 'error');
-            return;
-          }
-          if (newPw.length < 4) {
-            showToast('New password must be at least 4 characters', 'error');
-            return;
-          }
-          if (newPw !== confirmPw) {
-            showToast('New passwords do not match', 'error');
-            return;
-          }
-          const newHash = await hashPassword(newPw);
-          state.settings.dashboardPasswordHash = newHash;
-          delete state.settings.dashboardPassword;
-          saveState();
-          showToast('Password changed successfully', 'success');
-          renderCurrentTab();
-        });
+        if (changePwBtn) changePwBtn.addEventListener('click', changePasswordFlow);
 
         const resetBtn = document.getElementById('resetChallengeBtn');
         if (resetBtn) resetBtn.addEventListener('click', () => {
@@ -1369,7 +1366,7 @@
         if (importFile) importFile.addEventListener('change', (e) => {
           const file = e.target.files[0]; if (!file) return;
           const reader = new FileReader();
-          reader.onload = (ev) => {
+          reader.onload = async (ev) => {
             try {
               const parsed = JSON.parse(ev.target.result);
               if (parsed.version === 1 && Array.isArray(parsed.boxes) && parsed.boxes.length === TOTAL_BOXES) {
@@ -1377,16 +1374,12 @@
                 state.settings = { ...DEFAULT_SETTINGS, ...(state.settings || {}) };
                 if (!state.settings.dailyPace) state.settings.dailyPace = 1;
                 if (!state.settings.targetDate) state.settings.targetDate = DEFAULT_SETTINGS.targetDate;
+                if (!Array.isArray(state.boosters)) state.boosters = [];
+                if (!Array.isArray(state.penalties)) state.penalties = [];
+                if (!Array.isArray(state.missedDates)) state.missedDates = [];
                 if (!state.settings.dashboardPasswordHash) {
                   const legacyPlain = state.settings.dashboardPassword;
-                  hashPassword(legacyPlain || DEFAULT_PASSWORD).then(h => {
-                    state.settings.dashboardPasswordHash = h;
-                    delete state.settings.dashboardPassword;
-                    saveState();
-                    showToast('Imported', 'success');
-                    renderCurrentTab();
-                  });
-                  return;
+                  state.settings.dashboardPasswordHash = await hashPassword(legacyPlain || DEFAULT_PASSWORD);
                 }
                 delete state.settings.dashboardPassword;
                 saveState(); showToast('Imported', 'success'); renderCurrentTab();
@@ -1412,8 +1405,8 @@
         });
       }
 
-      function boot() {
-        loadState();
+      async function boot() {
+        await loadState();
         reconcileMissedDays();
         saveState();
         setupNav();
