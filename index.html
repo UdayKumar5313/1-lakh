@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>₹1 Lakh Challenge</title>
+<title>₹ Lakh Challenge</title>
 <style>
   /* ============ THEME VARIABLES ============ */
   :root {
-    /* Default: Dark theme */
     --bg: #000;
     --surface: #0a0a0a;
     --surface-2: #000;
@@ -49,16 +48,9 @@
     --modal-bg: rgba(0,0,0,0.85);
     --dot-off: #666;
     --dot-on: #fff;
-    --timeline-line: #222;
-    --timeline-line-progress: #fff;
-    --timeline-dot: #222;
-    --timeline-dot-active: #fff;
-    --timeline-dot-done: #fff;
-    --timeline-dot-target: #fff;
     --status-warn-border: #444;
   }
 
-  /* ============ SOFT THEME ============ */
   html[data-theme="soft"] {
     --bg: #1a1a1f;
     --surface: #232329;
@@ -101,16 +93,9 @@
     --modal-bg: rgba(10,10,12,0.85);
     --dot-off: #7a7a82;
     --dot-on: #f0f0f2;
-    --timeline-line: #383841;
-    --timeline-line-progress: #f0f0f2;
-    --timeline-dot: #383841;
-    --timeline-dot-active: #f0f0f2;
-    --timeline-dot-done: #f0f0f2;
-    --timeline-dot-target: #f0f0f2;
     --status-warn-border: #5a5a62;
   }
 
-  /* ============ HIGH CONTRAST THEME ============ */
   html[data-theme="contrast"] {
     --bg: #000;
     --surface: #000;
@@ -153,12 +138,6 @@
     --modal-bg: rgba(0,0,0,0.95);
     --dot-off: #fff;
     --dot-on: #fff;
-    --timeline-line: #fff;
-    --timeline-line-progress: #fff;
-    --timeline-dot: #fff;
-    --timeline-dot-active: #fff;
-    --timeline-dot-done: #fff;
-    --timeline-dot-target: #fff;
     --status-warn-border: #fff;
   }
 
@@ -304,88 +283,6 @@
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dot-off); flex-shrink: 0; }
   .status-dot.on { background: var(--dot-on); }
 
-  /* ============ GOAL TIMELINE ============ */
-  .timeline-wrap { padding: 24px 0 8px; }
-  .timeline-track {
-    position: relative;
-    height: 6px;
-    background: var(--timeline-line);
-    border-radius: 3px;
-    margin: 0 12px;
-  }
-  .timeline-progress {
-    position: absolute;
-    top: 0; left: 0; height: 100%;
-    background: var(--timeline-line-progress);
-    border-radius: 3px;
-    transition: width 0.5s ease;
-  }
-  .timeline-marker {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: var(--timeline-dot);
-    border: 2px solid var(--bg);
-    z-index: 2;
-    transition: background 0.2s;
-  }
-  .timeline-marker.filled { background: var(--timeline-dot-done); }
-  .timeline-marker.today { background: var(--timeline-dot-active); box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px var(--timeline-dot-active); width: 16px; height: 16px; }
-  .timeline-marker.target { background: var(--timeline-dot-target); width: 16px; height: 16px; }
-  .timeline-marker.projected { background: transparent; border: 2px dashed var(--timeline-dot); }
-  .timeline-label {
-    position: absolute;
-    top: -28px;
-    transform: translateX(-50%);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    white-space: nowrap;
-    text-align: center;
-    line-height: 1.3;
-  }
-  .timeline-label.below { top: auto; bottom: -34px; }
-  .timeline-label .date { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11px; color: var(--text); margin-top: 2px; }
-  .timeline-label.today .date { color: var(--text); font-weight: 700; }
-  .timeline-label.target .date { color: var(--text); font-weight: 700; }
-  .timeline-milestone-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 44px;
-  }
-  .milestone {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 14px;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-size: 13px;
-    gap: 12px;
-  }
-  .milestone.passed { opacity: 0.55; }
-  .milestone.current { border-color: var(--text-dim); }
-  .milestone-amount { font-family: "SF Mono", Menlo, Consolas, monospace; font-weight: 700; }
-  .milestone-date { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11px; color: var(--text-dim); }
-  .milestone-status {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 700;
-    color: var(--text-muted);
-    flex-shrink: 0;
-  }
-  .milestone.passed .milestone-status { color: var(--text-dim); }
-  .milestone.current .milestone-status { color: var(--text); }
-
-  /* ============ THEME SWITCHER ============ */
   .theme-switcher {
     display: flex;
     gap: 6px;
@@ -416,6 +313,17 @@
   }
   .theme-icon { font-size: 13px; margin-right: 4px; }
 
+  .level-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--surface-2); border: 1px solid var(--border-2);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .level-chip b { color: var(--text); font-size: 12px; }
+  .level-chip.on { background: var(--btn-primary-bg); color: var(--btn-primary-text); border-color: var(--btn-primary-bg); }
+  .level-chip.on b { color: var(--btn-primary-text); }
+
   .error-screen {
     position: fixed; inset: 0; background: #000; color: #fff; padding: 24px;
     font-family: monospace; font-size: 13px; z-index: 9999; overflow: auto;
@@ -434,11 +342,11 @@
 <div class="wrap" id="mainApp">
   <header class="hdr">
     <div>
-      <h1>₹1 LAKH<br>CHALLENGE</h1>
-      <p>240 Boxes · Savings Tracker</p>
+      <h1 id="hdrTitle">₹1 LAKH<br>CHALLENGE</h1>
+      <p id="hdrSub">240 Boxes · Level 1</p>
     </div>
     <div class="bal">
-      <small>Matrix</small>
+      <small>Total Saved</small>
       <b id="headerMatrix" class="mono">₹0</b>
     </div>
   </header>
@@ -447,6 +355,7 @@
     <button data-tab="dashboard" class="active">Dashboard</button>
     <button data-tab="timeline">Timeline</button>
     <button data-tab="matrix">Matrix</button>
+    <button data-tab="levels">Levels</button>
     <button data-tab="streak">Streak</button>
     <button data-tab="booster">Booster</button>
     <button data-tab="penalty">Penalty</button>
@@ -494,6 +403,15 @@
   </div>
 </div>
 
+<div id="levelUpModal" class="modal-bg">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:48px; margin-bottom:8px;">🏆</div>
+    <h3 id="levelUpTitle" style="font-size:22px; margin-bottom:12px;">Level Complete!</h3>
+    <p id="levelUpMsg" style="margin-bottom:24px;"></p>
+    <button id="levelUpContinue" class="btn btn-primary">Start Next Level</button>
+  </div>
+</div>
+
 <div id="toasts"></div>
 
 <script>
@@ -520,11 +438,10 @@
     { value: 500, count: 180 }
   ];
   const TOTAL_BOXES = 240;
-  const TOTAL_TARGET = 100000;
-  const STORAGE_KEY = 'savings_mono_v2';
+  const LEVEL_TARGET = 100000; // each level is ₹1 lakh
+  const STORAGE_KEY = 'savings_mono_v3'; // bumped for new schema
   const THEME_KEY = 'savings_theme_v1';
   const DEFAULT_PASSWORD = '1234';
-  const MILESTONES = [10000, 25000, 50000, 75000, 100000];
 
   function hashStr(s) {
     let h1 = 0x811c9dc5 >>> 0;
@@ -551,7 +468,6 @@
     document.documentElement.setAttribute('data-theme', name === 'dark' ? '' : name);
     if (name === 'dark') document.documentElement.removeAttribute('data-theme');
     storageSet(THEME_KEY, name);
-    // Update switcher UI if visible
     const sw = document.getElementById('themeSwitcher');
     if (sw) {
       const btns = sw.querySelectorAll('button');
@@ -605,6 +521,11 @@
   }
   function validDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
 
+  function lakhLabel(level) {
+    // 1 -> "₹1 Lakh", 2 -> "₹2 Lakh"
+    return '₹' + level + ' Lakh';
+  }
+
   const DEFAULT_SETTINGS = {
     startPenalty: 50,
     penaltyIncrement: 50,
@@ -614,9 +535,17 @@
     passwordHash: hashStr(DEFAULT_PASSWORD)
   };
 
+  // New schema v3:
+  // - state.currentLevel: number (1, 2, 3, ...)
+  // - state.boxes: current level's 240 boxes
+  // - state.levels: archive of completed levels [{ level, boxes, completedAt }]
+  // - boosters/penalties/missedDates are global across levels
   let state = {
-    version: 2,
-    boxes: [], boosters: [], penalties: [], missedDates: [],
+    version: 3,
+    currentLevel: 1,
+    boxes: [],
+    levels: [],
+    boosters: [], penalties: [], missedDates: [],
     settings: Object.assign({}, DEFAULT_SETTINGS),
     lastPenaltyPopupDate: null
   };
@@ -641,23 +570,28 @@
       const raw = storageGet(STORAGE_KEY);
       if (raw) {
         const p = JSON.parse(raw);
-        if (p && p.version === 2 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
+        if (p && p.version === 3 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
           state = p;
           state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings || {});
           if (!state.settings.passwordHash) state.settings.passwordHash = hashStr(DEFAULT_PASSWORD);
           if (!Array.isArray(state.boosters)) state.boosters = [];
           if (!Array.isArray(state.penalties)) state.penalties = [];
           if (!Array.isArray(state.missedDates)) state.missedDates = [];
+          if (!Array.isArray(state.levels)) state.levels = [];
+          if (typeof state.currentLevel !== 'number' || state.currentLevel < 1) state.currentLevel = 1;
           return;
         }
       }
     } catch (e) { console.warn('Load failed:', e); }
-    state.boxes = initBoxes();
-    state.boosters = [];
-    state.penalties = [];
-    state.missedDates = [];
-    state.settings = Object.assign({}, DEFAULT_SETTINGS);
-    state.lastPenaltyPopupDate = null;
+    state = {
+      version: 3,
+      currentLevel: 1,
+      boxes: initBoxes(),
+      levels: [],
+      boosters: [], penalties: [], missedDates: [],
+      settings: Object.assign({}, DEFAULT_SETTINGS),
+      lastPenaltyPopupDate: null
+    };
     saveState();
   }
 
@@ -674,9 +608,21 @@
     let guard = 0;
     while (d < today && guard++ < 5000) {
       let found = false;
+      // Check current level
       for (let i = 0; i < state.boxes.length; i++) {
         const b = state.boxes[i];
         if (b.completed && b.timestamp && b.timestamp.slice(0,10) === d) { found = true; break; }
+      }
+      // Check archived levels
+      if (!found) {
+        for (let L = 0; L < state.levels.length; L++) {
+          const boxes = state.levels[L].boxes || [];
+          for (let i = 0; i < boxes.length; i++) {
+            const b = boxes[i];
+            if (b.completed && b.timestamp && b.timestamp.slice(0,10) === d) { found = true; break; }
+          }
+          if (found) break;
+        }
       }
       if (!found) missed.push(d);
       const next = addDays(d, 1);
@@ -704,16 +650,54 @@
     saveState();
   }
 
-  function matrixSaved() {
+  // ---- Level helpers ----
+  function levelBoxesSaved() {
     let s = 0;
     for (let i = 0; i < state.boxes.length; i++) if (state.boxes[i].completed) s += state.boxes[i].value;
     return s;
   }
-  function matrixDone() {
+  function levelBoxesDone() {
     let c = 0;
     for (let i = 0; i < state.boxes.length; i++) if (state.boxes[i].completed) c++;
     return c;
   }
+  function archivedSaved() {
+    let s = 0;
+    for (let L = 0; L < state.levels.length; L++) {
+      const boxes = state.levels[L].boxes || [];
+      for (let i = 0; i < boxes.length; i++) if (boxes[i].completed) s += boxes[i].value;
+    }
+    return s;
+  }
+  function totalSaved() { return archivedSaved() + levelBoxesSaved(); }
+  function totalDone() {
+    let c = levelBoxesDone();
+    for (let L = 0; L < state.levels.length; L++) {
+      const boxes = state.levels[L].boxes || [];
+      for (let i = 0; i < boxes.length; i++) if (boxes[i].completed) c++;
+    }
+    return c;
+  }
+  function totalTarget() { return state.currentLevel * LEVEL_TARGET; }
+
+  function checkLevelUp() {
+    // Returns true if a level just completed
+    if (levelBoxesDone() < TOTAL_BOXES) return false;
+    const lv = state.currentLevel;
+    state.levels.push({
+      level: lv,
+      boxes: state.boxes.map(function(b) { return Object.assign({}, b); }),
+      completedAt: nowISO()
+    });
+    state.currentLevel = lv + 1;
+    state.boxes = initBoxes();
+    saveState();
+    return true;
+  }
+
+  function matrixSaved() { return totalSaved(); }
+  function matrixDone() { return totalDone(); }
+
   function boostersTotal() {
     let s = 0;
     for (let i = 0; i < state.boosters.length; i++) s += state.boosters[i].amount;
@@ -730,6 +714,7 @@
     return s;
   }
   function outstanding() { return penaltiesGen() - penaltiesPaid(); }
+
   function todayDone() {
     const t = todayStr();
     let c = 0;
@@ -753,7 +738,7 @@
     for (let i = 0; i < state.boxes.length; i++) if (!state.boxes[i].completed) return state.boxes[i];
     return null;
   }
-  function completedList() {
+  function completedListCurrentLevel() {
     const out = [];
     for (let i = 0; i < state.boxes.length; i++) {
       const b = state.boxes[i];
@@ -767,6 +752,13 @@
     for (let i = 0; i < state.boxes.length; i++) {
       const b = state.boxes[i];
       if (b.completed && b.timestamp) dates[b.timestamp.slice(0,10)] = true;
+    }
+    for (let L = 0; L < state.levels.length; L++) {
+      const boxes = state.levels[L].boxes || [];
+      for (let i = 0; i < boxes.length; i++) {
+        const b = boxes[i];
+        if (b.completed && b.timestamp) dates[b.timestamp.slice(0,10)] = true;
+      }
     }
     const sorted = Object.keys(dates).sort();
     let cur = 0, best = 0, run = 0, prev = null;
@@ -786,8 +778,8 @@
     const today = todayStr();
     const target = validDate(state.settings.targetDate) ? state.settings.targetDate : DEFAULT_SETTINGS.targetDate;
     const daysLeft = daysBetween(today, target);
-    const remBoxes = TOTAL_BOXES - matrixDone();
-    const remAmount = TOTAL_TARGET - matrixSaved();
+    const remBoxes = TOTAL_BOXES - levelBoxesDone();
+    const remAmount = LEVEL_TARGET - levelBoxesSaved();
     let reqPace = 0;
     if (daysLeft > 0 && remBoxes > 0) reqPace = remBoxes / daysLeft;
     else if (remBoxes > 0) reqPace = Infinity;
@@ -795,16 +787,13 @@
     const totalDays = Math.max(1, daysBetween(start, target));
     const elapsed = Math.max(0, Math.min(totalDays, daysBetween(start, today)));
     const expected = Math.floor((elapsed / totalDays) * TOTAL_BOXES);
-    const delta = matrixDone() - expected;
+    const delta = levelBoxesDone() - expected;
     let status = 'on-track';
     if (daysLeft < 0 && remBoxes > 0) status = 'overdue';
     else if (delta >= 5) status = 'ahead';
     else if (delta <= -5) status = 'behind';
     const reqSavings = (daysLeft > 0 && remAmount > 0) ? Math.ceil(remAmount / daysLeft) : 0;
-    let projected = null;
-    if (remBoxes > 0 && getPace() > 0) projected = addDays(today, Math.ceil(remBoxes / getPace()));
-    else if (remBoxes === 0) projected = today;
-    return { daysLeft: daysLeft, target: target, remBoxes: remBoxes, remAmount: remAmount, reqPace: reqPace, reqSavings: reqSavings, delta: delta, status: status, projected: projected };
+    return { daysLeft: daysLeft, target: target, remBoxes: remBoxes, remAmount: remAmount, reqPace: reqPace, reqSavings: reqSavings, delta: delta, status: status };
   }
 
   // ============ SMART DAILY TARGET ============
@@ -812,9 +801,9 @@
     const today = todayStr();
     const target = validDate(state.settings.targetDate) ? state.settings.targetDate : DEFAULT_SETTINGS.targetDate;
     const daysLeft = Math.max(0, daysBetween(today, target));
-    const saved = matrixSaved();
-    const done = matrixDone();
-    const remaining = TOTAL_TARGET - saved;
+    const saved = levelBoxesSaved();
+    const done = levelBoxesDone();
+    const remaining = LEVEL_TARGET - saved;
     const remBoxes = TOTAL_BOXES - done;
     const streak = getStreak();
     const missed = state.missedDates.length;
@@ -855,7 +844,7 @@
     else todayTarget = 0;
 
     let statusText, statusKind;
-    if (remaining <= 0) { statusText = 'Challenge complete'; statusKind = 'done'; }
+    if (remaining <= 0) { statusText = 'Level complete — advancing'; statusKind = 'done'; }
     else if (daysLeft <= 0) { statusText = 'Target date reached — finish now'; statusKind = 'urgent'; }
     else if (tSaved >= todayTarget && todayTarget > 0) { statusText = 'Daily target hit'; statusKind = 'done'; }
     else if (tSaved > 0) { statusText = fmt(todayTarget) + ' more to go'; statusKind = 'progress'; }
@@ -883,94 +872,33 @@
     };
   }
 
-  // ============ GOAL TIMELINE ============
-  // Returns milestones with their ISO dates (projected based on current pace)
   function getTimeline() {
     const start = validDate(state.settings.challengeStart) ? state.settings.challengeStart : todayStr();
     const target = validDate(state.settings.targetDate) ? state.settings.targetDate : DEFAULT_SETTINGS.targetDate;
     const today = todayStr();
-    const saved = matrixSaved();
-    const done = matrixDone();
+    const saved = levelBoxesSaved();
+    const done = levelBoxesDone();
     const pace = getPace();
 
     const totalDays = Math.max(1, daysBetween(start, target));
     const elapsed = Math.max(0, Math.min(totalDays, daysBetween(start, today)));
     const daysLeft = daysBetween(today, target);
 
-    // Projected finish date at current pace
     let projectedFinish = null;
     const remBoxes = TOTAL_BOXES - done;
     if (remBoxes > 0 && pace > 0) projectedFinish = addDays(today, Math.ceil(remBoxes / pace));
     else if (remBoxes === 0) projectedFinish = today;
 
-    // Milestones: when each amount will be reached (based on current average pace)
-    const milestones = [];
-    const todayNum = new Date(today + 'T00:00:00').getTime();
-    const startNum = new Date(start + 'T00:00:00').getTime();
-    const targetNum = new Date(target + 'T00:00:00').getTime();
-
-    // Compute average daily savings from history (if any)
     let avgDaily = 0;
     const st = getStreak();
     if (st.total > 0 && saved > 0) avgDaily = saved / st.total;
-    // Fall back to required pace if no history
-    if (avgDaily <= 0 && totalDays > 0) avgDaily = TOTAL_TARGET / totalDays;
-
-    for (let i = 0; i < MILESTONES.length; i++) {
-      const amt = MILESTONES[i];
-      const reached = saved >= amt;
-      let projDate = null;
-      if (reached) {
-        // Find the actual date it was reached
-        const list = completedList();
-        let cum = 0;
-        for (let j = 0; j < list.length; j++) {
-          cum += list[j].value;
-          if (cum >= amt) { projDate = list[j].timestamp.slice(0,10); break; }
-        }
-      } else if (avgDaily > 0) {
-        const need = amt - saved;
-        const daysNeeded = Math.ceil(need / avgDaily);
-        projDate = addDays(today, daysNeeded);
-      }
-      // Position on timeline (0-100)
-      let position = 0;
-      if (projDate && validDate(projDate)) {
-        const pn = new Date(projDate + 'T00:00:00').getTime();
-        if (pn <= startNum) position = 0;
-        else if (pn >= targetNum) position = 100;
-        else position = ((pn - startNum) / (targetNum - startNum)) * 100;
-      } else {
-        // fallback: amount-proportional position
-        position = (amt / TOTAL_TARGET) * 100;
-      }
-      milestones.push({ amount: amt, date: projDate, reached: reached, position: position });
-    }
-
-    // Today's position
-    let todayPos = 0;
-    if (todayNum <= startNum) todayPos = 0;
-    else if (todayNum >= targetNum) todayPos = 100;
-    else todayPos = ((todayNum - startNum) / (targetNum - startNum)) * 100;
-
-    // Target position (always 100)
-    // Projected position (based on projectedFinish)
-    let projectedPos = 100;
-    if (projectedFinish && validDate(projectedFinish)) {
-      const pn = new Date(projectedFinish + 'T00:00:00').getTime();
-      if (pn <= startNum) projectedPos = 0;
-      else if (pn >= targetNum) projectedPos = 100;
-      else projectedPos = ((pn - startNum) / (targetNum - startNum)) * 100;
-    }
+    if (avgDaily <= 0 && totalDays > 0) avgDaily = LEVEL_TARGET / totalDays;
 
     return {
       start: start,
       today: today,
       target: target,
       projectedFinish: projectedFinish,
-      milestones: milestones,
-      todayPos: todayPos,
-      projectedPos: projectedPos,
       totalDays: totalDays,
       elapsed: elapsed,
       daysLeft: daysLeft,
@@ -997,13 +925,17 @@
   }
   function breakdown(from, to) {
     let matrix = 0, mB = 0, boost = 0, bC = 0, pPaid = 0, pPaidC = 0, pGen = 0, pGenC = 0;
-    for (let i = 0; i < state.boxes.length; i++) {
-      const b = state.boxes[i];
-      if (b.completed && b.timestamp) {
-        const d = b.timestamp.slice(0,10);
-        if (d >= from && d <= to) { matrix += b.value; mB++; }
+    function scanBoxes(boxes) {
+      for (let i = 0; i < boxes.length; i++) {
+        const b = boxes[i];
+        if (b.completed && b.timestamp) {
+          const d = b.timestamp.slice(0,10);
+          if (d >= from && d <= to) { matrix += b.value; mB++; }
+        }
       }
     }
+    scanBoxes(state.boxes);
+    for (let L = 0; L < state.levels.length; L++) scanBoxes(state.levels[L].boxes || []);
     for (let i = 0; i < state.boosters.length; i++) {
       const b = state.boosters[i];
       if (b.date >= from && b.date <= to) { boost += b.amount; bC++; }
@@ -1031,13 +963,20 @@
     confirmCallback = onYes;
   }
 
+  function updateHeader() {
+    const lv = state.currentLevel;
+    document.getElementById('hdrTitle').innerHTML = lakhLabel(lv).replace(' ', '<br>').toUpperCase() + '<br>CHALLENGE';
+    document.getElementById('hdrSub').textContent = '240 Boxes · Level ' + lv;
+    document.getElementById('headerMatrix').textContent = fmt(totalSaved());
+  }
+
   // ============ SMART TARGET CARD ============
   function renderSmartTargetCard() {
     const t = getSmartTarget();
     const todayTargetStr = fmt(t.todayTarget);
     let html = '<div class="card card-hero">';
     html += '<div class="row-b" style="margin-bottom:14px;">';
-    html += '<div class="label-lg">Today\'s Smart Target</div>';
+    html += '<div class="label-lg">Today\'s Smart Target · Lvl ' + state.currentLevel + '</div>';
     html += '<span class="badge badge-invert">' + (t.statusKind === 'done' ? '✓ DONE' : t.statusKind === 'urgent' ? 'URGENT' : t.statusKind === 'streak' ? '🔥 STREAK' : 'SMART') + '</span>';
     html += '</div>';
     html += '<div class="big-xl mono" style="margin-bottom:6px;">' + todayTargetStr + '</div>';
@@ -1056,10 +995,10 @@
     html += '<div class="stat"><span class="label">Streak</span><b class="mono">' + t.streak + 'd</b></div>';
     html += '</div>';
     html += '<div style="margin-top:14px; font-size:11px; color:var(--hero-text-dim); line-height:1.5;">';
-    if (t.remaining <= 0) html += 'All boxes complete. Nothing left to save.';
-    else if (t.daysLeft <= 0) html += 'Target date has passed. ' + fmt(t.remaining) + ' still remaining.';
+    if (t.remaining <= 0) html += 'Level complete — next level starting.';
+    else if (t.daysLeft <= 0) html += 'Target date has passed. ' + fmt(t.remaining) + ' still remaining in this level.';
     else {
-      html += 'Based on ' + fmt(t.saved) + ' saved of ' + fmt(TOTAL_TARGET) + ' and ' + t.daysLeft + ' day' + (t.daysLeft === 1 ? '' : 's') + ' left';
+      html += 'Level ' + state.currentLevel + ': ' + fmt(t.saved) + ' of ' + fmt(LEVEL_TARGET) + ' saved, ' + t.daysLeft + ' day' + (t.daysLeft === 1 ? '' : 's') + ' left';
       if (t.streakDiscount > 0) html += ', reduced <b>' + Math.round(t.streakDiscount * 100) + '%</b> for your ' + t.streak + '-day streak';
       if (t.missed > 0 && t.missPenaltyFactor > 1) html += ', <b>+' + Math.round((t.missPenaltyFactor - 1) * 100) + '%</b> to catch up on ' + t.missed + ' missed day' + (t.missed === 1 ? '' : 's');
       html += '.';
@@ -1069,87 +1008,6 @@
     return html;
   }
 
-  // ============ GOAL TIMELINE CARD ============
-  function renderTimelineCard() {
-    const tl = getTimeline();
-    const todayPct = tl.todayPos;
-    const projPct = tl.projectedPos;
-
-    let html = '<div class="card">';
-    html += '<div class="row-b" style="margin-bottom:14px;">';
-    html += '<div class="label-lg">Goal Timeline</div>';
-    html += '<span class="badge">' + tl.daysLeft + 'd left</span>';
-    html += '</div>';
-
-    // The visual track
-    html += '<div class="timeline-wrap">';
-    html += '<div class="timeline-track">';
-    // Progress fill up to today
-    html += '<div class="timeline-progress" style="width:' + todayPct + '%"></div>';
-
-    // Start marker (0%)
-    html += '<div class="timeline-marker filled" style="left:0%;"></div>';
-    // Today marker
-    html += '<div class="timeline-marker today" style="left:' + todayPct + '%;"></div>';
-    // Target marker (100%)
-    html += '<div class="timeline-marker target" style="left:100%;"></div>';
-    // Projected marker
-    if (tl.projectedFinish && validDate(tl.projectedFinish) && projPct < 100) {
-      html += '<div class="timeline-marker projected" style="left:' + projPct + '%;"></div>';
-    }
-
-    // Labels: start (below, left-aligned), today (above), target (above, right), projected (below)
-    html += '<div class="timeline-label" style="left:0%; transform:translateX(0); text-align:left;">Start<div class="date">' + displayDate(tl.start) + '</div></div>';
-    if (todayPct > 15 && todayPct < 85) {
-      html += '<div class="timeline-label today" style="left:' + todayPct + '%;">Today<div class="date">' + displayDate(tl.today) + '</div></div>';
-    } else if (todayPct <= 15) {
-      html += '<div class="timeline-label today" style="left:' + Math.max(todayPct, 8) + '%;">Today<div class="date">' + displayDate(tl.today) + '</div></div>';
-    } else {
-      html += '<div class="timeline-label today" style="left:' + Math.min(todayPct, 92) + '%;">Today<div class="date">' + displayDate(tl.today) + '</div></div>';
-    }
-    html += '<div class="timeline-label target" style="left:100%; transform:translateX(-100%); text-align:right;">Target<div class="date">' + displayDate(tl.target) + '</div></div>';
-
-    if (tl.projectedFinish && validDate(tl.projectedFinish) && projPct < 100) {
-      const pClamp = Math.max(5, Math.min(projPct, 95));
-      html += '<div class="timeline-label below" style="left:' + pClamp + '%;">Projected<div class="date">' + displayDate(tl.projectedFinish) + '</div></div>';
-    }
-
-    html += '</div>';
-    html += '</div>';
-
-    // Legend
-    html += '<div class="row" style="margin-top:16px; gap:14px; font-size:11px; color:var(--text-muted); flex-wrap:wrap;">';
-    html += '<span><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--timeline-dot-done); margin-right:6px; vertical-align:middle;"></span>Reached</span>';
-    html += '<span><span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--timeline-dot-active); margin-right:6px; vertical-align:middle;"></span>Today</span>';
-    if (tl.projectedFinish && projPct < 100) {
-      html += '<span><span style="display:inline-block; width:8px; height:8px; border-radius:50%; border:2px dashed var(--timeline-dot); margin-right:6px; vertical-align:middle;"></span>Projected</span>';
-    }
-    html += '</div>';
-
-    // Milestone list
-    html += '<div class="timeline-milestone-list">';
-    for (let i = 0; i < tl.milestones.length; i++) {
-      const m = tl.milestones[i];
-      const isCurrent = !m.reached && tl.milestones.slice(0, i).every(function(x) { return x.reached; });
-      html += '<div class="milestone ' + (m.reached ? 'passed' : isCurrent ? 'current' : '') + '">';
-      html += '<div>';
-      html += '<div class="milestone-amount">' + fmt(m.amount) + '</div>';
-      if (m.date && validDate(m.date)) {
-        html += '<div class="milestone-date">' + displayDate(m.date) + (m.reached ? ' · reached' : ' · projected') + '</div>';
-      } else {
-        html += '<div class="milestone-date">—</div>';
-      }
-      html += '</div>';
-      html += '<div class="milestone-status">' + (m.reached ? '✓ Done' : isCurrent ? 'Next' : 'Upcoming') + '</div>';
-      html += '</div>';
-    }
-    html += '</div>';
-
-    html += '</div>';
-    return html;
-  }
-
-  // ============ THEME SWITCHER ============
   function renderThemeSwitcher() {
     return '<div class="card card-tight">' +
       '<div class="label" style="margin-bottom:10px;">Theme</div>' +
@@ -1161,10 +1019,56 @@
     '</div>';
   }
 
+  function renderLevelsCard() {
+    const cur = state.currentLevel;
+    let html = '<div class="card">';
+    html += '<div class="row-b" style="margin-bottom:14px;"><div class="label-lg">Levels</div><span class="badge badge-fill">Level ' + cur + ' active</span></div>';
+    html += '<div class="stack-sm">';
+
+    // Archived levels
+    for (let i = 0; i < state.levels.length; i++) {
+      const L = state.levels[i];
+      const boxes = L.boxes || [];
+      let saved = 0;
+      for (let j = 0; j < boxes.length; j++) if (boxes[j].completed) saved += boxes[j].value;
+      html += '<div class="list-row" style="padding:10px 0;">';
+      html += '<div>';
+      html += '<div style="font-weight:700; font-size:14px;">' + lakhLabel(L.level) + ' Level</div>';
+      html += '<div class="dim mono" style="font-size:11px; margin-top:2px;">Completed ' + displayDate((L.completedAt || '').slice(0,10)) + '</div>';
+      html += '</div>';
+      html += '<span class="badge badge-fill">✓ ' + fmt(saved) + '</span>';
+      html += '</div>';
+    }
+
+    // Current level
+    const curSaved = levelBoxesSaved();
+    const curDone = levelBoxesDone();
+    html += '<div class="list-row" style="padding:10px 0; background:var(--surface-2); border:1px solid var(--border-2); border-radius:8px; padding:12px;">';
+    html += '<div>';
+    html += '<div style="font-weight:700; font-size:14px;">' + lakhLabel(cur) + ' Level <span class="badge" style="margin-left:6px;">Active</span></div>';
+    html += '<div class="dim mono" style="font-size:11px; margin-top:2px;">' + curDone + ' / ' + TOTAL_BOXES + ' boxes · ' + fmt(curSaved) + ' / ' + fmt(LEVEL_TARGET) + '</div>';
+    html += '</div>';
+    html += '<span class="mono" style="font-weight:700;">' + Math.round((curDone / TOTAL_BOXES) * 100) + '%</span>';
+    html += '</div>';
+
+    // Preview next
+    html += '<div class="list-row" style="padding:10px 0; opacity:0.5;">';
+    html += '<div>';
+    html += '<div style="font-weight:700; font-size:14px;">' + lakhLabel(cur + 1) + ' Level</div>';
+    html += '<div class="dim" style="font-size:11px; margin-top:2px;">Locked — unlock after Level ' + cur + '</div>';
+    html += '</div>';
+    html += '<span class="badge">🔒 Locked</span>';
+    html += '</div>';
+
+    html += '</div></div>';
+    return html;
+  }
+
   function renderDashboard() {
-    const m = matrixSaved();
-    const pct = (m / TOTAL_TARGET * 100);
-    const done = matrixDone();
+    const m = totalSaved();
+    const lvSaved = levelBoxesSaved();
+    const lvPct = (lvSaved / LEVEL_TARGET * 100);
+    const done = levelBoxesDone();
     const tDone = todayDone();
     const p = getPace();
     const c = getCountdown();
@@ -1172,21 +1076,19 @@
     let html = '<div class="stack-lg">';
     html += renderSmartTargetCard();
 
-    // Progress card
     html += '<div class="card">';
     html += '<div class="row-b" style="margin-bottom:14px;">';
-    html += '<div><div class="label">Total Progress</div><div class="big mono" style="margin-top:6px;">' + fmt(m) + '</div></div>';
-    html += '<div style="text-align:right;"><div class="label">of</div><div class="h2 mono" style="margin-top:6px; color:var(--text-dim);">' + fmt(TOTAL_TARGET) + '</div></div>';
+    html += '<div><div class="label">Level ' + state.currentLevel + ' Progress</div><div class="big mono" style="margin-top:6px;">' + fmt(lvSaved) + '</div></div>';
+    html += '<div style="text-align:right;"><div class="label">of</div><div class="h2 mono" style="margin-top:6px; color:var(--text-dim);">' + fmt(LEVEL_TARGET) + '</div></div>';
     html += '</div>';
-    html += '<div class="bar"><div style="width:' + pct + '%"></div></div>';
-    html += '<div class="row-b" style="margin-top:12px;"><span class="label">' + done + ' / ' + TOTAL_BOXES + ' boxes</span><span class="label">' + pct.toFixed(1) + '%</span></div>';
+    html += '<div class="bar"><div style="width:' + lvPct + '%"></div></div>';
+    html += '<div class="row-b" style="margin-top:12px;"><span class="label">' + done + ' / ' + TOTAL_BOXES + ' boxes</span><span class="label">' + lvPct.toFixed(1) + '%</span></div>';
     html += '<div class="div"></div>';
     html += '<div class="row-b"><span class="dim" style="font-size:13px;">Today</span><span class="mono" style="font-weight:700; font-size:14px;">' + tDone + ' / ' + p + ' boxes</span></div>';
+    html += '<div class="div"></div>';
+    html += '<div class="row-b"><span class="dim" style="font-size:13px;">All-time total saved</span><span class="mono" style="font-weight:700; font-size:16px;">' + fmt(m) + '</span></div>';
     html += '</div>';
 
-    html += renderTimelineCard();
-
-    // Countdown card
     html += '<div class="card">';
     html += '<div class="row-b" style="margin-bottom:14px;"><div class="label-lg">Countdown</div><span class="badge ' + (c.status === 'on-track' ? 'badge-fill' : '') + '">' + (c.status === 'behind' ? Math.abs(c.delta) + ' behind' : c.status === 'ahead' ? c.delta + ' ahead' : c.status === 'overdue' ? 'Overdue' : 'On track') + '</span></div>';
     html += '<div class="grid-3">';
@@ -1196,7 +1098,6 @@
     html += '</div>';
     html += '</div>';
 
-    // Streak + Pace
     html += '<div class="grid-2">';
     const st = getStreak();
     html += '<div class="card card-tight"><div class="label">Streak</div><div class="big" style="margin-top:8px;">' + st.current + '</div><div class="dim" style="font-size:12px; margin-top:4px;">Best ' + st.best + ' · Total ' + st.total + '</div></div>';
@@ -1249,15 +1150,14 @@
   }
 
   function renderTimeline() {
-    let html = '<div class="stack">';
-    html += renderTimelineCard();
-
-    // Additional detail card
     const tl = getTimeline();
     const t = getSmartTarget();
-    const c = getCountdown();
+    let html = '<div class="stack">';
     html += '<div class="card">';
-    html += '<div class="label-lg" style="margin-bottom:14px;">Timeline Details</div>';
+    html += '<div class="row-b" style="margin-bottom:14px;">';
+    html += '<div class="label-lg">Timeline · Level ' + state.currentLevel + '</div>';
+    html += '<span class="badge">' + tl.daysLeft + 'd left</span>';
+    html += '</div>';
     html += '<div class="row-b"><span class="dim" style="font-size:13px;">Started</span><span class="mono" style="font-weight:600;">' + displayDate(tl.start) + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Today</span><span class="mono" style="font-weight:600;">' + displayDate(tl.today) + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Target</span><span class="mono" style="font-weight:600;">' + displayDate(tl.target) + '</span></div>';
@@ -1271,47 +1171,70 @@
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Avg saved/day</span><span class="mono" style="font-weight:600;">' + fmt(tl.avgDaily) + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Required today</span><span class="mono" style="font-weight:600;">' + fmt(t.todayTarget) + '</span></div>';
     html += '</div>';
-
     html += '</div>';
     return html;
   }
 
   function renderMatrix() {
-    const done = matrixDone();
-    const saved = matrixSaved();
+    const done = levelBoxesDone();
+    const saved = levelBoxesSaved();
     const tDone = todayDone();
     const p = getPace();
     const limit = tDone >= p;
     const rem = Math.max(0, p - tDone);
     const nb = nextBox();
-    const list = completedList();
+    const list = completedListCurrentLevel();
     const t = getSmartTarget();
     let html = '<div class="stack">';
 
     html += '<div class="status-bar ' + (t.todaySaved >= t.todayTarget && t.todayTarget > 0 ? '' : 'warn') + '">';
     html += '<div class="status-dot ' + (t.todaySaved >= t.todayTarget && t.todayTarget > 0 ? 'on' : '') + '"></div>';
-    if (t.remaining <= 0) html += '<span>🏆 Challenge complete</span>';
+    if (t.remaining <= 0) html += '<span>🏆 Level complete — advancing</span>';
     else if (t.todaySaved >= t.todayTarget && t.todayTarget > 0) html += '<span>✓ Daily target hit — ' + fmt(t.todaySaved) + ' saved today</span>';
     else html += '<span>Today\'s smart target: <b class="mono">' + fmt(t.todayTarget) + '</b> · ' + fmt(t.todaySaved) + ' saved so far</span>';
     html += '</div>';
 
     html += '<div class="card card-tight">';
-    html += '<div class="row-b"><span class="dim" style="font-size:13px;">Completed</span><span class="mono" style="font-weight:600;">' + done + ' / ' + TOTAL_BOXES + '</span></div>';
-    html += '<div class="row-b" style="margin-top:6px;"><span class="dim" style="font-size:13px;">Total saved</span><span class="mono" style="font-weight:600;">' + fmt(saved) + '</span></div>';
+    html += '<div class="row-b"><span class="dim" style="font-size:13px;">Level ' + state.currentLevel + ' boxes</span><span class="mono" style="font-weight:600;">' + done + ' / ' + TOTAL_BOXES + '</span></div>';
+    html += '<div class="row-b" style="margin-top:6px;"><span class="dim" style="font-size:13px;">Level saved</span><span class="mono" style="font-weight:600;">' + fmt(saved) + '</span></div>';
+    html += '<div class="row-b" style="margin-top:6px;"><span class="dim" style="font-size:13px;">All-time saved</span><span class="mono" style="font-weight:600;">' + fmt(totalSaved()) + '</span></div>';
     html += '<div class="div" style="margin:12px 0;"></div>';
     html += '<div class="row-b"><span class="dim" style="font-size:13px;">Today</span><span class="mono" style="font-weight:600;">' + (limit ? tDone + '/' + p + ' · pace limit' : rem + ' more box' + (rem === 1 ? '' : 'es') + ' allowed') + '</span></div>';
     html += '</div>';
 
     if (nb && !limit) html += '<div class="card" style="text-align:center;"><div class="label">Next to save</div><div class="big-lg mono" style="margin:12px 0;">' + fmt(nb.value) + '</div><button id="checkNextBtn" class="btn btn-primary">Mark ' + fmt(nb.value) + ' as Saved</button></div>';
     if (nb && limit) html += '<div class="card" style="text-align:center;"><div class="label">Next to save</div><div class="big-lg mono" style="margin:12px 0; color:var(--text-ghost);">' + fmt(nb.value) + '</div><div class="dim" style="font-size:13px;">Daily pace limit reached. Come back tomorrow.</div></div>';
-    if (!nb) html += '<div class="card" style="text-align:center;"><div style="font-size:32px;">🏆</div><div style="font-weight:700; margin-top:8px;">Complete!</div><div class="dim" style="font-size:13px; margin-top:4px;">All 240 boxes · ₹1,00,000 saved</div></div>';
+    if (!nb) html += '<div class="card" style="text-align:center;"><div style="font-size:32px;">🏆</div><div style="font-weight:700; margin-top:8px;">Level complete!</div><div class="dim" style="font-size:13px; margin-top:4px;">Advancing to Level ' + (state.currentLevel + 1) + '…</div></div>';
 
     if (list.length) {
-      html += '<div class="card"><div class="label" style="margin-bottom:12px;">Completed (' + list.length + ') · tap to undo</div><div class="m-grid">';
+      html += '<div class="card"><div class="label" style="margin-bottom:12px;">This level completed (' + list.length + ') · tap to undo</div><div class="m-grid">';
       for (let i = 0; i < list.length; i++) html += '<div class="m-box done" data-box-id="' + list[i].id + '">' + list[i].value + '</div>';
       html += '</div></div>';
     } else {
-      html += '<div class="empty">No boxes completed yet.</div>';
+      html += '<div class="empty">No boxes completed yet in this level.</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderLevels() {
+    let html = '<div class="stack">';
+    html += renderLevelsCard();
+
+    // Archive detail
+    if (state.levels.length) {
+      html += '<div class="card"><div class="label-lg" style="margin-bottom:12px;">Completed Levels</div>';
+      for (let i = 0; i < state.levels.length; i++) {
+        const L = state.levels[i];
+        const boxes = L.boxes || [];
+        let done = 0;
+        for (let j = 0; j < boxes.length; j++) if (boxes[j].completed) done++;
+        html += '<div class="list-row">';
+        html += '<div><div style="font-weight:700;">' + lakhLabel(L.level) + '</div><div class="dim mono" style="font-size:11px;">' + done + ' / ' + TOTAL_BOXES + ' boxes · completed ' + displayDate((L.completedAt || '').slice(0,10)) + '</div></div>';
+        html += '<span class="badge badge-fill">✓ Done</span>';
+        html += '</div>';
+      }
+      html += '</div>';
     }
     html += '</div>';
     return html;
@@ -1395,10 +1318,14 @@
   function renderActivity() {
     const map = {};
     function ensure(d) { if (!map[d]) map[d] = { matrix: 0, boxes: 0, boost: 0, pGen: 0, pPaid: 0 }; return map[d]; }
-    for (let i = 0; i < state.boxes.length; i++) {
-      const b = state.boxes[i];
-      if (b.completed && b.timestamp) { const r = ensure(b.timestamp.slice(0,10)); r.matrix += b.value; r.boxes++; }
+    function scanBoxes(boxes) {
+      for (let i = 0; i < boxes.length; i++) {
+        const b = boxes[i];
+        if (b.completed && b.timestamp) { const r = ensure(b.timestamp.slice(0,10)); r.matrix += b.value; r.boxes++; }
+      }
     }
+    scanBoxes(state.boxes);
+    for (let L = 0; L < state.levels.length; L++) scanBoxes(state.levels[L].boxes || []);
     for (let i = 0; i < state.boosters.length; i++) ensure(state.boosters[i].date).boost += state.boosters[i].amount;
     for (let i = 0; i < state.penalties.length; i++) {
       const p = state.penalties[i];
@@ -1433,20 +1360,23 @@
   }
 
   function renderReports() {
-    const m = matrixSaved(), b = boostersTotal(), actual = m + b;
+    const m = totalSaved(), b = boostersTotal(), actual = m + b;
     const pGen = penaltiesGen(), pPaid = penaltiesPaid(), out = outstanding();
-    const done = matrixDone();
     const st = getStreak();
-    const avg = done > 0 ? m / Math.max(1, st.total) : 0;
-    const c = getCountdown();
     const t = getSmartTarget();
     const tl = getTimeline();
     let html = '<div class="stack">';
     html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Financial Summary</div>';
-    html += '<div class="row-b"><span class="dim">Matrix</span><span class="mono" style="font-weight:600;">' + fmt(m) + '</span></div>';
+    html += '<div class="row-b"><span class="dim">Current level (' + state.currentLevel + ') matrix</span><span class="mono" style="font-weight:600;">' + fmt(levelBoxesSaved()) + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Archived levels matrix</span><span class="mono" style="font-weight:600;">' + fmt(archivedSaved()) + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Boosters</span><span class="mono" style="font-weight:600;">' + fmt(b) + '</span></div>';
     html += '<div class="div"></div>';
-    html += '<div class="row-b"><span style="font-weight:600;">Actual saved</span><span class="mono big" style="font-size:22px;">' + fmt(actual) + '</span></div></div>';
+    html += '<div class="row-b"><span style="font-weight:600;">Actual saved (all-time)</span><span class="mono big" style="font-size:22px;">' + fmt(actual) + '</span></div></div>';
+    html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Levels</div>';
+    html += '<div class="row-b"><span class="dim">Current level</span><span class="mono" style="font-weight:600;">' + state.currentLevel + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Completed levels</span><span class="mono" style="font-weight:600;">' + state.levels.length + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Total target</span><span class="mono" style="font-weight:600;">' + fmt(totalTarget()) + '</span></div>';
+    html += '</div>';
     html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Smart Target Breakdown</div>';
     html += '<div class="row-b"><span class="dim">Base daily need</span><span class="mono" style="font-weight:600;">' + fmt(t.baseDaily) + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Streak discount</span><span class="mono" style="font-weight:600;">' + Math.round(t.streakDiscount * 100) + '%</span></div>';
@@ -1471,27 +1401,26 @@
   }
 
   function renderCoach() {
-    const m = matrixSaved();
+    const m = totalSaved();
     const st = getStreak();
     const out = outstanding();
     const tB = boostersTotal();
     const c = getCountdown();
     const t = getSmartTarget();
-    const tl = getTimeline();
 
     let msg;
-    if (t.remaining <= 0) msg = '🏆 Challenge complete! You saved the full ₹1,00,000.';
-    else if (t.todaySaved >= t.todayTarget && t.todayTarget > 0) msg = '✓ Daily target hit. You saved ' + fmt(t.todaySaved) + ' today. ' + c.daysLeft + ' days left.';
-    else if (t.daysLeft <= 0) msg = '⏰ Target date reached. ' + fmt(t.remaining) + ' still remaining.';
+    if (t.remaining <= 0) msg = '🏆 Level ' + state.currentLevel + ' complete! Advancing to next level.';
+    else if (t.todaySaved >= t.todayTarget && t.todayTarget > 0) msg = '✓ Daily target hit. You saved ' + fmt(t.todaySaved) + ' today. ' + c.daysLeft + ' days left in level ' + state.currentLevel + '.';
+    else if (t.daysLeft <= 0) msg = '⏰ Target date reached. ' + fmt(t.remaining) + ' still remaining in this level.';
     else if (t.streak >= 7) msg = '🔥 ' + t.streak + '-day streak. Save ' + fmt(t.todayTarget) + ' today to keep it alive.';
     else if (t.missed > 0 && t.missPenaltyFactor > 1.05) msg = 'You missed ' + t.missed + ' day' + (t.missed === 1 ? '' : 's') + '. Today\'s target is ' + fmt(t.todayTarget) + ' to catch up.';
     else if (t.todaySaved > 0) msg = 'Saved ' + fmt(t.todaySaved) + ' today. ' + fmt(t.todayTarget) + ' more to hit today\'s target.';
     else msg = 'Save ' + fmt(t.todayTarget) + ' today to stay on track.';
 
     let html = '<div class="stack">';
-    html += '<div class="card card-hero"><div class="label-lg">Coach</div><div style="margin-top:16px; font-size:16px; line-height:1.6; font-weight:500;">' + msg + '</div></div>';
+    html += '<div class="card card-hero"><div class="label-lg">Coach · Level ' + state.currentLevel + '</div><div style="margin-top:16px; font-size:16px; line-height:1.6; font-weight:500;">' + msg + '</div></div>';
     html += '<div class="card"><div class="grid-2">';
-    html += '<div class="stat"><span class="label">Matrix</span><b class="mono">' + fmt(m) + '</b></div>';
+    html += '<div class="stat"><span class="label">All-time saved</span><b class="mono">' + fmt(m) + '</b></div>';
     html += '<div class="stat"><span class="label">Booster</span><b class="mono">' + fmt(tB) + '</b></div>';
     html += '<div class="stat"><span class="label">Streak</span><b class="mono">' + st.current + 'd</b></div>';
     html += '<div class="stat"><span class="label">Outstanding</span><b class="mono">' + fmt(out) + '</b></div>';
@@ -1541,6 +1470,7 @@
         case 'dashboard': html = renderDashboard(); break;
         case 'timeline': html = renderTimeline(); break;
         case 'matrix': html = renderMatrix(); break;
+        case 'levels': html = renderLevels(); break;
         case 'streak': html = renderStreak(); break;
         case 'booster': html = renderBooster(); break;
         case 'penalty': html = renderPenalty(); break;
@@ -1550,7 +1480,7 @@
         case 'settings': html = renderSettings(); break;
       }
       c.innerHTML = html;
-      document.getElementById('headerMatrix').textContent = fmt(matrixSaved());
+      updateHeader();
       bindEvents();
     } catch (e) {
       c.innerHTML = '<div class="card"><div style="color:var(--text); font-family:monospace; font-size:12px; white-space:pre-wrap;">Render error: ' + e.message + '\n\n' + (e.stack || '') + '</div></div>';
@@ -1558,10 +1488,16 @@
     }
   }
 
+  function triggerLevelUpModal() {
+    const lv = state.currentLevel - 1; // just-completed level
+    document.getElementById('levelUpTitle').textContent = 'Level ' + lv + ' Complete!';
+    document.getElementById('levelUpMsg').innerHTML = 'You saved <b>' + fmt(LEVEL_TARGET) + '</b> in Level ' + lv + '.<br>Total all-time: <b>' + fmt(totalSaved()) + '</b>.<br><br>Now starting Level ' + state.currentLevel + ' (' + lakhLabel(state.currentLevel) + ').';
+    document.getElementById('levelUpModal').classList.add('show');
+  }
+
   function bindEvents() {
     const el = function(id) { return document.getElementById(id); };
 
-    // Theme switcher
     const sw = el('themeSwitcher');
     if (sw) {
       const btns = sw.querySelectorAll('button');
@@ -1590,8 +1526,11 @@
       nb.completed = true;
       nb.timestamp = nowISO();
       toast('Saved ' + fmt(nb.value) + ' (' + (t + 1) + '/' + p + ' pace)');
+      // Check if level completes
+      const completed = checkLevelUp();
       saveState();
       renderTab();
+      if (completed) triggerLevelUpModal();
     };
 
     const doneBoxes = document.querySelectorAll('.m-box.done');
@@ -1678,10 +1617,14 @@
     };
     if (el('exportCsv')) el('exportCsv').onclick = function() {
       let csv = 'Date,Type,Amount,Description\n';
-      for (let i = 0; i < state.boxes.length; i++) {
-        const b = state.boxes[i];
-        if (b.completed && b.timestamp) csv += displayDate(b.timestamp.slice(0,10)) + ',Matrix,' + b.value + ',Box\n';
+      function scanBoxes(boxes) {
+        for (let i = 0; i < boxes.length; i++) {
+          const b = boxes[i];
+          if (b.completed && b.timestamp) csv += displayDate(b.timestamp.slice(0,10)) + ',Matrix,' + b.value + ',Box\n';
+        }
       }
+      scanBoxes(state.boxes);
+      for (let L = 0; L < state.levels.length; L++) scanBoxes(state.levels[L].boxes || []);
       for (let i = 0; i < state.boosters.length; i++) {
         const b = state.boosters[i];
         csv += displayDate(b.date) + ',Booster,' + b.amount + ',' + (b.description || '').replace(/,/g, ';') + '\n';
@@ -1732,7 +1675,7 @@
     };
 
     if (el('resetChallengeBtn')) el('resetChallengeBtn').onclick = function() {
-      confirmBox('Reset', 'Erase all data?', function() { storageRemove(STORAGE_KEY); location.reload(); });
+      confirmBox('Reset', 'Erase all data including all levels?', function() { storageRemove(STORAGE_KEY); location.reload(); });
     };
 
     if (el('importDataBtn')) el('importDataBtn').onclick = function() { el('importFile').click(); };
@@ -1743,13 +1686,15 @@
       r.onload = function(ev) {
         try {
           const p = JSON.parse(ev.target.result);
-          if (p.version === 2 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
+          if (p.version === 3 && Array.isArray(p.boxes) && p.boxes.length === TOTAL_BOXES) {
             state = p;
             state.settings = Object.assign({}, DEFAULT_SETTINGS, state.settings || {});
             if (!state.settings.passwordHash) state.settings.passwordHash = hashStr(DEFAULT_PASSWORD);
             if (!Array.isArray(state.boosters)) state.boosters = [];
             if (!Array.isArray(state.penalties)) state.penalties = [];
             if (!Array.isArray(state.missedDates)) state.missedDates = [];
+            if (!Array.isArray(state.levels)) state.levels = [];
+            if (typeof state.currentLevel !== 'number' || state.currentLevel < 1) state.currentLevel = 1;
             saveState();
             toast('Imported');
             renderTab();
@@ -1767,6 +1712,11 @@
   document.getElementById('confirmNo').onclick = function() {
     document.getElementById('confirmModal').classList.remove('show');
     confirmCallback = null;
+  };
+
+  document.getElementById('levelUpContinue').onclick = function() {
+    document.getElementById('levelUpModal').classList.remove('show');
+    renderTab();
   };
 
   function checkPw(entered) { return hashStr(entered) === state.settings.passwordHash; }
@@ -1831,9 +1781,12 @@
       if (!storageOK) toast('⚠️ Storage unavailable — data will not persist');
       loadState();
       reconcileMissedDays();
+      // If level already complete from a previous session (e.g. finished exactly on last box then closed)
+      const completed = checkLevelUp();
       saveState();
       setupNav();
       renderTab();
+      if (completed) triggerLevelUpModal();
       setTimeout(function() { try { checkPenaltyPopup(); } catch (e) { console.warn('penalty:', e); } }, 800);
     } catch (e) {
       showFatal('Boot error: ' + e.message + '\n\n' + (e.stack || ''));
