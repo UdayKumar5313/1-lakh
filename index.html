@@ -213,7 +213,6 @@
 (function() {
   'use strict';
 
-  // ============ GLOBAL ERROR CATCH ============
   window.onerror = function(msg, src, line, col, err) {
     showFatal('Runtime error: ' + msg + '\n\nLine ' + line + ':' + col + '\n\n' + (err && err.stack ? err.stack : ''));
     return false;
@@ -228,7 +227,6 @@
     }
   }
 
-  // ============ CONFIG ============
   const DENOMS = [
     { value: 100, count: 20 },
     { value: 200, count: 40 },
@@ -239,8 +237,6 @@
   const STORAGE_KEY = 'savings_mono_v2';
   const DEFAULT_PASSWORD = '1234';
 
-  // ============ SIMPLE SYNC HASH (no crypto.subtle, no async) ============
-  // Deterministic, non-cryptographic hash — sufficient for a local personal app.
   function hashStr(s) {
     let h1 = 0x811c9dc5 >>> 0;
     let h2 = 0xdeadbeef >>> 0;
@@ -253,24 +249,24 @@
     return h1.toString(16).padStart(8,'0') + h2.toString(16).padStart(8,'0');
   }
 
-  // ============ SAFE STORAGE ============
   let storageOK = true;
-  function storageGet(k) {
-    try { return localStorage.getItem(k); } catch (e) { storageOK = false; return null; }
-  }
-  function storageSet(k, v) {
-    try { localStorage.setItem(k, v); } catch (e) { storageOK = false; }
-  }
-  function storageRemove(k) {
-    try { localStorage.removeItem(k); } catch (e) {}
-  }
+  function storageGet(k) { try { return localStorage.getItem(k); } catch (e) { storageOK = false; return null; } }
+  function storageSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { storageOK = false; } }
+  function storageRemove(k) { try { localStorage.removeItem(k); } catch (e) {} }
 
-  // ============ HELPERS ============
+  // ---- Date helpers ----
   function todayStr() {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
   }
   function nowISO() { return new Date().toISOString(); }
+  // Convert ISO "YYYY-MM-DD" → display "DD/MM/YYYY"
+  function displayDate(iso) {
+    if (!iso || typeof iso !== 'string') return '—';
+    const parts = iso.split('-');
+    if (parts.length !== 3) return iso;
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
   function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { maximumFractionDigits: 0 }); }
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
   function addDays(ds, n) {
@@ -287,7 +283,6 @@
   }
   function validDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
 
-  // ============ STATE ============
   const DEFAULT_SETTINGS = {
     startPenalty: 50,
     penaltyIncrement: 50,
@@ -347,9 +342,7 @@
   }
 
   function saveState() {
-    try {
-      storageSet(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { console.warn('Save failed:', e); }
+    try { storageSet(STORAGE_KEY, JSON.stringify(state)); } catch (e) { console.warn('Save failed:', e); }
   }
 
   function reconcileMissedDays() {
@@ -391,7 +384,6 @@
     saveState();
   }
 
-  // ============ GETTERS ============
   function matrixSaved() {
     let s = 0;
     for (let i = 0; i < state.boxes.length; i++) if (state.boxes[i].completed) s += state.boxes[i].value;
@@ -523,7 +515,6 @@
     return { matrix: matrix, mB: mB, boost: boost, bC: bC, pPaid: pPaid, pPaidC: pPaidC, pGen: pGen, pGenC: pGenC, total: matrix + boost + pPaid };
   }
 
-  // ============ UI HELPERS ============
   function toast(msg) {
     const el = document.createElement('div');
     el.className = 'toast';
@@ -539,7 +530,6 @@
     confirmCallback = onYes;
   }
 
-  // ============ RENDER: DASHBOARD ============
   function renderDashboard() {
     const m = matrixSaved();
     const pct = (m / TOTAL_TARGET * 100);
@@ -554,8 +544,6 @@
                        c.status === 'overdue' ? 'Overdue' : 'On track';
 
     let html = '<div class="stack-lg">';
-
-    // Progress card
     html += '<div class="card">';
     html += '<div class="row-b" style="margin-bottom:14px;">';
     html += '<div><div class="label">Progress</div><div class="big mono" style="margin-top:6px;">' + fmt(m) + '</div></div>';
@@ -567,7 +555,6 @@
     html += '<div class="row-b"><span class="dim" style="font-size:13px;">Today</span><span class="mono" style="font-weight:700; font-size:14px;">' + tDone + ' / ' + p + '</span></div>';
     html += '</div>';
 
-    // Countdown card
     html += '<div class="card">';
     html += '<div class="row-b" style="margin-bottom:14px;"><div class="label-lg">Countdown</div><span class="badge ' + (c.status === 'on-track' ? 'badge-fill' : '') + '">' + statusText + '</span></div>';
     html += '<div class="grid-3">';
@@ -577,13 +564,12 @@
     html += '</div>';
     html += '<div class="div"></div>';
     html += '<div class="row-b"><span class="dim" style="font-size:13px;">Required pace</span><span class="mono" style="font-size:13px; font-weight:600;">' + (c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)) + ' /day</span></div>';
-    html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Target</span><span class="mono" style="font-size:13px;">' + c.target + '</span></div>';
+    html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Target</span><span class="mono" style="font-size:13px;">' + displayDate(c.target) + '</span></div>';
     if (c.projected && validDate(c.projected)) {
-      html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Projected</span><span class="mono" style="font-size:13px;">' + c.projected + '</span></div>';
+      html += '<div class="row-b" style="margin-top:8px;"><span class="dim" style="font-size:13px;">Projected</span><span class="mono" style="font-size:13px;">' + displayDate(c.projected) + '</span></div>';
     }
     html += '</div>';
 
-    // Streak + pace
     html += '<div class="grid-2">';
     html += '<div class="card card-tight"><div class="label">Streak</div><div class="big" style="margin-top:8px;">' + st.current + '</div><div class="dim" style="font-size:12px; margin-top:4px;">Best ' + st.best + ' · Total ' + st.total + '</div></div>';
     html += '<div class="card card-tight"><div class="label">Pace</div><select id="paceSelect" class="inp mono" style="margin-top:8px; padding:8px 10px;">';
@@ -594,7 +580,6 @@
     html += '</select><div class="dim" style="font-size:12px; margin-top:6px;">~' + Math.ceil(rem / p) + ' days</div></div>';
     html += '</div>';
 
-    // Financial panel
     html += renderFinancialPanel();
     html += '</div>';
     return html;
@@ -615,7 +600,7 @@
     const r = periodRange(activePeriod);
     const b = breakdown(r.from, r.to);
     let html = '<div class="card">';
-    html += '<div class="row-b" style="margin-bottom:14px;"><div><div class="label-lg">Detailed Collections</div><div class="dim mono" style="font-size:11px; margin-top:4px;">' + r.from + ' → ' + r.to + '</div></div><button id="lockFinBtn" class="btn btn-ghost btn-sm">Lock</button></div>';
+    html += '<div class="row-b" style="margin-bottom:14px;"><div><div class="label-lg">Detailed Collections</div><div class="dim mono" style="font-size:11px; margin-top:4px;">' + displayDate(r.from) + ' → ' + displayDate(r.to) + '</div></div><button id="lockFinBtn" class="btn btn-ghost btn-sm">Lock</button></div>';
     html += '<div class="pill-row" style="margin-bottom:16px;">';
     const periods = [['today','Today'],['week','Week'],['month','Month'],['all','All']];
     for (let i = 0; i < periods.length; i++) {
@@ -635,7 +620,6 @@
     return html;
   }
 
-  // ============ RENDER: MATRIX ============
   function renderMatrix() {
     const done = matrixDone();
     const saved = matrixSaved();
@@ -677,7 +661,6 @@
     return html;
   }
 
-  // ============ RENDER: STREAK ============
   function renderStreak() {
     const st = getStreak();
     const missed = state.missedDates || [];
@@ -708,7 +691,6 @@
     return html;
   }
 
-  // ============ RENDER: BOOSTER ============
   function renderBooster() {
     const total = boostersTotal();
     const sorted = state.boosters.slice().sort(function(a, b) { return a.timestamp < b.timestamp ? 1 : -1; });
@@ -722,7 +704,7 @@
     if (sorted.length) {
       for (let i = 0; i < sorted.length; i++) {
         const b = sorted[i];
-        html += '<div class="list-row"><div><div class="mono" style="font-weight:700;">' + fmt(b.amount) + '</div><div class="dim" style="font-size:12px; margin-top:2px;">' + (b.description || '—') + '</div><div style="font-size:11px; color:#444; margin-top:2px;" class="mono">' + b.date + (b.time ? ' · ' + b.time : '') + '</div></div><button class="btn btn-ghost btn-sm delete-booster" data-id="' + b.id + '">Del</button></div>';
+        html += '<div class="list-row"><div><div class="mono" style="font-weight:700;">' + fmt(b.amount) + '</div><div class="dim" style="font-size:12px; margin-top:2px;">' + (b.description || '—') + '</div><div style="font-size:11px; color:#444; margin-top:2px;" class="mono">' + displayDate(b.date) + (b.time ? ' · ' + b.time : '') + '</div></div><button class="btn btn-ghost btn-sm delete-booster" data-id="' + b.id + '">Del</button></div>';
       }
     } else {
       html += '<div class="empty">No boosters yet</div>';
@@ -731,7 +713,6 @@
     return html;
   }
 
-  // ============ RENDER: PENALTY ============
   function renderPenalty() {
     const gen = penaltiesGen(), paid = penaltiesPaid(), out = outstanding();
     const missed = state.missedDates.length;
@@ -747,7 +728,7 @@
     if (sorted.length) {
       for (let i = 0; i < sorted.length; i++) {
         const p = sorted[i];
-        html += '<div class="list-row"><div><div class="mono" style="font-weight:700;">' + fmt(p.amount) + '</div><div class="dim" style="font-size:12px; margin-top:2px;">' + p.date + ' · ' + (p.paid ? 'Paid ' + p.paidDate : 'Unpaid') + '</div></div>';
+        html += '<div class="list-row"><div><div class="mono" style="font-weight:700;">' + fmt(p.amount) + '</div><div class="dim" style="font-size:12px; margin-top:2px;">' + displayDate(p.date) + ' · ' + (p.paid ? 'Paid ' + displayDate(p.paidDate) : 'Unpaid') + '</div></div>';
         if (!p.paid) html += '<button class="btn btn-ghost btn-sm mark-paid" data-id="' + p.id + '">Pay</button>';
         else html += '<span class="badge">Paid</span>';
         html += '</div>';
@@ -759,7 +740,6 @@
     return html;
   }
 
-  // ============ RENDER: ACTIVITY ============
   function renderActivity() {
     const map = {};
     function ensure(d) { if (!map[d]) map[d] = { matrix: 0, boxes: 0, boost: 0, pGen: 0, pPaid: 0 }; return map[d]; }
@@ -791,7 +771,7 @@
         const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dateObj.getDay()];
         const monthName = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][dateObj.getMonth()];
         html += '<div class="card card-tight">';
-        html += '<div class="row-b" style="margin-bottom:10px;"><span style="font-weight:600; font-size:14px;">' + dayName + ', ' + (+parts[2]) + ' ' + monthName + '</span><span class="mono" style="font-size:12px; color:#888;">' + r.boxes + ' boxes</span></div>';
+        html += '<div class="row-b" style="margin-bottom:10px;"><span style="font-weight:600; font-size:14px;">' + dayName + ', ' + displayDate(d) + '</span><span class="mono" style="font-size:12px; color:#888;">' + r.boxes + ' boxes</span></div>';
         html += '<div style="font-size:12px; color:#888; line-height:1.7;">';
         html += '<div class="row-b"><span>Matrix</span><span class="mono">' + fmt(r.matrix) + '</span></div>';
         html += '<div class="row-b"><span>Booster</span><span class="mono">' + fmt(r.boost) + '</span></div>';
@@ -809,7 +789,6 @@
     return html;
   }
 
-  // ============ RENDER: REPORTS ============
   function renderReports() {
     const m = matrixSaved(), b = boostersTotal(), actual = m + b;
     const pGen = penaltiesGen(), pPaid = penaltiesPaid(), out = outstanding();
@@ -828,7 +807,7 @@
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Paid</span><span class="mono" style="font-weight:600;">' + fmt(pPaid) + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Outstanding</span><span class="mono" style="font-weight:600;">' + fmt(out) + '</span></div></div>';
     html += '<div class="card"><div class="label-lg" style="margin-bottom:14px;">Countdown</div>';
-    html += '<div class="row-b"><span class="dim">Target</span><span class="mono" style="font-weight:600;">' + c.target + '</span></div>';
+    html += '<div class="row-b"><span class="dim">Target</span><span class="mono" style="font-weight:600;">' + displayDate(c.target) + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Days left</span><span class="mono" style="font-weight:600;">' + c.daysLeft + '</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Required pace</span><span class="mono" style="font-weight:600;">' + (c.reqPace === Infinity ? '—' : c.reqPace.toFixed(2)) + '/day</span></div>';
     html += '<div class="row-b" style="margin-top:8px;"><span class="dim">Required ₹/day</span><span class="mono" style="font-weight:600;">' + fmt(c.reqSavings) + '</span></div>';
@@ -841,7 +820,6 @@
     return html;
   }
 
-  // ============ RENDER: COACH ============
   function renderCoach() {
     const m = matrixSaved();
     const pct = (m / TOTAL_TARGET * 100);
@@ -882,7 +860,6 @@
     return html;
   }
 
-  // ============ RENDER: SETTINGS ============
   function renderSettings() {
     const s = state.settings;
     let html = '<div class="stack">';
@@ -910,7 +887,6 @@
     return html;
   }
 
-  // ============ MAIN RENDER ============
   let finUnlocked = false;
   let activePeriod = 'today';
   let currentTab = 'dashboard';
@@ -1053,15 +1029,15 @@
       let csv = 'Date,Type,Amount,Description\n';
       for (let i = 0; i < state.boxes.length; i++) {
         const b = state.boxes[i];
-        if (b.completed && b.timestamp) csv += b.timestamp.slice(0,10) + ',Matrix,' + b.value + ',Box\n';
+        if (b.completed && b.timestamp) csv += displayDate(b.timestamp.slice(0,10)) + ',Matrix,' + b.value + ',Box\n';
       }
       for (let i = 0; i < state.boosters.length; i++) {
         const b = state.boosters[i];
-        csv += b.date + ',Booster,' + b.amount + ',' + (b.description || '').replace(/,/g, ';') + '\n';
+        csv += displayDate(b.date) + ',Booster,' + b.amount + ',' + (b.description || '').replace(/,/g, ';') + '\n';
       }
       for (let i = 0; i < state.penalties.length; i++) {
         const p = state.penalties[i];
-        csv += p.date + ',Penalty,' + p.amount + ',' + (p.paid ? 'Paid' : 'Unpaid') + '\n';
+        csv += displayDate(p.date) + ',Penalty,' + p.amount + ',' + (p.paid ? 'Paid' : 'Unpaid') + '\n';
       }
       const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement('a');
@@ -1138,7 +1114,6 @@
     };
   }
 
-  // Confirm modal buttons
   document.getElementById('confirmYes').onclick = function() {
     document.getElementById('confirmModal').classList.remove('show');
     if (confirmCallback) { const cb = confirmCallback; confirmCallback = null; cb(); }
@@ -1148,7 +1123,6 @@
     confirmCallback = null;
   };
 
-  // Password modal
   function checkPw(entered) {
     return hashStr(entered) === state.settings.passwordHash;
   }
@@ -1185,7 +1159,7 @@
     for (let i = 0; i < state.penalties.length; i++) if (!state.penalties[i].paid) unpaid.push(state.penalties[i]);
     if (!unpaid.length) return;
     const latest = unpaid[unpaid.length - 1];
-    document.getElementById('penaltyModalText').innerHTML = 'You missed <b>' + latest.date + '</b>. Penalty: <b>' + fmt(latest.amount) + '</b>.';
+    document.getElementById('penaltyModalText').innerHTML = 'You missed <b>' + displayDate(latest.date) + '</b>. Penalty: <b>' + fmt(latest.amount) + '</b>.';
     document.getElementById('penaltyModal').classList.add('show');
     state.lastPenaltyPopupDate = t;
     saveState();
@@ -1202,7 +1176,6 @@
     };
   }
 
-  // ============ NAV ============
   function setupNav() {
     const btns = document.querySelectorAll('#mainNav button');
     for (let i = 0; i < btns.length; i++) {
@@ -1217,12 +1190,9 @@
     }
   }
 
-  // ============ BOOT ============
   function boot() {
     try {
-      if (!storageOK) {
-        toast('⚠️ Storage unavailable — data will not persist');
-      }
+      if (!storageOK) toast('⚠️ Storage unavailable — data will not persist');
       loadState();
       reconcileMissedDays();
       saveState();
